@@ -1,0 +1,17 @@
+Required results:
+
+=================================================================
+Algorithm: 
+a) ft, currents
+b) precision: design vs. reality
+
+=================================================================
+Sources of inaccuracy: 
+a) vision
+b) locomotion with balancing
+
+=================================================================
+Insights:
+a) object inertia on stability in spin
+b) forward bias with weight on 1 wheel
+c) grasping while spinning: need to hold with two-hands
