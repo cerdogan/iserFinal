@@ -129,16 +129,9 @@ in fact partitions the configuration space of the objects even before the design
 are considered to prune infeasible assignments.
 
 The role assignment to available resources has been a thoroughly studied area, starting from
-classical planning \cite{newell1961gps,mccarthy1963programs}, and evolving into operations research
-\cite{fulkerson1961network,taha1975integer}, and in this work, we adopt the STRIPS representation
-for the planning process \cite{fikes1972strips}. The idea is to provide the domain knowledge of possible
-actions to take on the available objects in the environment. For instance, a lever can be \textit{placed}
-on a fulcrum or a ramp can be \textit{rested} against another object. A minor difference in our
-framework is that every action induces additional constraints to the assembly configurations and
-an action can be taken if and only if there exists some configuration that satisfies the accumulated
-constraints.
+classical planning \cite{newell1961gps}, and evolving into operations research \cite{fulkerson1961network, taha1975integer}, 
+and in this work, we adopt the STRIPS representation for the planning process.
 
-\subsection{Continuous Configuration Space and Constraints}
 
 \newpage
 \bibliographystyle{plain}

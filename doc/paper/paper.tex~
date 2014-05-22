@@ -138,7 +138,6 @@ framework is that every action induces additional constraints to the assembly co
 an action can be taken if and only if there exists some configuration that satisfies the accumulated
 constraints.
 
-\subsection{Continuous Configuration Space and Constraints}
 
 \newpage
 \bibliographystyle{plain}

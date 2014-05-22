@@ -1,0 +1,75 @@
+This is BibTeX, Version 0.99c (TeX Live 2009/Debian)
+The top-level auxiliary file: abstract.aux
+The style file: plain.bst
+Database file #1: references.bib
+Too many commas in name 1 of "Yu, L., Yeung, S., Tang, C., Terzopoulos, D., Chan, T. and Osher, S." for entry yu2011make
+while executing---line 1049 of file plain.bst
+Too many commas in name 1 of "Yu, L., Yeung, S., Tang, C., Terzopoulos, D., Chan, T. and Osher, S." for entry yu2011make
+while executing---line 1049 of file plain.bst
+Too many commas in name 1 of "Yu, L., Yeung, S., Tang, C., Terzopoulos, D., Chan, T. and Osher, S." for entry yu2011make
+while executing---line 1049 of file plain.bst
+Too many commas in name 1 of "Yu, L., Yeung, S., Tang, C., Terzopoulos, D., Chan, T. and Osher, S." for entry yu2011make
+while executing---line 1049 of file plain.bst
+Too many commas in name 1 of "Yu, L., Yeung, S., Tang, C., Terzopoulos, D., Chan, T. and Osher, S." for entry yu2011make
+while executing---line 1049 of file plain.bst
+Too many commas in name 1 of "Yu, L., Yeung, S., Tang, C., Terzopoulos, D., Chan, T. and Osher, S." for entry yu2011make
+while executing---line 1049 of file plain.bst
+Too many commas in name 1 of "Yu, L., Yeung, S., Tang, C., Terzopoulos, D., Chan, T. and Osher, S." for entry yu2011make
+while executing---line 1049 of file plain.bst
+Warning--empty year in beetz2010cram
+Too many commas in name 1 of "Yu, L., Yeung, S., Tang, C., Terzopoulos, D., Chan, T. and Osher, S." for entry yu2011make
+while executing---line 1090 of file plain.bst
+Too many commas in name 1 of "Yu, L., Yeung, S., Tang, C., Terzopoulos, D., Chan, T. and Osher, S." for entry yu2011make
+while executing---line 1090 of file plain.bst
+Too many commas in name 1 of "Yu, L., Yeung, S., Tang, C., Terzopoulos, D., Chan, T. and Osher, S." for entry yu2011make
+while executing---line 1090 of file plain.bst
+Too many commas in name 1 of "Yu, L., Yeung, S., Tang, C., Terzopoulos, D., Chan, T. and Osher, S." for entry yu2011make
+while executing---line 1090 of file plain.bst
+Too many commas in name 1 of "Yu, L., Yeung, S., Tang, C., Terzopoulos, D., Chan, T. and Osher, S." for entry yu2011make
+while executing---line 1090 of file plain.bst
+Too many commas in name 1 of "Yu, L., Yeung, S., Tang, C., Terzopoulos, D., Chan, T. and Osher, S." for entry yu2011make
+while executing---line 1090 of file plain.bst
+Too many commas in name 1 of "Yu, L., Yeung, S., Tang, C., Terzopoulos, D., Chan, T. and Osher, S." for entry yu2011make
+while executing---line 1090 of file plain.bst
+You've used 11 entries,
+            2118 wiz_defined-function locations,
+            563 strings with 6161 characters,
+and the built_in function-call counts, 3871 in all, are:
+= -- 364
+> -- 228
+< -- 3
++ -- 89
+- -- 78
+* -- 272
+:= -- 664
+add.period$ -- 35
+call.type$ -- 11
+change.case$ -- 72
+chr.to.int$ -- 0
+cite$ -- 12
+duplicate$ -- 145
+empty$ -- 277
+format.name$ -- 78
+if$ -- 795
+int.to.chr$ -- 0
+int.to.str$ -- 11
+missing$ -- 11
+newline$ -- 58
+num.names$ -- 22
+pop$ -- 81
+preamble$ -- 1
+purify$ -- 61
+quote$ -- 0
+skip$ -- 100
+stack$ -- 0
+substring$ -- 158
+swap$ -- 32
+text.length$ -- 3
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 44
+warning$ -- 1
+while$ -- 33
+width$ -- 13
+write$ -- 119
+(There were 14 error messages)

@@ -1,0 +1,111 @@
+\begin{thebibliography}{10}
+
+\bibitem{beetz2010cram}
+Michael Beetz, Lorenz Mosenlechner, and Moritz Tenorth.
+\newblock Cram—a cognitive robot abstract machine for everyday manipulation
+  in human environments.
+\newblock In {\em IROS, 2010}.
+
+\bibitem{erdogan2013planning}
+C.~Erdogan and M.~Stilman.
+\newblock Planning in constraint space: Automated design of functional
+  structures.
+\newblock {\em ICRA}, 2013.
+
+\bibitem{erdogan2014incorporating}
+C.~Erdogan and M.~Stilman.
+\newblock Incorporating kinodynamic constraints in automated design of simple
+  machines.
+\newblock {\em Submitted to IROS}, 2014.
+
+\bibitem{fikes1972strips}
+Richard~E Fikes and Nils~J Nilsson.
+\newblock Strips: A new approach to the application of theorem proving to
+  problem solving.
+\newblock {\em Artificial intelligence}, 2(3):189--208, 1972.
+
+\bibitem{fulkerson1961network}
+Delbert~R Fulkerson.
+\newblock A network flow computation for project cost curves.
+\newblock {\em Management science}, 7(2):167--178, 1961.
+
+\bibitem{kemp2007challenges}
+Charles~C Kemp, Aaron Edsinger, and Eduardo Torres-Jara.
+\newblock Challenges for robot manipulation in human environments.
+\newblock {\em IEEE Robotics and Automation Magazine}, 14(1):20, 2007.
+
+\bibitem{kuindersma2009dexterous}
+Scott~R Kuindersma, Edward Hannigan, Dirk Ruiken, and Roderic~A Grupen.
+\newblock Dexterous mobility with the ubot-5 mobile manipulator.
+\newblock In {\em Advanced Robotics, 2009. ICAR 2009. International Conference
+  on}, pages 1--7. IEEE, 2009.
+
+\bibitem{mccarthy1963programs}
+John McCarthy.
+\newblock {\em Programs with common sense}.
+\newblock Defense Technical Information Center, 1963.
+
+\bibitem{newell1961gps}
+Allen Newell and Herbert~A Simon.
+\newblock {\em GPS, a program that simulates human thought}.
+\newblock Defense Technical Information Center, 1961.
+
+\bibitem{nishiwaki2000design}
+Koichi Nishiwaki, Tomomichi Sugihara, Satoshi Kagami, Fumio Kanehiro, Masayuki
+  Inaba, and Hirochika Inoue.
+\newblock Design and development of research platform for perception-action
+  integration in humanoid robot: H6.
+\newblock In {\em Intelligent Robots and Systems, 2000.(IROS 2000).
+  Proceedings. 2000 IEEE/RSJ International Conference on}, volume~3, pages
+  1559--1564. IEEE, 2000.
+
+\bibitem{dasgupta1999making}
+Vijay Pradeep, Kurt Konolige, and Eric Berger.
+\newblock Calibrating a multi-arm multi-sensor robot: A bundle adjustment
+  approach.
+\newblock In {\em Experimental Robotics}, 1999.
+
+\bibitem{saranli2001rhex}
+Uluc Saranli, Martin Buehler, and Daniel~E Koditschek.
+\newblock Rhex: A simple and highly mobile hexapod robot.
+\newblock {\em The International Journal of Robotics Research}, 20(7):616--631,
+  2001.
+
+\bibitem{srinivasa2010herb}
+Siddhartha~S Srinivasa, Dave Ferguson, Casey~J Helfrich, Dmitry Berenson,
+  Alvaro Collet, Rosen Diankov, Garratt Gallagher, Geoffrey Hollinger, James
+  Kuffner, and Michael~Vande Weghe.
+\newblock Herb: a home exploring robotic butler.
+\newblock {\em Autonomous Robots}, 28(1):5--20, 2010.
+
+\bibitem{stilman2005navigation}
+Mike Stilman and James~J Kuffner.
+\newblock Navigation among movable obstacles: Real-time reasoning in complex
+  environments.
+\newblock {\em International Journal of Humanoid Robotics}, 2(04):479--503,
+  2005.
+
+\bibitem{taha1975integer}
+Hamdy~A Taha.
+\newblock {\em Integer programming: theory, applications, and computations},
+  volume 975.
+\newblock Academic Press New York, 1975.
+
+\bibitem{vidal2006branching}
+V.~Vidal and H.~Geffner.
+\newblock Branching and pruning: An optimal temporal pocl planner based on
+  constraint programming.
+\newblock {\em AI}, 2006.
+
+\bibitem{yamauchi2004packbot}
+Brian~M Yamauchi.
+\newblock Packbot: a versatile platform for military robotics.
+\newblock In {\em Defense and Security}, pages 228--237. International Society
+  for Optics and Photonics, 2004.
+
+\bibitem{yu2011make}
+Yeung S. Tang C. Terzopoulos D. Chan~T. Yu, L. and S.~Osher.
+\newblock Make it home: automatic optim. of furniture arrangement.
+\newblock {\em Siggraph}, 2011.
+
+\end{thebibliography}
