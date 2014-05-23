@@ -8,11 +8,11 @@
 
 \begin{document}
 
-\mainmatter 
+% \mainmatter 
 
 \title{Autonomous Realization of Simple Machines}
 \author{Can Erdogan \and Mike Stilman}
-\institute{Institute for Robotics and Intelligent Machines \\Georgia Institute of Technology}
+% \institute{Institute for Robotics and Intelligent Machines \\Georgia Institute of Technology}
 
 \maketitle
 

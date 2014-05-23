@@ -1,9 +1,11 @@
 \documentclass[runningheads,a4paper]{llncs}
 % \documentclass{article}
 \usepackage{amssymb}
+\usepackage{amsmath}
 \setcounter{tocdepth}{3}
 \usepackage{graphicx}
 \usepackage{url}
+\usepackage[algoruled, vlined,linesnumbered]{algorithm2e}
 
 \begin{document}
 
@@ -75,7 +77,9 @@ recognition has only recently started to gather interest in the humanoid robotic
 capture methods \cite{dasgupta1999making}.
 
 \newpage
-\section{Constraint Satisfaction for Simple Machine Designs}
+\section{Technical Approach}
+
+\subsection{Constraint Satisfaction for Simple Machine Designs}
 
 The manipulation of multiple objects to achieve a goal can be readily represented in a constraint
 satisfaction paradigm where the constraints represent the relationships between the design
@@ -90,7 +94,7 @@ the structure components are assigned roles that designate how they should be pu
 the constraints that \textit{bind} one to another. Lastly, the planner needs to configure the objects
 such that the role constraints and the general design criteria are satisfied. 
 
-\subsection{Component Choices}
+\subsubsection{Component Choices}
 
 A completeness property for an autonomous planner for structural designs is a crucial advantage
 for deployment in real-world circumstances (e.g. military or search-and-rescue operations). In
@@ -112,7 +116,7 @@ two wooden blocks of the same size (or approximately to a degree of confidence) 
 under one class. Similarly, for loads that are known to be significantly heavier than a robot can
 handle, the longer lever candidates might be priotized in the search process.
 
-\subsection{Object Roles} 
+\subsubsection{Object Roles} 
 
 Imagine a two-step stairs is needed to enable a swarm of rough-terrain vehicles, such as 
 PackBots or RHexs \cite{yamauchi2004packbot,saranli2001rhex}, climb a window and survey a building, and some of them have robotic
@@ -128,6 +132,22 @@ representation of the constraints for the object configurations. Note that choos
 in fact partitions the configuration space of the objects even before the design constraints
 are considered to prune infeasible assignments.
 
+The goal of the object roles is to specify (1) the relationship of a component with respect to
+others, and (2) which of its face and edges are used in these connections. Figure \ref{fig:matches} 
+\cite{erdogan2014incorporating} demonstrates some outcome assemblies with the triangle prism
+object acting as fulcrum positioned on different base faces and in contact with the chosen lever
+on various edges. Similarly, we observe that the lever can be used on at least two of its faces
+(discounting symmetries) while it is still possible to find a feasible assembly. 
+
+\begin{figure}[ht!] 
+  \centering
+  \includegraphics[width=0.7\linewidth]{Figures/matches.png}
+  \caption{Different face and edge assignments for the lever-fulcrum assembly. Some assignments,
+  such as using the shortest edge of the lever to connect the fulcrum and the load, may not
+  be feasible due to design constraints and collisions.}
+  \label{fig:matches}
+\end{figure}
+
 The role assignment to available resources has been a thoroughly studied area, starting from
 classical planning \cite{newell1961gps,mccarthy1963programs}, and evolving into operations research
 \cite{fulkerson1961network,taha1975integer}, and in this work, we adopt the STRIPS representation
@@ -138,9 +158,154 @@ framework is that every action induces additional constraints to the assembly co
 an action can be taken if and only if there exists some configuration that satisfies the accumulated
 constraints.
 
+\subsubsection{Continuous Configuration Space and Constraints}
+
+The proposed framework accumulates design constraints via a classical planning framework
+and a feasibility process determines whether the constraints can be satisfied by some configuration
+of the components. The idea is that the different type of constraints can all be generically
+expressed as equality or inequality functions on the space of object and robot configurations.
+If all the constraints are convex, for instance in a stair or bridge design with simplified
+robot assumptions, the feasibility can be determined by an efficient simplex algorithm
+implementation \cite{erdogan2013planning}. For the larger set of nonconvex domains, especially when
+robot kinodynamics are considered, we propose a nonlinear optimization process which minimizes the
+violation of the constraints and attempts to find an assignment of configurations that satisfies all of them.
+
+A number of design constraints such as stacking a box on top of another one or placing a lever
+at the edge of a fulcrum can be expressed with geometric projections. Figure \ref{fig:constraints}
+demonstrates three types of connections: (1) center of mass-face, (2) edge-face, and (3) face-face. 
+The general idea is that points of interest such as center of mass, endpoints of an edge or vertices
+of a face are projected to the plane of another face and limits are imposed on its location. For instance,
+for two objects to be stacked successfully (A), the center of mass of the top object has to lie within
+the supporting face of the bottom object. Similarly, to ensure an edge is on a face (B), it is sufficient
+to confine the endpoints of the edge onto the face plane and guarantee there exists a shared point
+(e.g. cross) between the edge and the face. Lastly, for contact between two faces (C), 
+three points of one of the faces has to lie on the other one and again, a shared point should exist.
+Observe that geometric contact concepts are easily expressed through equality
+and inequality expressions on the projections of significant points on the meshes. 
+
+\begin{figure}[ht!] 
+  \centering
+  \includegraphics[width=0.75\linewidth]{Figures/constraints.png}
+  \caption{Visualization of different types of geometric contact constraints}
+  \label{fig:constraints}
+\end{figure}
+
+Once the object choices and roles are determined, the equality and the inequality constraints between
+the assembly components can be gathered into two sets $\mathcal{F}$ and $\mathcal{G}$ respectively.
+The idea behind using optimization to find feasible samples in the configuration space is based on
+creating error functions by the violation of the constraints for a sample $\vec{x}$:
+
+\vspace{-1em}
+\begin{align*}
+f(\vec{x}) = 0 \;\; \Rightarrow & \;\; E_f(\vec{x}) = f^2(\vec{x}) \\
+g(\vec{x}) \leq 0 \;\; \Rightarrow & \;\; E_g(\vec{x}) = 
+	\begin{cases}
+		g^2(\vec{x}) & \text{if $g(\vec{x}) > 0 $}, \\
+	0        & \text{otherwise}.
+	\end{cases}
+\end{align*}
+
+\noindent where $E_f(\vec{x})$ and $E_g(\vec{x})$ are the proposed squared error functions. Now,
+given the constraint sets $\mathcal{F}$ and $\mathcal{G}$, we define the total error:
+
+\begin{equation}
+	\mathcal{E}(\vec{x}) = \sum\limits_{f \in \mathcal{F}} E_f(\vec{x}) + \sum\limits_{g \in \mathcal{G}} E_g(\vec{x}).
+\end{equation}
+
+\noindent Note that $\mathcal{E}(\vec{x})$ is 0 for
+some $\vec{x}$ if and only if configurations $\vec{x}$ satisfy all the design
+constraints. Moreover, the global minima is guaranteed be more than or equal
+to 0 since the function is a sum of squared errors. Then, by using an optimization method, such as
+Levenberg-Marquardt, the global minima could be found through sampling the space for good initializations.
+
+We outline the overall approach in Algorithm 1 below. Given the available objects, the goal
+criteria and the available actions, the planner searches in the space of discrete object roles
+(line 3) and attempts to take actions as long as they lead to feasible configurations (line 9). The forward
+search accumulates constraints until a feasible design is reached or backtracks. 
+
+\begin{algorithm}[ht!]
+  \SetCommentSty{emph}
+  \KwIn{$domain$: objects properties and generic actions; $goals$: list of goal literals to be fulfilled; $initialState$: discrete literals and no constraints; }
+  \KwResult{configurations: a feasible value in goal subspace; }
+  $stateStack \leftarrow $createStack$(initialState);$ \\
+  \While{$state \leftarrow stateStack$.pop$()$} {
+    $actions \leftarrow $stateActions$(domain)$; \\
+    \ForEach{$action$ in the set $actions$} {
+      \If{$action.pres \subset state.literals$} {
+				newConsts $\leftarrow$ state.consts $\cup$ action.consts; \\
+				\For{$counter = 1 \dots MAX\_COUNT$} {
+					\{\textit{localMin, confs}\} $\leftarrow $optimize($newConsts$, newSeed($domain$)); \\
+					\If{abs$(localMin) \leq 1e^{-4}$} {
+						\lIf{$goals \subset action.afters$} \Return{confs}; \\
+						\Else{
+							$child = \{state.literals \cup action.afters, newConsts\}$ \\
+							$stateStack$.push($child$); \\
+							\textbf{break}; \\
+						}
+					}
+				}
+			}
+		}
+  }
+  \Return{$\emptyset$}; 
+  \caption{ConstraintPlanner()}
+\end{algorithm}
+
+\subsection{Humanoid Robot Platform: Golem Krang}
+
+Designed and built in the Humanoid Robotics Laboratory, Golem Krang is a 150 kg, 6.2 m segway-like
+humanoid robot with two wheels that uses a balancing strategy for locomotion and manipulation \cite{stilman2010golem}.
+Given its unique design, an autonomous planner for functional structures needs to address several
+hardware constraints. First, the contact point on the lever needs to be reachable by the robot.
+Second, the robot needs to apply sufficient force to overcome the opposing weight or friction. For
+Golem Krang, we opt to use only the waist and the wheel motors (Figure 1), and choose to fix the
+arms with hard mechanical breaks. The motivation is three-fold: (1) the chosen joints have
+sufficient torque to actuate the simple machine, (2) simpler reasoning about reachable space of the
+end-effectors, and (3) hardware safety in manipulating hundreds of kgs of objects with an already
+heavy robot. Lastly, Golem Krang needs to maintain a stable posture before contact is made with the
+structure.
+
+\subsection{Perception}
+
+Equipped with a two degree of freedom platform that houses a Microsoft Kinect, Golem Krang can
+inspect and reason about its environment with visual data. In perceiving the environment, we propose
+using a light-weight feasure-based recognition approach as opposed to full 3D based approaches that
+use the entire mesh data such as the iterative closest point algorithm or over-segmentation methods.
+Figure \ref{fig:detection} demonstrates a sample output of the framework.
+
+\begin{figure}[ht!] 
+  \centering
+  \includegraphics[width=0.9\linewidth]{Figures/detection.png}
+  \caption{Cinder block and wooden plates detected as fulcrum and lever objects.}
+  \label{fig:detection}
+\end{figure}
+
+The key assumption of the work is that the planner already knows the mesh of the available objects
+and with minimal additional feature knowledge, such as the top of a cinder block is at 44 cm from
+the ground or a lever is at least 2 meters in one dimension, we can speed up the detection. At its
+current stage, the agent can autonomously detect cinder blocks, the load as shown in Figure 1, the
+walls and the 2-by-4 levers. To localize objects of interest, we perform a simple scan with the tilt
+and pan degrees of freedom of the RGBD camera, taking also into account the robot kinematics.
+
+\subsection{Locomotion}
+
+% Why balance?
+% How to balance? 
+% How to balance while carrying objects?
+
 
 \newpage
 \bibliographystyle{plain}
 \bibliography{references}
 
 \end{document}
+
+% Having chosen the objects and their roles, the autonomous planner needs to find configurations
+% for the assembly components to satisfy a range of constraints. First, the proposed assembly needs
+% to be physically stable (e.g. all center of masses of upper layers within support polygons) and 
+% collision-free. Second, the structure should satisfy its purpose, such as overturning a load,
+% while taking into account the actuator robot's kinodynamic limitations, possibly guided by design
+% principles such as the input arm of a lever being longer than the load arm for mechanical advantage.
+% Note that in considering the robot limitations, we focus on the initial moment of actuation where
+% presumably the required force input is maximal and output a robot configuration and required joint
+% torques along with the design that is sufficient to realize the task. 

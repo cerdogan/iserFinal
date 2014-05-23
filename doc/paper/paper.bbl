@@ -16,7 +16,7 @@ C.~Erdogan and M.~Stilman.
 C.~Erdogan and M.~Stilman.
 \newblock Incorporating kinodynamic constraints in automated design of simple
   machines.
-\newblock {\em Submitted to IROS}, 2014.
+\newblock {\em IROS}, 2014.
 
 \bibitem{fikes1972strips}
 Richard~E Fikes and Nils~J Nilsson.
@@ -84,6 +84,13 @@ Mike Stilman and James~J Kuffner.
   environments.
 \newblock {\em International Journal of Humanoid Robotics}, 2(04):479--503,
   2005.
+
+\bibitem{stilman2010golem}
+Mike Stilman, Jon Olson, and William Gloss.
+\newblock Golem krang: Dynamically stable humanoid robot for mobile
+  manipulation.
+\newblock In {\em Robotics and Automation (ICRA), 2010 IEEE International
+  Conference on}, pages 3304--3309. IEEE, 2010.
 
 \bibitem{taha1975integer}
 Hamdy~A Taha.
