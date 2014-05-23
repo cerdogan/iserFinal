@@ -293,9 +293,9 @@ The primary locomotion strategy for Golem Krang is to balance on its two wheels,
 center of mass on the vertical plane through its wheel axis. Modeled as an inverted pendulum,
 locomotion via balancing has a few advantages over running on both the wheels and the back caster of
 the robot. First, the footprint of the robot is smaller, 54 cm front to back due to diameter
-of the wheels while dynamically balancing as opposed to 86 cm when the robot is staticly grounded.
+of the wheels while dynamically balancing, as opposed to 86 cm when the robot is staticly grounded.
 Second, the locomotion of the robot is simpler to model since the fixed caster without omnidirectional
-wheels has different friction properties as the robot spins, moves forward and backward. 
+wheels has different ground friction properties as the robot spins, moves forward and backward. 
 
 The position and posture control is implemented using a proportional derivative controller based on
 the inertial readings that indicate the robot angle from the vertical and the wheel encoders. In
@@ -313,10 +313,15 @@ on the effect of the object inertia and mass on the system stability.
 
 \subsection{Manipulation}
 
-% Why balance?
-% How to balance? 
-% How to balance while carrying objects?
+\begin{figure}[ht!] 
+  \centering
+  \includegraphics[width=1.0\linewidth]{Figures/manipulation.png}
+  \caption{.}
+  \label{fig:manipulation}
+\end{figure}
 
+
+asdf
 
 \newpage
 \bibliographystyle{plain}
