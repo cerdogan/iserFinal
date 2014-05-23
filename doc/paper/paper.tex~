@@ -289,6 +289,30 @@ and pan degrees of freedom of the RGBD camera, taking also into account the robo
 
 \subsection{Locomotion}
 
+The primary locomotion strategy for Golem Krang is to balance on its two wheels, keeping its
+center of mass on the vertical plane through its wheel axis. Modeled as an inverted pendulum,
+locomotion via balancing has a few advantages over running on both the wheels and the back caster of
+the robot. First, the footprint of the robot is smaller, 54 cm front to back due to diameter
+of the wheels while dynamically balancing as opposed to 86 cm when the robot is staticly grounded.
+Second, the locomotion of the robot is simpler to model since the fixed caster without omnidirectional
+wheels has different friction properties as the robot spins, moves forward and backward. 
+
+The position and posture control is implemented using a proportional derivative controller based on
+the inertial readings that indicate the robot angle from the vertical and the wheel encoders. In
+this work, we assume the environment is setup such that the locomotion can be carried out by
+turning towards the goal position, moving forward and adjusting for the goal orientation - ignoring
+collisions in the world. To move forward, we use a velocity profile with limits on minimum and maximum
+acceleration and deceleration. 
+
+A significant aspect of the locomotion is the manipulation of heavy objects such as 15 kg cinder
+blocks and 10 kg wooden plates. To enable stable dynamic balancing, the force-torque sensors
+at the end-effectors of Golem Krang are used to incorporate the mass of the carried objects into
+the robot model and update the center of mass position appropriately using forward kinematics. We
+provide additional insights on heavy object manipulation in the experiments section, specifically
+on the effect of the object inertia and mass on the overall system stability. 
+
+\subsection{Manipulation}
+
 % Why balance?
 % How to balance? 
 % How to balance while carrying objects?
@@ -299,6 +323,8 @@ and pan degrees of freedom of the RGBD camera, taking also into account the robo
 \bibliography{references}
 
 \end{document}
+
+% DISCUSSION: CHALLENGES WITH VISUAL SERVOING A NONHOLONOMIC ROBOT BASE
 
 % Having chosen the objects and their roles, the autonomous planner needs to find configurations
 % for the assembly components to satisfy a range of constraints. First, the proposed assembly needs
