@@ -39,6 +39,12 @@ Robert~P Goldman and Mark~S Boddy.
 \newblock Expressive planning and explicit knowledge.
 \newblock In {\em AIPS}, volume~2, page~3, 1996.
 
+\bibitem{ha1996trajectory}
+Yun-Su Ha and Shin'ichi Yuta.
+\newblock Trajectory tracking control for navigation of the inverse pendulum
+  type self-contained mobile robot.
+\newblock {\em Robotics and autonomous systems}, 17(1):65--80, 1996.
+
 \bibitem{kemp2007challenges}
 Charles~C Kemp, Aaron Edsinger, and Eduardo Torres-Jara.
 \newblock Challenges for robot manipulation in human environments.

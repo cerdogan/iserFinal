@@ -440,27 +440,72 @@ In this section, we provide experimental results on the functionality of the rea
 machines under different conditions, study the sources of inaccuracies in the assembly process
 and provide some insights on the autonomous manipulation of heavy objects. 
 
-\subsection{Designs with Different Load Weights}
+\subsubsection{Designs with Different Load Weights}
 
-To assess the ability of the proposed design algorithm, the framework is tested with two different
-load sizes, 50 kg and 100 kg, where the planner needs to choose from two different levers 1.7 and 2.5
-m long in each case. Once a choice is made, Golem Krang autonomously constructs the design, as
-described in Section 3, and we measure the force/torque sensor readings at the end-effector of
-the actuating arm. Figure \ref{fig:comparison} demonstrates the readings for the two experiments
-where the maximum applied forces are 242.27 Nm and 368.63 Nm for 50 kg and 100 kg experiments
+The proposed framework is tested with two 
+load sizes, 50 kg and 100 kg, where the planner chooses from two levers 1.7 and 2.5
+m long. Once the design is made, Golem Krang autonomously constructs it, as
+described in Section 3, and we measure the force/torque sensor readings at the actuating arm gripper. Figure \ref{fig:graphs}a demonstrates the maximum applied forces at 242.27 Nm and 368.63 Nm for 50 kg and 100 kg experiments
 respectively. We conclude that the mechanical advantage is 2.02:1 and 2.66:1 for each case, and 
 the maximum force limit is preserved; and thus, the planned design, its assembly and actuation are
 successful.
 
 \begin{figure}[ht!] 
   \centering
-  \includegraphics[width=0.7\linewidth]{Figures/loads.png}
-  \caption{The mechanical advantage in forces}
-  \label{fig:comparison}
+  \includegraphics[width=1.0\linewidth]{Figures/loads.png}
+  \caption{Left: Input forces during the 50 kg (red) and 100 kg (red) overturning tasks. 
+  Right: Fulcrum shift while using a small lever leads to increased input force  (grey line).}
+  
+  \label{fig:graphs}
 \end{figure}
 
-\subsection{Fulcrum Base Choice and Unmodeled Implications}
+\vspace{-2em}
+\subsubsection{Fulcrum Base Choice and Unmodeled Implications}
 
+The proposed planner focuses on the initial moment of force application and ensures that the force
+induces enough torque to overturn the load. Although constraints are used to guarantee that the
+motion is collision-free, the possibility of the the contact between
+the lever and the cinder block moving is not considered. Figure \ref{fig:short}a demonstrates a case where
+the planner \textit{autonomously} adapts the fulcrum base choice to accommodate the short
+lever. However, the fulcrum point moves (Figures \ref{fig:short}b-c) because the contact height is
+shorter than the center of mass of the load. Figure \ref{fig:graphs}b displays the increase in
+the required force as the fulcrum shifts.
+
+
+\begin{figure}[ht!] 
+  \centering
+  \includegraphics[width=1.0\linewidth]{Figures/short.png}
+  \caption{.}
+  \label{fig:short}
+\end{figure}
+
+\subsubsection{Evaluating Accuracy}
+
+DONT READ HERE YET!
+
+A significant challenge in accomplishing the series of the autonomous manipulation and perception
+tasks has been the accumulation of error over the course of the executions. To remedy such an error
+build-up, at the current state of our work, the authors intervene and instruct the robot to minimize
+its position errors. We focus on the two main reasons and propose possible solutions.
+
+During experiments, we observed that the RGBD data becomes more erroneous as the distance increases.
+Within a 1 meter bound, the mean error is within 2-3 cm whereas with the maximum 4 meters (e.g. the
+room limits), we see errors up to 10 cm. The proportional increase of error with respect to distance
+suggest a camera calibration problem. Another source of error could be the slack in the tilt and pan
+joints that control the camera view. The general of camera calibration has been addressed via bundle
+adjustment in \cite{dasgupta1999making}.
+
+A second reason we suspect that might lead to localization errors is the error accumulated while the
+robot attempts to follow a velocity profile in the forward direction. Figure \ref{fig:controller} demonstrates the
+reference position and velocity trajectories (green), along with the real trajectories (red). To
+remedy this error, we will focus on the trajectory following techniques developed by \cite{ha1996trajectory}.
+
+\begin{figure}[ht!] 
+  \centering
+  \includegraphics[width=0.6\linewidth]{Figures/controller.png}
+  \caption{The mechanical advantage in forces}
+  \label{fig:controller}
+\end{figure}
 
 \newpage
 \bibliographystyle{plain}

@@ -363,7 +363,7 @@ objects in assembly tasks by pushing the objects into known configurations. \cit
 \section{Experiments}
 
 Golem Krang is tasked with overturning a 50 kg load using a lever-fulcrum assembly with a limit of
-\textcolor{red}{TBA} Nm on the force it can apply to the environment. Given the dimensions of the 
+300 Nm on the force it can apply to the environment. Given the dimensions of the 
 available objects in the environment, the robot has to design a structure, locate the components,
 configure them into their positions and actuate the simple machine. In the following section, we
 describe a typical run, focusing on details of perception, locomotion and manipulation.
@@ -430,7 +430,7 @@ it.
 \begin{figure}[ht!] 
   \centering
   \includegraphics[width=1.0\linewidth]{Figures/d.png}
-  \caption{The mechanical advantage in forces}
+  \caption{Golem Krang places the lever in the planned pose and overturns the 50 kg load.}
   \label{fig:typical_d}
 \end{figure}
 
@@ -440,13 +440,43 @@ In this section, we provide experimental results on the functionality of the rea
 machines under different conditions, study the sources of inaccuracies in the assembly process
 and provide some insights on the autonomous manipulation of heavy objects. 
 
-\subsection{Designs with Different Load Weights}
+\subsubsection{Designs with Different Load Weights}
 
 To assess the ability of the proposed design algorithm, the framework is tested with two different
-load sizes, 50 and 100 kg, where the planner needs to choose from two different levers 1.7 and 2.5
+load sizes, 50 kg and 100 kg, where the planner needs to choose from two different levers 1.7 and 2.5
 m long in each case. Once a choice is made, Golem Krang autonomously constructs the design, as
 described in Section 3, and we measure the force/torque sensor readings at the end-effector of
-the actuating arm. 
+the actuating arm. Figure \ref{fig:graphs}a demonstrates the readings for the two experiments
+where the maximum applied forces are 242.27 Nm and 368.63 Nm for 50 kg and 100 kg experiments
+respectively. We conclude that the mechanical advantage is 2.02:1 and 2.66:1 for each case, and 
+the maximum force limit is preserved; and thus, the planned design, its assembly and actuation are
+successful.
+
+\begin{figure}[ht!] 
+  \centering
+  \includegraphics[width=1.0\linewidth]{Figures/loads.png}
+  \caption{Left: Input forces during the 50 kg (red) and 100 kg (red) overturning tasks. 
+  Right: Fulcrum shift while using a small lever leads to increased input force  (grey line).}
+  
+  \label{fig:graphs}
+\end{figure}
+
+\vspace{-2em}
+\subsubsection{Fulcrum Base Choice and Unmodeled Implications}
+
+As discussed in Section 2a, the planning algorithm focuses on the initial moment of force application
+and ensures that the input force to the lever induces enough torque around the back edge of the
+load to overturn it. Although additional constraints are included to guarantee that the motion is
+collision-free, the possibility of the fulcrum point moving, that is the contact between the lever
+and the cinder block, is not considered. 
+
+\begin{figure}[ht!] 
+  \centering
+  \includegraphics[width=1.0\linewidth]{Figures/short.png}
+  \caption{Golem Krang places the lever in d pose and overturns the 50 kg load.}
+  \label{fig:typical_d}
+\end{figure}
+
 
 \newpage
 \bibliographystyle{plain}
