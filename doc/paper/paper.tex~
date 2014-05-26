@@ -475,7 +475,7 @@ the required force as the fulcrum shifts.
 \begin{figure}[ht!] 
   \centering
   \includegraphics[width=1.0\linewidth]{Figures/short.png}
-  \caption{.}
+  \caption{The movement of the fulcrum-lever contact point for short lever objects.}
   \label{fig:short}
 \end{figure}
 
@@ -515,11 +515,6 @@ start spinning since one wheel has to accommodate the extra weight.
 % \bibliography{references}
 
 \begin{thebibliography}{27}
-
-% \bibitem{proceeding1} Czajkowski, K., Fitzgerald, S., Foster, I., Kesselman, C.: Grid
-% Information Services for Distributed Resource Sharing. In: 10th IEEE
-% International Symposium on High Performance Distributed Computing, pp.
-% 181--184. IEEE Press, New York (2001)
 
 \bibitem{erdogan2013planning} Erdogan, C., Stilman, M: Planning in constraint space: Automated design of
 functional structures. ICRA, 2013.
