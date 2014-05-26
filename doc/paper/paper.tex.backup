@@ -6,6 +6,7 @@
 \usepackage{graphicx}
 \usepackage{url}
 \usepackage[algoruled, vlined,linesnumbered]{algorithm2e}
+\usepackage{color}
 
 \begin{document}
 
@@ -42,7 +43,7 @@ constraint satisfaction approach to assembly design, specifically for robotic ma
 locomotion. The key idea is to represent the constraints
 between the components of the design, the robot kinematics and dynamics as generic equality and
 inequality functions within a nonlinear optimization framework and solve for the global minima, if
-necessary by random restarts. Such global optimization methods have been used in other fields as
+ necessary by random restarts. Such global optimization methods have been used in other fields as
 well, such as operations research \cite{vidal2006branching} and architecture \cite{yu2011make}.
 
 In this work, we take the next step towards full autonomy where the humanoid robot, Golem Krang,
@@ -272,6 +273,7 @@ inspect and reason about its environment with visual data. In perceiving the env
 using a light-weight feasure-based recognition approach as opposed to full 3D based approaches that
 use the entire mesh data such as the iterative closest point algorithm or over-segmentation methods.
 Figure \ref{fig:detection} demonstrates a sample output of the framework.
+% TODO Justify why not use planar segmentation and ICP
 
 \begin{figure}[ht!] 
   \centering
@@ -359,6 +361,44 @@ Such motions have been used before to eliminate uncertainty in the initial confi
 objects in assembly tasks by pushing the objects into known configurations. \cite{mason1986mechanics}
 
 \section{Experiments}
+
+Golem Krang is tasked with overturning a 45 kg load using a lever-fulcrum assembly with a limit of
+\textcolor{red}{TBA} Nm on the force it can apply to the environment. Given the dimensions of the 
+available objects in the environment, the robot has to design a structure, locate the components,
+configure them into their positions and actuate the simple machine. In the following section, we
+describe a typical run, focusing on details of perception, locomotion and manipulation.
+
+Figu
+\begin{figure}[ht!] 
+  \centering
+  \includegraphics[width=1.0\linewidth]{Figures/a.png}
+  \caption{The mechanical advantage in forces}
+  \label{fig:showOff}
+\end{figure}
+
+\begin{figure}[ht!] 
+  \centering
+  \includegraphics[width=1.0\linewidth]{Figures/b.png}
+  \caption{The mechanical advantage in forces}
+  \label{fig:showOff}
+\end{figure}
+
+\begin{figure}[ht!]  	
+  \centering
+  \includegraphics[width=1.0\linewidth]{Figures/c.png}
+  \caption{The mechanical advantage in forces}
+  \label{fig:showOff}
+\end{figure}
+
+
+\begin{figure}[ht!] 
+  \centering
+  \includegraphics[width=1.0\linewidth]{Figures/d.png}
+  \caption{The mechanical advantage in forces}
+  \label{fig:showOff}
+\end{figure}
+
+% The robot has to move its arms out of the way to visualize the objects.
 
 \newpage
 \bibliographystyle{plain}
