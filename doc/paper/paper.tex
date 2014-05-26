@@ -481,31 +481,29 @@ the required force as the fulcrum shifts.
 
 \subsubsection{Evaluating Accuracy}
 
-DONT READ HERE YET!
-
-A significant challenge in accomplishing the series of the autonomous manipulation and perception
-tasks has been the accumulation of error over the course of the executions. To remedy such an error
-build-up, at the current state of our work, the authors intervene and instruct the robot to minimize
-its position errors. We focus on the two main reasons and propose possible solutions.
-
-During experiments, we observed that the RGBD data becomes more erroneous as the distance increases.
-Within a 1 meter bound, the mean error is within 2-3 cm whereas with the maximum 4 meters (e.g. the
-room limits), we see errors up to 10 cm. The proportional increase of error with respect to distance
-suggest a camera calibration problem. Another source of error could be the slack in the tilt and pan
-joints that control the camera view. The general of camera calibration has been addressed via bundle
-adjustment in \cite{dasgupta1999making}.
-
-A second reason we suspect that might lead to localization errors is the error accumulated while the
-robot attempts to follow a velocity profile in the forward direction. Figure \ref{fig:controller} demonstrates the
-reference position and velocity trajectories (green), along with the real trajectories (red). To
-remedy this error, we will focus on the trajectory following techniques developed by \cite{ha1996trajectory}.
+A challenge in long-term manipulation tasks is the accumulation of error over the course of the
+executions. To remedy such an error build-up, at the current state of our work, the authors
+intervene and instruct the robot to minimize its error if necessary. One of the main causes of this
+inaccuracy is the reliability of the RGBD data. We observe that a mean error of 2-3 cm within a 1 m
+bound increases up to 10 cm with 4 meters. The proportional increase in error with respect to
+distance suggest a camera calibration problem which can be addressed with bundle adjustment \cite{dasgupta1999making}. 
+ 
+Secondly, locomotion for heavy balancing robots is an active research area and our implementation
+with a proportional-derivative controller can be improved following techniques as presented in
+\cite{ha1996trajectory}. A major challenge is the system modeling, specifically accurate center of
+mass and inertia information. Figure \ref{fig:controller} demonstrates the behavior of the robot as
+it follows a velocity profile, moving straight. The sinusoidal behavior in the output position
+trajectory (red) is the robot regaining its balance and the steady state error may be accommodated
+with an integral term in the controller. A concern is the high-frequency velocity sinusoids which may cause instability when heavy objects are manipulated.
 
 \begin{figure}[ht!] 
   \centering
-  \includegraphics[width=0.6\linewidth]{Figures/controller.png}
+  \includegraphics[width=0.9\linewidth]{Figures/controller.png}
   \caption{The mechanical advantage in forces}
   \label{fig:controller}
 \end{figure}
+
+\subsection{}
 
 \newpage
 \bibliographystyle{plain}
