@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009/Debian) (format=pdflatex 2013.3.6)  25 MAY 2014 23:50
+This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009/Debian) (format=pdflatex 2013.3.6)  26 MAY 2014 00:48
 entering extended mode
  %&-line parsing enabled.
 **paper.tex
@@ -360,7 +360,7 @@ File: Figures/b.png Graphic file (type png)
 <use Figures/b.png> <Figures/c.png, id=58, 1285.05093pt x 288.3272pt>
 File: Figures/c.png Graphic file (type png)
 
-<use Figures/c.png> <Figures/d.png, id=59, 1265.47781pt x 287.57437pt>
+<use Figures/c.png> <Figures/d.png, id=59, 1251.17438pt x 287.57437pt>
 File: Figures/d.png Graphic file (type png)
 
 <use Figures/d.png> [9 <./Figures/manipulation.png>] (./paper.bbl
@@ -403,7 +403,7 @@ f-texlive/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/share/texmf-texlive/fo
 nts/type1/public/amsfonts/cm/cmsy9.pfb></usr/share/texmf-texlive/fonts/type1/pu
 blic/amsfonts/cm/cmti10.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfon
 ts/cm/cmti9.pfb>
-Output written on paper.pdf (12 pages, 8763388 bytes).
+Output written on paper.pdf (12 pages, 8719585 bytes).
 PDF statistics:
  136 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
