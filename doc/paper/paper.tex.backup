@@ -293,9 +293,9 @@ The primary locomotion strategy for Golem Krang is to balance on its two wheels,
 center of mass on the vertical plane through its wheel axis. Modeled as an inverted pendulum,
 locomotion via balancing has a few advantages over running on both the wheels and the back caster of
 the robot. First, the footprint of the robot is smaller, 54 cm front to back due to diameter
-of the wheels while dynamically balancing as opposed to 86 cm when the robot is staticly grounded.
+of the wheels while dynamically balancing, as opposed to 86 cm when the robot is staticly grounded.
 Second, the locomotion of the robot is simpler to model since the fixed caster without omnidirectional
-wheels has different friction properties as the robot spins, moves forward and backward. 
+wheels has different ground friction properties as the robot spins, moves forward and backward. 
 
 The position and posture control is implemented using a proportional derivative controller based on
 the inertial readings that indicate the robot angle from the vertical and the wheel encoders. In
@@ -307,12 +307,58 @@ acceleration and deceleration.
 A significant aspect of the locomotion is the manipulation of heavy objects such as 15 kg cinder
 blocks and 10 kg wooden plates. To enable stable dynamic balancing, the force-torque sensors
 at the end-effectors of Golem Krang are used to incorporate the mass of the carried objects into
-the robot model and update the center of mass position appropriately using forward kinematics. 
+the robot model and update the center of mass position appropriately using forward kinematics. We
+provide additional insights on heavy object manipulation in the experiments section, specifically
+on the effect of the object inertia and mass on the system stability. 
 
-% Why balance?
-% How to balance? 
-% How to balance while carrying objects?
+\subsection{Manipulation}
 
+The manipulation of multiple objects under motor and perception uncertainty requires a series of 
+robust strategies both algorithmicly and in practical implementation. In this work, a wide range of
+motion planning tools are adopted such as rapidly-expanding random trees (RRTs) \cite{kuffner2000rrt},
+analytical inverse kinematics \cite{tolani2000real} and Jacobian control \cite{whitney1969resolved}. 
+Additionally, to handle perception errors, we propose using guarded moves \cite{bejczy1977effect} 
+that control the manipulator behavior until a predetermined tactile feedback is received. Moreover,
+we deploy ``conformant motion'' behaviors where the robot action forces itself
+and its environment to a desired state without any sensory feedback \cite{goldman1996expressive}. 
+
+\subsubsection{Motion planning}
+
+Figure \ref{fig:manipulation} depicts the analytical inverse kinematics and the motion planning
+steps during the manipulation of a cinder block to be used as a fulcrum. We use a predetermined
+grasp location, the top surface with the holes at the sides (see Figure \ref{fig:manipulation}a).
+Having observed the object and moved its base to a desirable configuration, the goal for Golem
+Krang is to use one of its manipulators to grasp the object. To do so, we first use analytical
+inverse kinematics to find configurations close to the object we can reach without collisions.
+Figure \ref{fig:manipulation}a displays three configurations out of which the left most,
+semi-transparent one collides with one of the wheels. Once a goal in arm jointspace is determined,
+bidirectional RRTs with path shortening and smoothing are used to move the arm from its initial 
+pose to the goal. Figure \ref{fig:manipulation}b demonstrates the keyframes as the left arm moves
+around the cinder block to avoid collisions until it reaches the goal pose (green) in front of the grasp point. 
+
+\begin{figure}[ht!] 
+  \centering
+  \includegraphics[width=1.0\linewidth]{Figures/manipulation.png}
+  \caption{Left: Candidate grasp poses for the block - left most in collision with wheel.
+  Right: RRT trajectory to goal grasp pose, moving around the block to avoid collisions.}
+  \label{fig:manipulation}
+\end{figure}
+
+\vspace{-2em}
+\subsubsection{Guarded and conformant motions}
+
+Once in position using motion planning, Golem Krang uses force/torque feedback at the end-effectors
+to reach out to the cinder block until contact and ensure its grippers can grasp it. Such guarded
+moves have proven to be simple, heuristic alternatives to visual servoing as the robot picks up
+levers, and positions them on the fulcrum and inside the load.
+
+In addition to guarded moves with sensory feedback, we also utilize conformant motions where
+in order to localize the lever more precisely, the robot runs its wheels against the lever,
+usually one of them first, turning its base flush against it and eliminating any visual positioning error.
+Such motions have been used before to eliminate uncertainty in the initial configuration of manipulated
+objects in assembly tasks by pushing the objects into known configurations. \cite{mason1986mechanics}
+
+\section{Experiments}
 
 \newpage
 \bibliographystyle{plain}

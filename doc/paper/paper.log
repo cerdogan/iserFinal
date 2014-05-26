@@ -1,17 +1,11 @@
-This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009/Debian) (format=pdflatex 2012.11.30)  23 MAY 2014 07:39
+This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009/Debian) (format=pdflatex 2013.3.6)  25 MAY 2014 21:10
 entering extended mode
  %&-line parsing enabled.
 **paper.tex
 (./paper.tex
 LaTeX2e <2009/09/24>
 Babel <v3.8l> and hyphenation patterns for english, usenglishmax, dumylang, noh
-yphenation, farsi, arabic, croatian, bulgarian, ukrainian, russian, czech, slov
-ak, danish, dutch, finnish, french, basque, ngerman, german, german-x-2009-06-1
-9, ngerman-x-2009-06-19, ibycus, monogreek, greek, ancientgreek, hungarian, san
-skrit, italian, latin, latvian, lithuanian, mongolian2a, mongolian, bokmal, nyn
-orsk, romanian, irish, coptic, serbian, turkish, welsh, esperanto, uppersorbian
-, estonian, indonesian, interlingua, icelandic, kurmanji, slovenian, polish, po
-rtuguese, spanish, galician, catalan, swedish, ukenglish, loaded.
+yphenation, loaded.
 (./llncs.cls
 Document Class: llncs 2013/09/27 v2.18 
  LaTeX document class for Lecture Notes in Computer Science
@@ -271,7 +265,10 @@ subscribe by emailing sympa@lirmm.fr with 'subscribe <list> <firstname name>'
 \algocf@algobox=\box60
 ) (./paper.aux
 
-LaTeX Warning: Label `fig:detection' multiply defined.
+LaTeX Warning: Label `fig:showOff' multiply defined.
+
+
+LaTeX Warning: Label `fig:showOff' multiply defined.
 
 )
 \openout1 = `paper.aux'.
@@ -344,32 +341,39 @@ Underfull \hbox (badness 10000) detected at line 252
 [6] <Figures/detection.png, id=46, 992.95969pt x 357.58594pt>
 File: Figures/detection.png Graphic file (type png)
 
-<use Figures/detection.png> [7 <./Figures/detection.png>]
-<Figures/manipulation.png, id=52, 1139.00531pt x 410.2828pt>
+<use Figures/detection.png> [7 <./Figures/detection.png>] [8]
+<Figures/manipulation.png, id=55, 1139.00531pt x 410.2828pt>
 File: Figures/manipulation.png Graphic file (type png)
 
-<use Figures/manipulation.png> [8 <./Figures/manipulation.png>] (./paper.bbl
+<use Figures/manipulation.png>
+<Figures/asdf.png, id=56, 1641.13126pt x 287.57437pt>
+File: Figures/asdf.png Graphic file (type png)
+ <use Figures/asdf.png>
+<Figures/asdfg.png, id=57, 1199.98312pt x 287.57437pt>
+File: Figures/asdfg.png Graphic file (type png)
+ <use Figures/asdfg.png>
+[9 <./Figures/manipulation.png> <./Figures/asdf.png>] (./paper.bbl
 Missing character: There is no â in font cmr9!
 Missing character: There is no € in font cmr9!
 Missing character: There is no ” in font cmr9!
 
-Underfull \hbox (badness 2126) in paragraph at lines 54--61
+Underfull \hbox (badness 2126) in paragraph at lines 75--82
 []\OT1/cmr/m/n/9 Koichi Nishi-waki, To-momichi Sug-i-hara, Satoshi Kagami, Fu-m
 io Kane-hiro,
  []
 
-) [9] (./paper.aux)
+[10 <./Figures/asdfg.png>]) [11] (./paper.aux)
 
 LaTeX Warning: There were multiply-defined labels.
 
  ) 
 Here is how much of TeX's memory you used:
- 3366 strings out of 493857
- 40488 string characters out of 1153304
- 128715 words of memory out of 3000000
- 6604 multiletter control sequences out of 15000+50000
+ 3383 strings out of 495061
+ 40807 string characters out of 1182622
+ 127765 words of memory out of 3000000
+ 6521 multiletter control sequences out of 15000+50000
  14105 words of font info for 52 fonts, out of 3000000 for 9000
- 714 hyphenation exceptions out of 8191
+ 28 hyphenation exceptions out of 8191
  31i,27n,24p,339b,530s stack positions out of 5000i,500n,10000p,200000b,50000s
 </usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmbx10.pfb></usr/sha
 re/texmf-texlive/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/share/texmf-te
@@ -388,9 +392,9 @@ f-texlive/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/share/texmf-texlive/fo
 nts/type1/public/amsfonts/cm/cmsy9.pfb></usr/share/texmf-texlive/fonts/type1/pu
 blic/amsfonts/cm/cmti10.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfon
 ts/cm/cmti9.pfb>
-Output written on paper.pdf (9 pages, 3989515 bytes).
+Output written on paper.pdf (11 pages, 6478238 bytes).
 PDF statistics:
- 119 PDF objects out of 1000 (max. 8388607)
+ 129 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
- 26 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 36 words of extra memory for PDF output out of 10000 (max. 10000000)
 

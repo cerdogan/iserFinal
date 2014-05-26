@@ -15,6 +15,24 @@
   publisher={Academic Press New York}
 }
 
+@article{fikes1972strips,
+  title={STRIPS: A new approach to the application of theorem proving to problem solving},
+  author={Fikes, Richard E and Nilsson, Nils J},
+  journal={Artificial intelligence},
+  volume={2},
+  number={3},
+  pages={189--208},
+  year={1972},
+  publisher={Elsevier}
+}
+
+@book{mccarthy1963programs,
+  title={Programs with common sense},
+  author={McCarthy, John},
+  year={1963},
+  publisher={Defense Technical Information Center}
+}
+
 @book{newell1961gps,
   title={GPS, a program that simulates human thought},
   author={Newell, Allen and Simon, Herbert A},
@@ -86,6 +104,44 @@
   pages={915--923},
   year={1995},
   organization={Citeseer}
+}
+
+@article{whitney1969resolved,
+  title={Resolved motion rate control of manipulators and human prostheses.},
+  author={Whitney, Daniel E},
+  journal={IEEE Transactions on man-machine systems},
+  year={1969}
+}
+
+@inproceedings{goldman1996expressive,
+  title={Expressive Planning and Explicit Knowledge.},
+  author={Goldman, Robert P and Boddy, Mark S},
+  booktitle={AIPS},
+  volume={2},
+  pages={3},
+  year={1996}
+}
+
+@article{bejczy1977effect,
+  title={Effect of hand-based sensors on manipulator control performance},
+  author={Bejczy, Antal K},
+  journal={Mechanism and Machine Theory},
+  volume={12},
+  number={5},
+  pages={547--567},
+  year={1977},
+  publisher={Elsevier}
+}
+
+@article{tolani2000real,
+  title={Real-time inverse kinematics techniques for anthropomorphic limbs},
+  author={Tolani, Deepak and Goswami, Ambarish and Badler, Norman I},
+  journal={Graphical models},
+  volume={62},
+  number={5},
+  pages={353--388},
+  year={2000},
+  publisher={Elsevier}
 }
 
 @inproceedings{kuffner2000rrt,
@@ -231,8 +287,17 @@
 @article{erdogan2014incorporating,
   title={Incorporating Kinodynamic Constraints in Automated Design of Simple Machines},
   author={Erdogan, C. and Stilman, M.},
-  journal={Submitted to IROS},
+  journal={IROS},
   year={2014}
+}
+
+@inproceedings{stilman2010golem,
+  title={Golem krang: Dynamically stable humanoid robot for mobile manipulation},
+  author={Stilman, Mike and Olson, Jon and Gloss, William},
+  booktitle={Robotics and Automation (ICRA), 2010 IEEE International Conference on},
+  pages={3304--3309},
+  year={2010},
+  organization={IEEE}
 }
 
 @inproceedings{fox1999detection,

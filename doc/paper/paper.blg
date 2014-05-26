@@ -31,45 +31,45 @@ Too many commas in name 1 of "Yu, L., Yeung, S., Tang, C., Terzopoulos, D., Chan
 while executing---line 1090 of file plain.bst
 Too many commas in name 1 of "Yu, L., Yeung, S., Tang, C., Terzopoulos, D., Chan, T. and Osher, S." for entry yu2011make
 while executing---line 1090 of file plain.bst
-You've used 19 entries,
+You've used 25 entries,
             2118 wiz_defined-function locations,
-            610 strings with 7313 characters,
-and the built_in function-call counts, 6522 in all, are:
-= -- 637
-> -- 318
-< -- 6
-+ -- 126
-- -- 106
-* -- 435
-:= -- 1081
-add.period$ -- 61
-call.type$ -- 19
-change.case$ -- 107
+            643 strings with 8096 characters,
+and the built_in function-call counts, 8275 in all, are:
+= -- 812
+> -- 383
+< -- 8
++ -- 152
+- -- 126
+* -- 549
+:= -- 1375
+add.period$ -- 80
+call.type$ -- 25
+change.case$ -- 135
 chr.to.int$ -- 0
-cite$ -- 20
-duplicate$ -- 262
-empty$ -- 509
-format.name$ -- 106
-if$ -- 1374
+cite$ -- 26
+duplicate$ -- 336
+empty$ -- 663
+format.name$ -- 126
+if$ -- 1743
 int.to.chr$ -- 0
-int.to.str$ -- 19
-missing$ -- 22
-newline$ -- 98
-num.names$ -- 38
-pop$ -- 130
+int.to.str$ -- 25
+missing$ -- 28
+newline$ -- 128
+num.names$ -- 50
+pop$ -- 159
 preamble$ -- 1
-purify$ -- 91
+purify$ -- 113
 quote$ -- 0
-skip$ -- 181
+skip$ -- 227
 stack$ -- 0
-substring$ -- 346
-swap$ -- 63
-text.length$ -- 6
+substring$ -- 447
+swap$ -- 75
+text.length$ -- 8
 text.prefix$ -- 0
 top$ -- 0
-type$ -- 70
+type$ -- 94
 warning$ -- 1
-while$ -- 61
-width$ -- 21
-write$ -- 207
+while$ -- 80
+width$ -- 27
+write$ -- 273
 (There were 14 error messages)
