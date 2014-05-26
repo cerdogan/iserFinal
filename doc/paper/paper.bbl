@@ -1,16 +1,5 @@
 \begin{thebibliography}{10}
 
-\bibitem{beetz2010cram}
-Michael Beetz, Lorenz Mosenlechner, and Moritz Tenorth.
-\newblock Cram—a cognitive robot abstract machine for everyday manipulation
-  in human environments.
-\newblock In {\em IROS, 2010}.
-
-\bibitem{bejczy1977effect}
-Antal~K Bejczy.
-\newblock Effect of hand-based sensors on manipulator control performance.
-\newblock {\em Mechanism and Machine Theory}, 12(5):547--567, 1977.
-
 \bibitem{erdogan2013planning}
 C.~Erdogan and M.~Stilman.
 \newblock Planning in constraint space: Automated design of functional
@@ -23,37 +12,34 @@ C.~Erdogan and M.~Stilman.
   machines.
 \newblock {\em IROS}, 2014.
 
-\bibitem{fikes1972strips}
-Richard~E Fikes and Nils~J Nilsson.
-\newblock Strips: A new approach to the application of theorem proving to
-  problem solving.
-\newblock {\em Artificial intelligence}, 2(3):189--208, 1972.
+\bibitem{vidal2006branching}
+V.~Vidal and H.~Geffner.
+\newblock Branching and pruning: An optimal temporal pocl planner based on
+  constraint programming.
+\newblock {\em AI}, 2006.
 
-\bibitem{fulkerson1961network}
-Delbert~R Fulkerson.
-\newblock A network flow computation for project cost curves.
-\newblock {\em Management science}, 7(2):167--178, 1961.
+\bibitem{yu2011make}
+Yeung S. Tang C. Terzopoulos D. Chan~T. Yu, L. and S.~Osher.
+\newblock Make it home: automatic optim. of furniture arrangement.
+\newblock {\em Siggraph}, 2011.
 
-\bibitem{goldman1996expressive}
-Robert~P Goldman and Mark~S Boddy.
-\newblock Expressive planning and explicit knowledge.
-\newblock In {\em AIPS}, volume~2, page~3, 1996.
+\bibitem{beetz2010cram}
+Michael Beetz, Lorenz Mosenlechner, and Moritz Tenorth.
+\newblock Cram—a cognitive robot abstract machine for everyday manipulation
+  in human environments.
+\newblock In {\em IROS, 2010}.
 
-\bibitem{ha1996trajectory}
-Yun-Su Ha and Shin'ichi Yuta.
-\newblock Trajectory tracking control for navigation of the inverse pendulum
-  type self-contained mobile robot.
-\newblock {\em Robotics and autonomous systems}, 17(1):65--80, 1996.
+\bibitem{stilman2005navigation}
+Mike Stilman and James~J Kuffner.
+\newblock Navigation among movable obstacles: Real-time reasoning in complex
+  environments.
+\newblock {\em International Journal of Humanoid Robotics}, 2(04):479--503,
+  2005.
 
 \bibitem{kemp2007challenges}
 Charles~C Kemp, Aaron Edsinger, and Eduardo Torres-Jara.
 \newblock Challenges for robot manipulation in human environments.
 \newblock {\em IEEE Robotics and Automation Magazine}, 14(1):20, 2007.
-
-\bibitem{kuffner2000rrt}
-J.J. Kuffner~Jr and S.M. LaValle.
-\newblock {RRT-connect: An efficient approach to single-query path planning}.
-\newblock In {\em ICRA}. IEEE, 2000.
 
 \bibitem{kuindersma2009dexterous}
 Scott~R Kuindersma, Edward Hannigan, Dirk Ruiken, and Roderic~A Grupen.
@@ -61,21 +47,12 @@ Scott~R Kuindersma, Edward Hannigan, Dirk Ruiken, and Roderic~A Grupen.
 \newblock In {\em Advanced Robotics, 2009. ICAR 2009. International Conference
   on}, pages 1--7. IEEE, 2009.
 
-\bibitem{mason1986mechanics}
-Matthew~T Mason.
-\newblock Mechanics and planning of manipulator pushing operations.
-\newblock {\em The International Journal of Robotics Research}, 5(3):53--71,
-  1986.
-
-\bibitem{mccarthy1963programs}
-John McCarthy.
-\newblock {\em Programs with common sense}.
-\newblock Defense Technical Information Center, 1963.
-
-\bibitem{newell1961gps}
-Allen Newell and Herbert~A Simon.
-\newblock {\em GPS, a program that simulates human thought}.
-\newblock Defense Technical Information Center, 1961.
+\bibitem{srinivasa2010herb}
+Siddhartha~S Srinivasa, Dave Ferguson, Casey~J Helfrich, Dmitry Berenson,
+  Alvaro Collet, Rosen Diankov, Garratt Gallagher, Geoffrey Hollinger, James
+  Kuffner, and Michael~Vande Weghe.
+\newblock Herb: a home exploring robotic butler.
+\newblock {\em Autonomous Robots}, 28(1):5--20, 2010.
 
 \bibitem{nishiwaki2000design}
 Koichi Nishiwaki, Tomomichi Sugihara, Satoshi Kagami, Fumio Kanehiro, Masayuki
@@ -87,10 +64,17 @@ Koichi Nishiwaki, Tomomichi Sugihara, Satoshi Kagami, Fumio Kanehiro, Masayuki
   1559--1564. IEEE, 2000.
 
 \bibitem{dasgupta1999making}
-Vijay Pradeep, Kurt Konolige, and Eric Berger.
-\newblock Calibrating a multi-arm multi-sensor robot: A bundle adjustment
-  approach.
-\newblock In {\em Experimental Robotics}, 1999.
+Anirvan Dasgupta and Yoshihiko Nakamura.
+\newblock Making feasible walking motion of humanoid robots from human motion
+  capture data.
+\newblock In {\em Robotics and Automation, 1999. Proceedings. 1999 IEEE
+  International Conference on}, volume~2, pages 1044--1049. IEEE, 1999.
+
+\bibitem{yamauchi2004packbot}
+Brian~M Yamauchi.
+\newblock Packbot: a versatile platform for military robotics.
+\newblock In {\em Defense and Security}, pages 228--237. International Society
+  for Optics and Photonics, 2004.
 
 \bibitem{saranli2001rhex}
 Uluc Saranli, Martin Buehler, and Daniel~E Koditschek.
@@ -98,19 +82,32 @@ Uluc Saranli, Martin Buehler, and Daniel~E Koditschek.
 \newblock {\em The International Journal of Robotics Research}, 20(7):616--631,
   2001.
 
-\bibitem{srinivasa2010herb}
-Siddhartha~S Srinivasa, Dave Ferguson, Casey~J Helfrich, Dmitry Berenson,
-  Alvaro Collet, Rosen Diankov, Garratt Gallagher, Geoffrey Hollinger, James
-  Kuffner, and Michael~Vande Weghe.
-\newblock Herb: a home exploring robotic butler.
-\newblock {\em Autonomous Robots}, 28(1):5--20, 2010.
+\bibitem{newell1961gps}
+Allen Newell and Herbert~A Simon.
+\newblock {\em GPS, a program that simulates human thought}.
+\newblock Defense Technical Information Center, 1961.
 
-\bibitem{stilman2005navigation}
-Mike Stilman and James~J Kuffner.
-\newblock Navigation among movable obstacles: Real-time reasoning in complex
-  environments.
-\newblock {\em International Journal of Humanoid Robotics}, 2(04):479--503,
-  2005.
+\bibitem{mccarthy1963programs}
+John McCarthy.
+\newblock {\em Programs with common sense}.
+\newblock Defense Technical Information Center, 1963.
+
+\bibitem{fulkerson1961network}
+Delbert~R Fulkerson.
+\newblock A network flow computation for project cost curves.
+\newblock {\em Management science}, 7(2):167--178, 1961.
+
+\bibitem{taha1975integer}
+Hamdy~A Taha.
+\newblock {\em Integer programming: theory, applications, and computations},
+  volume 975.
+\newblock Academic Press New York, 1975.
+
+\bibitem{fikes1972strips}
+Richard~E Fikes and Nils~J Nilsson.
+\newblock Strips: A new approach to the application of theorem proving to
+  problem solving.
+\newblock {\em Artificial intelligence}, 2(3):189--208, 1972.
 
 \bibitem{stilman2010golem}
 Mike Stilman, Jon Olson, and William Gloss.
@@ -119,37 +116,47 @@ Mike Stilman, Jon Olson, and William Gloss.
 \newblock In {\em Robotics and Automation (ICRA), 2010 IEEE International
   Conference on}, pages 3304--3309. IEEE, 2010.
 
-\bibitem{taha1975integer}
-Hamdy~A Taha.
-\newblock {\em Integer programming: theory, applications, and computations},
-  volume 975.
-\newblock Academic Press New York, 1975.
+\bibitem{kuffner2000rrt}
+J.J. Kuffner~Jr and S.M. LaValle.
+\newblock {RRT-connect: An efficient approach to single-query path planning}.
+\newblock In {\em ICRA}. IEEE, 2000.
 
 \bibitem{tolani2000real}
 Deepak Tolani, Ambarish Goswami, and Norman~I Badler.
 \newblock Real-time inverse kinematics techniques for anthropomorphic limbs.
 \newblock {\em Graphical models}, 62(5):353--388, 2000.
 
-\bibitem{vidal2006branching}
-V.~Vidal and H.~Geffner.
-\newblock Branching and pruning: An optimal temporal pocl planner based on
-  constraint programming.
-\newblock {\em AI}, 2006.
-
 \bibitem{whitney1969resolved}
 Daniel~E Whitney.
 \newblock Resolved motion rate control of manipulators and human prostheses.
 \newblock {\em IEEE Transactions on man-machine systems}, 1969.
 
-\bibitem{yamauchi2004packbot}
-Brian~M Yamauchi.
-\newblock Packbot: a versatile platform for military robotics.
-\newblock In {\em Defense and Security}, pages 228--237. International Society
-  for Optics and Photonics, 2004.
+\bibitem{bejczy1977effect}
+Antal~K Bejczy.
+\newblock Effect of hand-based sensors on manipulator control performance.
+\newblock {\em Mechanism and Machine Theory}, 12(5):547--567, 1977.
 
-\bibitem{yu2011make}
-Yeung S. Tang C. Terzopoulos D. Chan~T. Yu, L. and S.~Osher.
-\newblock Make it home: automatic optim. of furniture arrangement.
-\newblock {\em Siggraph}, 2011.
+\bibitem{goldman1996expressive}
+Robert~P Goldman and Mark~S Boddy.
+\newblock Expressive planning and explicit knowledge.
+\newblock In {\em AIPS}, volume~2, page~3, 1996.
+
+\bibitem{mason1986mechanics}
+Matthew~T Mason.
+\newblock Mechanics and planning of manipulator pushing operations.
+\newblock {\em The International Journal of Robotics Research}, 5(3):53--71,
+  1986.
+
+\bibitem{pradeep2014calibrating}
+Vijay Pradeep, Kurt Konolige, and Eric Berger.
+\newblock Calibrating a multi-arm multi-sensor robot: A bundle adjustment
+  approach.
+\newblock In {\em Experimental Robotics}, 1999.
+
+\bibitem{ha1996trajectory}
+Yun-Su Ha and Shin'ichi Yuta.
+\newblock Trajectory tracking control for navigation of the inverse pendulum
+  type self-contained mobile robot.
+\newblock {\em Robotics and autonomous systems}, 17(1):65--80, 1996.
 
 \end{thebibliography}

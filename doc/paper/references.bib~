@@ -112,6 +112,25 @@
   journal={IEEE Transactions on man-machine systems},
   year={1969}
 }
+@inproceedings{dasgupta1999making,
+  title={Making feasible walking motion of humanoid robots from human motion capture data},
+  author={Dasgupta, Anirvan and Nakamura, Yoshihiko},
+  booktitle={Robotics and Automation, 1999. Proceedings. 1999 IEEE International Conference on},
+  volume={2},
+  pages={1044--1049},
+  year={1999},
+  organization={IEEE}
+}
+@article{mason1986mechanics,
+  title={Mechanics and planning of manipulator pushing operations},
+  author={Mason, Matthew T},
+  journal={The International Journal of Robotics Research},
+  volume={5},
+  number={3},
+  pages={53--71},
+  year={1986},
+  publisher={Sage Publications}
+}
 
 @inproceedings{goldman1996expressive,
   title={Expressive Planning and Explicit Knowledge.},

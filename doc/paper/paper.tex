@@ -486,7 +486,7 @@ executions. To remedy such an error build-up, at the current state of our work, 
 intervene and instruct the robot to minimize its error if necessary. One of the main causes of this
 inaccuracy is the reliability of the RGBD data. We observe that a mean error of 2-3 cm within a 1 m
 bound increases up to 10 cm with 4 meters. The proportional increase in error with respect to
-distance suggest a camera calibration problem which can be addressed with bundle adjustment \cite{dasgupta1999making}. 
+distance suggest a camera calibration problem which can be addressed with bundle adjustment \cite{pradeep2014calibrating}. 
  
 Secondly, locomotion for heavy balancing robots is an active research area and our implementation
 with a proportional-derivative controller can be improved following techniques as presented in
@@ -499,15 +499,81 @@ with an integral term in the controller. A concern is the high-frequency velocit
 \begin{figure}[ht!] 
   \centering
   \includegraphics[width=0.9\linewidth]{Figures/controller.png}
-  \caption{The mechanical advantage in forces}
+  \caption{The oscillations and steady state error in following a reference velocity profile.}
   \label{fig:controller}
 \end{figure}
 
-\subsection{}
+\subsubsection{Manipulation of Heavy Objects}
+
+We offer two insights from our experiments. First, the manipulation of heavy objects brings about
+interesting challenges. If the object inertia model is not known, the system can be thrown off
+balance easily. Moreover, when the mass of the object is mostly on one of the wheels, the robot can
+start spinning since one wheel has to accommodate the extra weight. 
 
 \newpage
-\bibliographystyle{plain}
-\bibliography{references}
+% \bibliographystyle{unsrt}
+% \bibliography{references}
+
+\begin{thebibliography}{27}
+
+\bibitem{erdogan2013planning} Erdogan, C., Stilman, M: Planning in constraint space: Automated design of
+functional structures. ICRA, 2013.
+\bibitem{erdogan2014incorporating} Erdogan, C., Stilman, M: Incorporating kinodynamic constraints in automated
+design of simple machines. IROS, 2014.
+\bibitem{vidal2006branching} Vincent, V., Geffner, H.: Branching and pruning: An optimal temporal pocl planner
+based on constraint programming. AI, 2006.
+\bibitem{yu2011make} Yu, L. F., Yeung, S. K., Tang, C. K., Terzopoulos, D., Chan, T. F., Osher, S: Make it home:
+automatic optim. of furniture arrangement. In Siggraph, 2011.
+\bibitem{beetz2010cram} Beetz, M., Mosenlechner, L., Tenorth, M: Crama cognitive robot
+abstract machine for everyday manipulation in human environments. In IROS,
+2010.
+\bibitem{stilman2005navigation} Stilman, M., Kuffner, J. J.: Navigation among movable obstacles: Real-
+time reasoning in complex environments. IJHR, 2005.
+\bibitem{kemp2007challenges} Kemp, C. C., Edsinger, A., Torres-Jara, E: Challenges for robot
+manipulation in human environments. IEEE Robotics and Automation Magazine,
+14(1):20, 2007.
+\bibitem{kuindersma2009dexterous} Kuindersma, S. R., Hannigan, E., Ruiken, D., and Grupen, R. A:
+Dexterous mobility with the ubot-5 mobile manipulator. ICAR, 2009.
+\bibitem{srinivasa2010herb}  Srinivasa, S. S., Ferguson, D., Helfrich, C. J., Berenson, D., 
+Collet, A., Diankov, R., Gallagher, R., Hollinger, G., Kuffner, J., and
+Weghe, M. V.. Herb: a home exploring robotic butler. Autonomous Robots,
+28(1):5–20, 2010.
+\bibitem{nishiwaki2000design} Nishiwaki, K., Sugihara, T., Kagami, S., Kanehiro, F.,
+Inaba, M., and Inoue, H.: Design and development of research platform for perception-action 
+integration in humanoid robot: H6. IROS, 2000.
+\bibitem{dasgupta1999making} Dasgupta, A., Nakamura, Y.: Making feasible walking motion of
+humanoid robots from human motion capture data. ICRA, 1999.
+\bibitem{yamauchi2004packbot} Yamauchi, M. B.: Packbot: a versatile platform for military robotics. In Defense
+and Security, pages 228–237. International Society for Optics and Photonics, 2004.
+\bibitem{saranli2001rhex} Saranli, U., Buehler, M., Koditschek, D. E.. Rhex: A simple and
+highly mobile hexapod robot. IJRR, 2001.
+\bibitem{newell1961gps} Newell, A., Simon, H.: GPS, a program that simulates human thought.
+DTIC, '61.
+\bibitem{mccarthy1963programs} McCarthy, J.: Programs with common sense. DTIC, 1963.
+\bibitem{fulkerson1961network} Fulkerson, D. R.: A network flow computation for project cost curves. Management science, 7(2):167–178, 1961.
+\bibitem{taha1975integer} Taha, H.A.: Integer programming: theory, applications, and computations,
+volume 975. Academic Press New York, 1975.
+\bibitem{fikes1972strips} Fikes, R. E., Nilsson, N. J.: Strips: A new approach to the application of
+theorem proving to problem solving. Artificial intelligence, 2(3):189–208, 1972.
+\bibitem{stilman2010golem} Stilman, M., Olson, J., Gloss, W.: Golem krang: Dynamically stable
+humanoid robot for mobile manipulation. ICRA, 2010.
+\bibitem{kuffner2000rrt} Kuffner J.J., LaValle, S.M.: RRT-connect: An efficient approach to single-
+query path planning. In ICRA. IEEE, 2000.
+\bibitem{tolani2000real} Tolani, D., Goswami, A., Badler, N. I.: Real-time inverse kinematics techniques for anthropomorphic limbs. Graphical models, 62(5):353–388,
+2000.
+\bibitem{whitney1969resolved} Whitney, D. E.: Resolved motion rate control of manipulators and human pros-
+theses. IEEE Transactions on man-machine systems, 1969.
+\bibitem{bejczy1977effect} Bejczy, A.K.: Effect of hand-based sensors on manipulator control performance.
+Mechanism and Machine Theory, 12(5):547–567, 1977.
+\bibitem{goldman1996expressive} Goldman, R., Boddy, M.: Expressive planning and explicit knowledge. AIPS, 1996.
+\bibitem{mason1986mechanics} Mason, M.T.: Mechanics and planning of manipulator pushing operations.
+The International Journal of Robotics Research, 5(3):53–71, 1986.
+\bibitem{pradeep2014calibrating} Pradeep, V., Konolige, K., Berger, E.: Calibrating a multi-arm multi-
+sensor robot: A bundle adjustment approach. In Experimental Robotics, 1999.
+\bibitem{ha1996trajectory} Ha, Y., Yuta, S.: Trajectory tracking control for navigation of the
+inverse pendulum type self-contained mobile robot. Robotics and autonomous systems, 1996.
+
+\end{thebibliography}
 
 \end{document}
 
