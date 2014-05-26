@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009/Debian) (format=pdflatex 2013.3.6)  25 MAY 2014 21:10
+This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009/Debian) (format=pdflatex 2013.3.6)  25 MAY 2014 23:50
 entering extended mode
  %&-line parsing enabled.
 **paper.tex
@@ -270,6 +270,12 @@ LaTeX Warning: Label `fig:showOff' multiply defined.
 
 LaTeX Warning: Label `fig:showOff' multiply defined.
 
+
+LaTeX Warning: Label `fig:showOff' multiply defined.
+
+
+LaTeX Warning: Label `fig:showOff' multiply defined.
+
 )
 \openout1 = `paper.aux'.
 
@@ -345,33 +351,38 @@ File: Figures/detection.png Graphic file (type png)
 <Figures/manipulation.png, id=55, 1139.00531pt x 410.2828pt>
 File: Figures/manipulation.png Graphic file (type png)
 
-<use Figures/manipulation.png>
-<Figures/asdf.png, id=56, 1641.13126pt x 287.57437pt>
-File: Figures/asdf.png Graphic file (type png)
- <use Figures/asdf.png>
-<Figures/asdfg.png, id=57, 1199.98312pt x 287.57437pt>
-File: Figures/asdfg.png Graphic file (type png)
- <use Figures/asdfg.png>
-[9 <./Figures/manipulation.png> <./Figures/asdf.png>] (./paper.bbl
+<use Figures/manipulation.png> <Figures/a.png, id=56, 1360.33218pt x 289.08pt>
+File: Figures/a.png Graphic file (type png)
+
+<use Figures/a.png> <Figures/b.png, id=57, 1280.53406pt x 289.08pt>
+File: Figures/b.png Graphic file (type png)
+
+<use Figures/b.png> <Figures/c.png, id=58, 1285.05093pt x 288.3272pt>
+File: Figures/c.png Graphic file (type png)
+
+<use Figures/c.png> <Figures/d.png, id=59, 1265.47781pt x 287.57437pt>
+File: Figures/d.png Graphic file (type png)
+
+<use Figures/d.png> [9 <./Figures/manipulation.png>] (./paper.bbl
 Missing character: There is no â in font cmr9!
 Missing character: There is no € in font cmr9!
 Missing character: There is no ” in font cmr9!
-
+ [10 <./Figures/a.png> <./Figures/b.png> <./Figures/c.png> <./Figures/d.png>]
 Underfull \hbox (badness 2126) in paragraph at lines 75--82
 []\OT1/cmr/m/n/9 Koichi Nishi-waki, To-momichi Sug-i-hara, Satoshi Kagami, Fu-m
 io Kane-hiro,
  []
 
-[10 <./Figures/asdfg.png>]) [11] (./paper.aux)
+[11]) [12] (./paper.aux)
 
 LaTeX Warning: There were multiply-defined labels.
 
  ) 
 Here is how much of TeX's memory you used:
- 3383 strings out of 495061
- 40807 string characters out of 1182622
+ 3393 strings out of 495061
+ 40924 string characters out of 1182622
  127765 words of memory out of 3000000
- 6521 multiletter control sequences out of 15000+50000
+ 6529 multiletter control sequences out of 15000+50000
  14105 words of font info for 52 fonts, out of 3000000 for 9000
  28 hyphenation exceptions out of 8191
  31i,27n,24p,339b,530s stack positions out of 5000i,500n,10000p,200000b,50000s
@@ -392,9 +403,9 @@ f-texlive/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/share/texmf-texlive/fo
 nts/type1/public/amsfonts/cm/cmsy9.pfb></usr/share/texmf-texlive/fonts/type1/pu
 blic/amsfonts/cm/cmti10.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfon
 ts/cm/cmti9.pfb>
-Output written on paper.pdf (11 pages, 6478238 bytes).
+Output written on paper.pdf (12 pages, 8763388 bytes).
 PDF statistics:
- 129 PDF objects out of 1000 (max. 8388607)
+ 136 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
- 36 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 46 words of extra memory for PDF output out of 10000 (max. 10000000)
 
