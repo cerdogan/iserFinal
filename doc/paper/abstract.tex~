@@ -122,7 +122,7 @@ reach without collisions. Once close, we perform Jacobian inverse kinematics to 
 and detect contact with the object with the gripper force-torque sensor. Analytical inverse
 kinematics is used as a resolution-complete method to determine whether a collision-free grasp
 configuration exists as opposed to sampling the large configuration space of the arms to avoid local
-minima with Jacobians. In addition to motion planning for the arms, we also make use of an example
+minima with Jacobian.s In addition to motion planning for the arms, we also make use of an example
 of conformant planning in picking up a lever. The motivation is to avoid perception problems by
 running each wheel to the 2-by-4 on the ground while the wheels cannot exert the torque to climb
 over the object. Thus, the robot autonomously aligns itself with the object of interest by using

@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009/Debian) (format=pdflatex 2013.3.6)  26 MAY 2014 07:11
+This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009/Debian) (format=pdflatex 2013.3.6)  26 MAY 2014 11:26
 entering extended mode
  %&-line parsing enabled.
 **paper.tex
@@ -358,7 +358,11 @@ File: Figures/c.png Graphic file (type png)
  <use Figures/c.png> [10 <./Figures/a.png> <./Figures/b.png>]
 <Figures/d.png, id=68, 1251.17438pt x 287.57437pt>
 File: Figures/d.png Graphic file (type png)
- <use Figures/d.png> [11 <./Figures/c.png> <./Figures/d.png>] [12] (./paper.bbl
+ <use Figures/d.png> [11 <./Figures/c.png> <./Figures/d.png>]
+<Figures/loads.png, id=74, 1623.06375pt x 1216.545pt>
+File: Figures/loads.png Graphic file (type png)
+ <use Figures/loads.png>
+[12 <./Figures/loads.png>] (./paper.bbl
 Missing character: There is no â in font cmr9!
 Missing character: There is no € in font cmr9!
 Missing character: There is no ” in font cmr9!
@@ -370,10 +374,10 @@ io Kane-hiro,
 
 [13]) [14] (./paper.aux) ) 
 Here is how much of TeX's memory you used:
- 3440 strings out of 495061
- 41619 string characters out of 1182622
- 128816 words of memory out of 3000000
- 6572 multiletter control sequences out of 15000+50000
+ 3446 strings out of 495061
+ 41731 string characters out of 1182622
+ 128826 words of memory out of 3000000
+ 6577 multiletter control sequences out of 15000+50000
  14105 words of font info for 52 fonts, out of 3000000 for 9000
  28 hyphenation exceptions out of 8191
  31i,28n,24p,339b,541s stack positions out of 5000i,500n,10000p,200000b,50000s
@@ -394,9 +398,9 @@ sy6.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmsy7.pfb></us
 r/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmsy9.pfb></usr/share/texm
 f-texlive/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/share/texmf-texlive/f
 onts/type1/public/amsfonts/cm/cmti9.pfb>
-Output written on paper.pdf (14 pages, 8725839 bytes).
+Output written on paper.pdf (14 pages, 8882495 bytes).
 PDF statistics:
- 143 PDF objects out of 1000 (max. 8388607)
+ 145 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
- 46 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 51 words of extra memory for PDF output out of 10000 (max. 10000000)
 

@@ -50,7 +50,7 @@ In this work, we take the next step towards full autonomy where the humanoid rob
 autonomously manipulates the objects in its environment to construct a simple machine. We present
 an autonomous planner that perceives the available objects, specifically 15 kg cinder blocks and 10
 kg 2-by-4 block blocks (e.g. potential levers), relocates them to the desired configurations output
-by the constraint planner, and actuates them to flip a 45 kg load. Figure \ref{fig:showOff} demonstrates key scenes
+by the constraint planner, and actuates them to flip a 50 kg load. Figure \ref{fig:showOff} demonstrates key scenes
 from this scenario such as (a) detection of a cinder block, (b) locomotion with a heavy load, (c)
 manipulating a lever while subject to multiple constraints and (d) application of force to the lever
 leading to a successful load motion.
@@ -362,8 +362,8 @@ objects in assembly tasks by pushing the objects into known configurations. \cit
 
 \section{Experiments}
 
-Golem Krang is tasked with overturning a 45 kg load using a lever-fulcrum assembly with a limit of
-\textcolor{red}{TBA} Nm on the force it can apply to the environment. Given the dimensions of the 
+Golem Krang is tasked with overturning a 50 kg load using a lever-fulcrum assembly with a limit of
+300 Nm on the force it can apply to the environment. Given the dimensions of the 
 available objects in the environment, the robot has to design a structure, locate the components,
 configure them into their positions and actuate the simple machine. In the following section, we
 describe a typical run, focusing on details of perception, locomotion and manipulation.
@@ -387,7 +387,7 @@ such as RRTs and guarded moves, the robot grasps the cinder block at its top.
 An interesting observation we expand on in Section 4 is about how the location of a manipulated object
 and the uneven distribution of its weight over the wheels affect the locomotion accuracy. To minimize
 such an artifact, in Figure \ref{fig:typical_b}, Golem Krang first moves the grasped cinder block 
-to the middle of its torso before turning around and localizing the load object at 45 kg. Having
+to the middle of its torso before turning around and localizing the load object at 50 kg. Having
 detected the load, the final configuration of the fulcrum is deduced from the assembly design and
 the robot places it appropriately. 
 
@@ -430,7 +430,7 @@ it.
 \begin{figure}[ht!] 
   \centering
   \includegraphics[width=1.0\linewidth]{Figures/d.png}
-  \caption{The mechanical advantage in forces}
+  \caption{Golem Krang places the lever in the planned pose and overturns the 50 kg load.}
   \label{fig:typical_d}
 \end{figure}
 
@@ -439,6 +439,29 @@ it.
 In this section, we provide experimental results on the functionality of the realized simple
 machines under different conditions, study the sources of inaccuracies in the assembly process
 and provide some insights on the autonomous manipulation of heavy objects. 
+
+\subsection{Designs with Different Load Weights}
+
+To assess the ability of the proposed design algorithm, the framework is tested with two different
+load sizes, 50 kg and 100 kg, where the planner needs to choose from two different levers 1.7 and 2.5
+m long in each case. Once a choice is made, Golem Krang autonomously constructs the design, as
+described in Section 3, and we measure the force/torque sensor readings at the end-effector of
+the actuating arm. Figure \ref{fig:comparison} demonstrates the readings for the two experiments
+where the maximum applied forces are 242.27 Nm and 368.63 Nm for 50 kg and 100 kg experiments
+respectively. We conclude that the mechanical advantage is 2.02:1 and 2.66:1 for each case, and 
+the maximum force limit is preserved; and thus, the planned design, its assembly and actuation are
+successful.
+
+\begin{figure}[ht!] 
+  \centering
+  \includegraphics[width=0.7\linewidth]{Figures/loads.png}
+  \caption{The mechanical advantage in forces}
+  \label{fig:comparison}
+\end{figure}
+
+\subsection{A Design with Different Fulcrum Base Choices}
+
+
 \newpage
 \bibliographystyle{plain}
 \bibliography{references}

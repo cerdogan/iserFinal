@@ -50,7 +50,7 @@ In this work, we take the next step towards full autonomy where the humanoid rob
 autonomously manipulates the objects in its environment to construct a simple machine. We present
 an autonomous planner that perceives the available objects, specifically 15 kg cinder blocks and 10
 kg 2-by-4 block blocks (e.g. potential levers), relocates them to the desired configurations output
-by the constraint planner, and actuates them to flip a 45 kg load. Figure \ref{fig:showOff} demonstrates key scenes
+by the constraint planner, and actuates them to flip a 50 kg load. Figure \ref{fig:showOff} demonstrates key scenes
 from this scenario such as (a) detection of a cinder block, (b) locomotion with a heavy load, (c)
 manipulating a lever while subject to multiple constraints and (d) application of force to the lever
 leading to a successful load motion.
@@ -323,7 +323,7 @@ Additionally, to handle perception errors, we propose using guarded moves \cite{
 that control the manipulator behavior until a predetermined tactile feedback is received. Moreover,
 we deploy ``conformant motion'' behaviors where the robot action forces itself
 and its environment to a desired state without any sensory feedback \cite{goldman1996expressive}. 
-
+% 
 \subsubsection{Motion planning}
 
 Figure \ref{fig:manipulation} depicts the analytical inverse kinematics and the motion planning
@@ -362,43 +362,91 @@ objects in assembly tasks by pushing the objects into known configurations. \cit
 
 \section{Experiments}
 
-Golem Krang is tasked with overturning a 45 kg load using a lever-fulcrum assembly with a limit of
+Golem Krang is tasked with overturning a 50 kg load using a lever-fulcrum assembly with a limit of
 \textcolor{red}{TBA} Nm on the force it can apply to the environment. Given the dimensions of the 
 available objects in the environment, the robot has to design a structure, locate the components,
 configure them into their positions and actuate the simple machine. In the following section, we
 describe a typical run, focusing on details of perception, locomotion and manipulation.
 
-Figu
+Placed in a random configuration in the room, Golem Krang begins by scanning the room for the 
+available objects and find the closest cinder block that would be used as a fulcrum (see Figure \ref{fig:typical_a}).
+The scanning process is composed of a set of atomic behaviors which allow the robot to raise
+its torso while sitting on the ground and move its arms out of its sight to avoid occlusions.
+Once the fulcrum is located, the robot starts balancing and approaching the robot, until it 
+positions itself in a predetermined distance to grasp the object. Using the motion planning tools,
+such as RRTs and guarded moves, the robot grasps the cinder block at its top.
+
 \begin{figure}[ht!] 
   \centering
   \includegraphics[width=1.0\linewidth]{Figures/a.png}
-  \caption{The mechanical advantage in forces}
-  \label{fig:showOff}
+  \caption{Once Golem Krang detects the closest cinder block (left), it approaches (middle) and grasps
+  the objects (right). Scene continues in Figure \ref{fig:typical_b}.}
+  \label{fig:typical_a}
 \end{figure}
+
+An interesting observation we expand on in Section 4 is about how the location of a manipulated object
+and the uneven distribution of its weight over the wheels affect the locomotion accuracy. To minimize
+such an artifact, in Figure \ref{fig:typical_b}, Golem Krang first moves the grasped cinder block 
+to the middle of its torso before turning around and localizing the load object at 50 kg. Having
+detected the load, the final configuration of the fulcrum is deduced from the assembly design and
+the robot places it appropriately. 
 
 \begin{figure}[ht!] 
   \centering
   \includegraphics[width=1.0\linewidth]{Figures/b.png}
-  \caption{The mechanical advantage in forces}
-  \label{fig:showOff}
+  \caption{Having grasped the fulcrum, the robot localizes the load and places the fulcrum
+		in the initial design configuration. Scene continues in Figure \ref{fig:typical_c}.} 
+	\label{fig:typical_b}
 \end{figure}
+
+In the third part of the experiment, Golem Krang needs to detect and localize a candidate lever
+object and grasp it, as shown in Figure \ref{fig:typical_c}. Given the size of the lever and the
+noisy perception data, we propose using the wheels to localize the lever object more accurately
+once the robot approaches it. Figure \ref{fig:typical_c}b displays the conformant behavior where the 
+robot moves forward slowly to collide with the lever and have its localization error fixed. The
+left wheel first makes contact and the contact overcomes the input torque, while the right wheel 
+keeps moving until the robot is parallel and directly in front of the lever. 
 
 \begin{figure}[ht!]  	
   \centering
   \includegraphics[width=1.0\linewidth]{Figures/c.png}
-  \caption{The mechanical advantage in forces}
-  \label{fig:showOff}
+  \caption{The lever is picked up by first using vision and then running
+	the wheels against the object to make physical contact before manipulation. Scene continues 
+	in Figure \ref{fig:typical_d}.}
+  \label{fig:typical_c}
 \end{figure}
 
+To simplify the locomotion, we have assumed collision-free paths and when Golem Krang carries the
+lever, we ensure that the lever is carried high enough that it does not collide with other objects
+(see Figure \ref{fig:typical_d}. Once the robot repositions itself in front of the robot, using
+guarded moves, the robot first pushes the lever against the load horizontal to ensure it is at
+the correct horizontal distance and then raises it until the design specification. Once at the
+correct height, the robot releases the lever and allows it to slide on the fulcrum into the load
+ - one of the more practically challenging tasks. For addition tasks, we have used task-constraint
+ manipulation with online perception to minimize the errors during this routine. Finally, in
+ Figure \ref{fig:typical_d}c, the robot pushes the object at the desired contact point and overturns
+it.
 
 \begin{figure}[ht!] 
   \centering
   \includegraphics[width=1.0\linewidth]{Figures/d.png}
   \caption{The mechanical advantage in forces}
-  \label{fig:showOff}
+  \label{fig:typical_d}
 \end{figure}
 
-% The robot has to move its arms out of the way to visualize the objects.
+\section{Results}
+
+In this section, we provide experimental results on the functionality of the realized simple
+machines under different conditions, study the sources of inaccuracies in the assembly process
+and provide some insights on the autonomous manipulation of heavy objects. 
+
+\subsection{Designs with Different Load Weights}
+
+To assess the ability of the proposed design algorithm, the framework is tested with two different
+load sizes, 50 and 100 kg, where the planner needs to choose from two different levers 1.7 and 2.5
+m long in each case. Once a choice is made, Golem Krang autonomously constructs the design, as
+described in Section 3, and we measure the force/torque sensor readings at the end-effector of
+the actuating arm. 
 
 \newpage
 \bibliographystyle{plain}
