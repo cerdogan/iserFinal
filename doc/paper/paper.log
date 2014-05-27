@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009/Debian) (format=pdflatex 2013.3.6)  26 MAY 2014 16:22
+This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009/Debian) (format=pdflatex 2013.3.6)  26 MAY 2014 20:31
 entering extended mode
  %&-line parsing enabled.
 **paper.tex
@@ -323,53 +323,61 @@ File: Figures/matches.png Graphic file (type png)
 <Figures/constraints.png, id=25, 1206.00563pt x 572.1375pt>
 File: Figures/constraints.png Graphic file (type png)
 
-<use Figures/constraints.png>
-Underfull \vbox (badness 10000) has occurred while \output is active []
+<use Figures/constraints.png> [5 <./Figures/constraints.png>]
+LaTeX Font Info:    Try loading font information for OMS+cmr on input line 249.
 
- [5 <./Figures/constraints.png>]
-LaTeX Font Info:    Try loading font information for OMS+cmr on input line 250.
 
- (/usr/share/texmf-texlive/tex/latex/base/omscmr.fd
+(/usr/share/texmf-texlive/tex/latex/base/omscmr.fd
 File: omscmr.fd 1999/05/25 v2.5h Standard LaTeX font definitions
 )
 LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <9> not available
-(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 250.
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 249.
 
-Underfull \hbox (badness 10000) detected at line 253
+Underfull \hbox (badness 10000) detected at line 252
 [][]
  []
 
-[6] <Figures/detection.png, id=46, 992.95969pt x 357.58594pt>
+[6] <Figures/detection.png, id=46, 694.84593pt x 249.93375pt>
 File: Figures/detection.png Graphic file (type png)
 
-<use Figures/detection.png> [7 <./Figures/detection.png>] [8]
-<Figures/manipulation.png, id=55, 1139.00531pt x 410.2828pt>
+<use Figures/detection.png> [7 <./Figures/detection.png>]
+<Figures/manipulation.png, id=52, 1139.00531pt x 410.2828pt>
 File: Figures/manipulation.png Graphic file (type png)
 
-<use Figures/manipulation.png> [9 <./Figures/manipulation.png>]
-<Figures/a.png, id=60, 1360.33218pt x 289.08pt>
+<use Figures/manipulation.png> [8]
+<Figures/a.png, id=56, 1088.56688pt x 231.11343pt>
 File: Figures/a.png Graphic file (type png)
- <use Figures/a.png>
-<Figures/b.png, id=61, 1280.53406pt x 289.08pt>
+ <use Figures/a.png> [9 <./Figures/manipulation.png>] <Figures/b.png, id=61, 10
+24.57782pt x 231.11343pt>
 File: Figures/b.png Graphic file (type png)
- <use Figures/b.png>
-<Figures/c.png, id=62, 1285.05093pt x 288.3272pt>
+
+<use Figures/b.png> <Figures/c.png, id=62, 1028.34187pt x 230.36063pt>
 File: Figures/c.png Graphic file (type png)
- <use Figures/c.png> [10 <./Figures/a.png> <./Figures/b.png>]
-<Figures/d.png, id=68, 1251.17438pt x 287.57437pt>
+
+<use Figures/c.png> <Figures/d.png, id=63, 1001.24063pt x 230.36063pt>
 File: Figures/d.png Graphic file (type png)
- <use Figures/d.png> [11 <./Figures/c.png> <./Figures/d.png>]
-<Figures/loads.png, id=74, 3158.80125pt x 1231.60126pt>
+
+<use Figures/d.png> [10 <./Figures/a.png> <./Figures/b.png>]
+<Figures/loads.png, id=69, 3158.80125pt x 1231.60126pt>
 File: Figures/loads.png Graphic file (type png)
 
-<use Figures/loads.png> <Figures/short.png, id=75, 2746.26pt x 549.55313pt>
+<use Figures/loads.png> [11 <./Figures/c.png> <./Figures/d.png>]
+<Figures/short.png, id=75, 1098.35344pt x 219.82124pt>
 File: Figures/short.png Graphic file (type png)
-
-<use Figures/short.png> [12 <./Figures/loads.png> <./Figures/short.png>]
+ <use Figures/short.png>
+[12 <./Figures/loads.png> <./Figures/short.png>]
 <Figures/controller.png, id=81, 766.36313pt x 438.8897pt>
 File: Figures/controller.png Graphic file (type png)
 
 <use Figures/controller.png> [13 <./Figures/controller.png>]
+<Figures/wheels.png, id=87, 1550.79375pt x 647.41875pt>
+File: Figures/wheels.png Graphic file (type png)
+
+<use Figures/wheels.png>
+Missing character: There is no â in font cmr9!
+Missing character: There is no € in font cmr9!
+Missing character: There is no “ in font cmr9!
+ [14 <./Figures/wheels.png>]
 Missing character: There is no â in font cmr9!
 Missing character: There is no € in font cmr9!
 Missing character: There is no “ in font cmr9!
@@ -388,39 +396,35 @@ Missing character: There is no “ in font cmr9!
 Missing character: There is no â in font cmr9!
 Missing character: There is no € in font cmr9!
 Missing character: There is no “ in font cmr9!
-Missing character: There is no â in font cmr9!
-Missing character: There is no € in font cmr9!
-Missing character: There is no “ in font cmr9!
- [14] [15]
-(./paper.aux) ) 
+ [15] (./paper.aux) ) 
 Here is how much of TeX's memory you used:
- 3457 strings out of 495061
- 41989 string characters out of 1182622
- 128854 words of memory out of 3000000
- 6589 multiletter control sequences out of 15000+50000
+ 3464 strings out of 495061
+ 42118 string characters out of 1182622
+ 126868 words of memory out of 3000000
+ 6595 multiletter control sequences out of 15000+50000
  14105 words of font info for 52 fonts, out of 3000000 for 9000
  28 hyphenation exceptions out of 8191
  31i,28n,24p,339b,541s stack positions out of 5000i,500n,10000p,200000b,50000s
-</usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmbx10.
-pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/s
-hare/texmf-texlive/fonts/type1/public/amsfonts/cm/cmbx7.pfb></usr/share/texmf-t
-exlive/fonts/type1/public/amsfonts/cm/cmbx9.pfb></usr/share/texmf-texlive/fonts
-/type1/public/amsfonts/cm/cmex10.pfb></usr/share/texmf-texlive/fonts/type1/publ
-ic/amsfonts/cm/cmmi10.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts
-/cm/cmmi7.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmmi9.pf
-b></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmmib10.pfb></usr/sh
-are/texmf-texlive/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texmf-te
-xlive/fonts/type1/public/amsfonts/cm/cmr6.pfb></usr/share/texmf-texlive/fonts/t
-ype1/public/amsfonts/cm/cmr7.pfb></usr/share/texmf-texlive/fonts/type1/public/a
-msfonts/cm/cmr9.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cm
-sy10.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmsy6.pfb></u
-sr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/share/tex
-mf-texlive/fonts/type1/public/amsfonts/cm/cmsy9.pfb></usr/share/texmf-texlive/f
-onts/type1/public/amsfonts/cm/cmti10.pfb></usr/share/texmf-texlive/fonts/type1/
-public/amsfonts/cm/cmti9.pfb>
-Output written on paper.pdf (15 pages, 14534515 bytes).
+</usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/c
+mbx10.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmbx12.pfb><
+/usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmbx7.pfb></usr/share/t
+exmf-texlive/fonts/type1/public/amsfonts/cm/cmbx9.pfb></usr/share/texmf-texlive
+/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/share/texmf-texlive/fonts/type
+1/public/amsfonts/cm/cmmi10.pfb></usr/share/texmf-texlive/fonts/type1/public/am
+sfonts/cm/cmmi7.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cm
+mi9.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmmib10.pfb></
+usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/te
+xmf-texlive/fonts/type1/public/amsfonts/cm/cmr6.pfb></usr/share/texmf-texlive/f
+onts/type1/public/amsfonts/cm/cmr7.pfb></usr/share/texmf-texlive/fonts/type1/pu
+blic/amsfonts/cm/cmr9.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts
+/cm/cmsy10.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmsy6.p
+fb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/sha
+re/texmf-texlive/fonts/type1/public/amsfonts/cm/cmsy9.pfb></usr/share/texmf-tex
+live/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/share/texmf-texlive/fonts/
+type1/public/amsfonts/cm/cmti9.pfb>
+Output written on paper.pdf (15 pages, 7822425 bytes).
 PDF statistics:
- 152 PDF objects out of 1000 (max. 8388607)
+ 154 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
- 61 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 66 words of extra memory for PDF output out of 10000 (max. 10000000)
 

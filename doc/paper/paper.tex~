@@ -77,7 +77,6 @@ recognition has only recently started to gather interest in the humanoid robotic
 \cite{srinivasa2010herb} \cite{nishiwaki2000design} as opposed to the long established motion
 capture methods \cite{dasgupta1999making}.
 
-\newpage
 \section{Technical Approach}
 
 \subsection{Constraint Satisfaction for Simple Machine Designs}
@@ -346,7 +345,6 @@ around the cinder block to avoid collisions until it reaches the goal pose (gree
   \label{fig:manipulation}
 \end{figure}
 
-\vspace{-2em}
 \subsubsection{Guarded and conformant motions}
 
 Once in position using motion planning, Golem Krang uses force/torque feedback at the end-effectors
@@ -505,14 +503,36 @@ with an integral term in the controller. A concern is the high-frequency velocit
 
 \subsubsection{Manipulation of Heavy Objects}
 
-We offer two insights from our experiments. First, the manipulation of heavy objects brings about
-interesting challenges. If the object inertia model is not known, the system can be thrown off
-balance easily. Moreover, when the mass of the object is mostly on one of the wheels, the robot can
-start spinning since one wheel has to accommodate the extra weight. 
+The manipulation of heavy objects brings about interesting challenging in manipulation, locomotion
+and control fields. First of all, even though the mass and the center of mass information of a
+carried load is sufficient in maintaining quasi-static balance, the inertias are needed when
+the motion become faster. Although most of the time, the dynamic parameters of manipulated objects
+is not readily available, there are a variety of methods to estimate them with simple experiments
+\cite{saal2010active} or with simplifying assumptions based on geometry and mass. 
 
-\newpage
-% \bibliographystyle{unsrt}
-% \bibliography{references}
+Secondly, we observe that the configuration of the grasped object with respect to the body frame
+can affect the accuracy of locomotion. For instance, carrying a 15 kg load in the middle of the 
+two wheels as opposed to a meter off to the side induces different output trajectories for the 
+same velocity profiles. Figure \ref{fig:wheels} demonstrates the effect of the distribution 
+of the load mass over the wheels where the robot moves a cinder block from +1 meter to the -1 meter off
+its center and attempts to follow a straight line. The results show a proportional relationship
+where the trajectories bias towards the load increases with the distance between the load and the center. 
+We speculate that the cause is that the wheel with the more weight on has to apply more torque
+to keep up with the other one. Note that the distribution of the load and its effect of the joint
+torques is a general issue that also affects legged humanoid robots. 
+
+\begin{figure}[ht!] 
+  \centering
+  \includegraphics[width=0.9\linewidth]{Figures/wheels.png}
+  \caption{The effect of the grasping location on the accuracy of locomotion.}
+  \label{fig:wheels}
+\end{figure}
+
+Lastly, the mass and the sheer size of the manipulated objects can cause problems with robust
+grasping during locomotion. For instance, for Golem Krang's grippers with two prismatic finger joints,
+it is important to guarantee that an object would not slip from its grasp as the robot turns around
+swiftly. To handle such cases, we have adopted a two-hand grasp for the cinder block and ensured
+that the lever is held mostly from its middle region and at an upwards angle. 
 
 \begin{thebibliography}{27}
 
@@ -572,12 +592,19 @@ The International Journal of Robotics Research, 5(3):53–71, 1986.
 sensor robot: A bundle adjustment approach. In Experimental Robotics, 1999.
 \bibitem{ha1996trajectory} Ha, Y., Yuta, S.: Trajectory tracking control for navigation of the
 inverse pendulum type self-contained mobile robot. Robotics and autonomous systems, 1996.
-
+\bibitem{saal2010active} Saal, H. P., Ting, J. A.,  Vijayakumar, S.: Active estimation of object dynamics
+parameters with tactile sensors. IROS, 2010. 
 \end{thebibliography}
 
 \end{document}
 
 % DISCUSSION: CHALLENGES WITH VISUAL SERVOING A NONHOLONOMIC ROBOT BASE
+% Lastly, we observe that the manipulation of multiple objects to assemble functional structures
+% is closely related to the grasp problem where the manipulator has to choose how to grasp the objects.
+% In this work, we use predetermined grasp areas for the cinder block and the planner is provided
+% the orientation of the hand as the robot grasps the lever. Moreover, learning from the effect
+% of the carried load configuration on locomotion, we adopt an atomic behavior that holds the load
+% in the middle of the robot. 
 
 % Having chosen the objects and their roles, the autonomous planner needs to find configurations
 % for the assembly components to satisfy a range of constraints. First, the proposed assembly needs
