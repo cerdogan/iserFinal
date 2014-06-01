@@ -1,17 +1,43 @@
- Required results:
+-------------------------------------------------------------------------------
+ISER 2014 Ramp Video
+-------------------------------------------------------------------------------
 
-=================================================================
-Algorithm: 
-a) ft, currents
-b) precision: design vs. reality
+PART A:
+1- Locomotion: 		Go towards the first cinder block to pick up with right arm
+2- Perception:		Localize the cinder block 
+3- Locomotion:		Approach more
+4- Manipulation:	Pick up the cinder block with the preconfigured grasp 
+5- Locomotion:		Bring the cinder block to the default location
+6- Manipulation:	Perform RRTs and place the cinder block 
 
-=================================================================
-Sources of inaccuracy: 
-a) vision
-b) locomotion with balancing
+PART B:
+1- Locomotion: 		Go towards the second cinder block to pick up with right arm
+2- Perception:		Localize the cinder block 
+3- Locomotion:		Approach more
+4- Manipulation:	Pick up the cinder block with the preconfigured grasp
+5- Locomotion:		Bring the cinder block to the default location
+6- Perception:		Localize the first cinder block and determine goal pose 
+7- Manipulation:	Perform RRTs and place the cinder block 
 
-=================================================================
-Insights:
-a) object inertia on stability in spin
-b) forward bias with weight on 1 wheel
-c) grasping while spinning: need to hold with two-hands
+PART C:
+1- Locomotion: 		Go towards the first plate to pick up with both arms 
+2- Perception:		Localize the plate 
+3- Locomotion:		Approach more
+4- Manipulation:	Pick up the plate with two hands
+5- Locomotion:		Bring the plate to the default location
+6- Perception: 		Localize the second (top) cinder block
+7- Planning: 			Fix the two cinder blocks and ensure there is a plate pose
+8- Manipulation:	Perform RRTs and place the plate 
+
+PART D:
+1- Locomotion: 		Go towards the first plate to pick up with both arms 
+2- Perception:		Localize the plate 
+3- Locomotion:		Approach more
+4- Manipulation:	Pick up the plate with two hands
+5- Locomotion:		Bring the plate to the default location
+6- Perception: 		Localize the second (top) cinder block
+7- Planning: 			Fix the two cinder blocks and ensure there is a plate pose
+8- Manipulation:	Perform RRTs and place the plate 
+
+PART E:
+1- Realization:		Drive the car up the ramps.
