@@ -23,7 +23,13 @@
 
 #pragma once
 
+typedef Eigen::Matrix<double,6,1> Vector6d;
+extern Vector6d state;					//< current state (x,x.,y,y.,th,th.)
+extern Eigen::Vector3d locoGoal;
 extern bool sending_commands;
+extern dynamics::SkeletonDynamics* krang;
+extern Krang::Hardware* hw;     
+extern somatic_d_t daemon_cx;    
 
 /// See todo for explanation of the enums
 enum Mode {

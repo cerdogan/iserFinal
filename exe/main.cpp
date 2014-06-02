@@ -24,6 +24,7 @@ simulation::World* world;
 dynamics::SkeletonDynamics* krang;
 Hardware* hw;     
 Mode mode = A1;
+Vector6d state;					//< current state (x,x.,y,y.,th,th.)
 
 bool sending_commands = false;
 
