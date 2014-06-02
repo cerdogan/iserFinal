@@ -20,7 +20,7 @@ using namespace std;
 /* ******************************************************************************************** */
 /// Read file for gains
 void readGains () {
-	ifstream file ("/home/cerdogan/Documents/Software/project/krang/experiments/navigation/data/gains-04.txt");
+	ifstream file ("/home/cerdogan/Documents/Software/project/krang/iser/data/gains-04.txt");
 	assert(file.is_open());
 	char line [1024];
 	K = Eigen::Vector4d::Zero();
@@ -102,12 +102,12 @@ void computeTorques (const Vector6d& state, double& ul, double& ur) {
 
 	// Limit the output torques
 	u_spin = max(-20.0, min(20.0, u_spin));
-	u_x= max(-15.0, min(15.0, u_x));
+	u_x= max(-11.0, min(11.0, u_x));
 	if(dbg) printf("u_x: %lf, u_spin: %lf\n", u_x, u_spin);
 	ul = u_x - u_spin;
 	ur = u_x + u_spin;
-	ul = max(-30.0, min(30.0, ul));
-	ur = max(-30.0, min(30.0, ur));
+	ul = max(-25.0, min(25.0, ul));
+	ur = max(-25.0, min(25.0, ur));
 	if(dbg) printf("ul: %lf, ur: %lf\n", ul, ur);
 }
 
@@ -115,12 +115,16 @@ void computeTorques (const Vector6d& state, double& ul, double& ur) {
 bool checkReach (LocoMode lMode) {
 	static const double angleToler = 1.0 / 180.0 * M_PI;
 	static const double distToler = 0.05;	// meters
-	if((lMode == TURN1) && (fabs(refState(4) - state(4)) < angleToler)) return true;
+	if(lMode == TURN1) {
+		if(fabs(refState(4) - state(4)) < angleToler) return true;
+	}
 	else if(lMode == FORW) {
-		double distSQ = SQ(refState(0) - state(0)) + SQ(refState(1) - state(1));
+		double distSQ = SQ(refState(0) - state(0)) + SQ(refState(2) - state(2));
 		if(distSQ < SQ(distToler)) return true;
 	}
-	else if((lMode == TURN2) && (fabs(refState(4) - state(4)) < angleToler)) return true;
+	else if(lMode == TURN2) {
+		if(fabs(refState(4) - state(4)) < angleToler) return true;
+	}
 	else assert(false && "Unknown loco mode");
 	return false;
 }
@@ -129,12 +133,13 @@ bool checkReach (LocoMode lMode) {
 bool locomotion (Mode mode) {
 
 	// Initialize variables
+	static int c_ = 0;
 	static struct timespec t_now, t_prev;
 	static LocoMode lMode;
 	if(!initialized) {
 
 		// Set the reference state if perception is not needed for it
-		if(mode == A1) locoGoal = Eigen::Vector3d(0.5, 1.0, M_PI_2);
+		if(mode == A1) locoGoal = Eigen::Vector3d(0.0, 0.8, M_PI_2);
 		else assert(false && "unknown loco goal");
 
 		// Set the time
@@ -153,8 +158,13 @@ bool locomotion (Mode mode) {
 		refState = state;
 		refState(1) = refState(3) = refState(5) = 0.0;
  		refState(4) = atan2(locoGoal(1) - state(2), locoGoal(0) - state(0));
+		c_ = 0;
+		initialized = true;
 	}
 	
+	dbg = ((c_++ % 20) == 0);
+	if(dbg) cout << "\n===========================================" << endl;
+
 	// Get the current time and compute the time difference and update the prev. time
 	t_now = aa_tm_now();						
 	double dt = (double)aa_tm_timespec2sec(aa_tm_sub(t_now, t_prev));	
@@ -164,6 +174,7 @@ bool locomotion (Mode mode) {
 	lastWheelsState = wheelsState;
 	updateWheelsState(wheelsState, dt); 
 	if(dbg) cout << "wheelsState: " << wheelsState.transpose() << endl;
+	if(dbg) cout << "lastWheelsState: " << lastWheelsState.transpose() << endl;
 	updateState(wheelsState, lastWheelsState, state);
 	if(dbg) cout << "state: " << state.transpose() << endl;
 
@@ -174,7 +185,7 @@ bool locomotion (Mode mode) {
 			refState = state;
 			refState(1) = refState(3) = refState(5) = 0.0;
 			refState(0) = locoGoal(0);
-			refState(1) = locoGoal(1);
+			refState(2) = locoGoal(1);
 		}
 		else if(lMode == FORW) {
 			refState = state;
@@ -183,10 +194,17 @@ bool locomotion (Mode mode) {
 		}
 		else if(lMode == TURN2) {
 			initialized = false;
+			double input [2] = {0.0, 0.0};
+			somatic_motor_cmd(&daemon_cx, hw->amc, SOMATIC__MOTOR_PARAM__MOTOR_CURRENT, input, 2, NULL);
+			cout << "state: " << state.transpose() << endl;
+			cout << "refState: " << refState.transpose() << endl;
+			cout << "reached the goal" << endl;
 			return true;
 		}
 		lMode = (LocoMode) (lMode + 1);
 	}
+	if(dbg) cout << "refState: " << refState.transpose() << endl;
+	if(dbg) cout << "loco mode: " << locoModeStr(lMode) << endl;
 	
 	// Compute the torques based on the state and the mode
 	double ul, ur;
