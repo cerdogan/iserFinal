@@ -67,12 +67,19 @@ void updateState(Eigen::Vector4d& wheelsState, Eigen::Vector4d& lastWheelsState,
 	double dt = wheelsState[2] - lastWheelsState[2];
 	double last_theta = state[4]; 
 
+	// Compute the state
 	state[0] = state[0] + dx*cos(last_theta);
 	state[1] = wheelsState[1];
 	state[2] = state[2] + dx*sin(last_theta);
 	state[3] = 0;
 	state[4] = state[4] + dt;
 	state[5] = wheelsState[3];
+
+	// Set the robot config
+	static int base_ids_a [3] = {0, 1, 3};
+	static vector <int> base_ids (base_ids_a, base_ids_a + 3);  
+	Eigen::Vector3d base_conf (state(0), state(2), state(4) - M_PI_2);
+	krang->setConfig(base_ids, base_conf);
 }
 
 /* ******************************************************************************************** */
@@ -102,12 +109,12 @@ void computeTorques (const Vector6d& state, double& ul, double& ur) {
 
 	// Limit the output torques
 	u_spin = max(-20.0, min(20.0, u_spin));
-	u_x= max(-11.0, min(11.0, u_x));
+	u_x= max(-13.0, min(13.0, u_x));
 	if(dbg) printf("u_x: %lf, u_spin: %lf\n", u_x, u_spin);
 	ul = u_x - u_spin;
 	ur = u_x + u_spin;
-	ul = max(-25.0, min(25.0, ul));
-	ur = max(-25.0, min(25.0, ur));
+	ul = max(-20.0, min(20.0, ul));
+	ur = max(-20.0, min(20.0, ur));
 	if(dbg) printf("ul: %lf, ur: %lf\n", ul, ur);
 }
 
@@ -139,7 +146,9 @@ bool locomotion (Mode mode) {
 	if(!initialized) {
 
 		// Set the reference state if perception is not needed for it
-		if(mode == A1) locoGoal = Eigen::Vector3d(0.0, 0.8, M_PI_2);
+		// if(mode == A1) locoGoal = Eigen::Vector3d(0.0, 0.8, M_PI_2);
+		if(mode == A1) locoGoal = Eigen::Vector3d(1.0, 0.0, M_PI_2);
+		if(mode == A1) locoGoal = Eigen::Vector3d(0.3, 0.0, M_PI_2/3);
 		else assert(false && "unknown loco goal");
 
 		// Set the time

@@ -132,7 +132,7 @@ void getCinder () {
 		int result;
 		size_t numBytes = 0;
 		uint8_t* buffer = (uint8_t*) somatic_d_get(&daemon_cx, &cinder_chan, &numBytes, 
-			&abstimeout, ACH_O_WAIT, &result);
+			&abstimeout, ACH_O_WAIT | ACH_O_LAST, &result);
   	if(numBytes == 0) {
 			data_idx--;
 			continue;

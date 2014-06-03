@@ -84,20 +84,29 @@ bool perception (Mode mode) {
 			somatic_d_channel_open(&daemon_cx, &vision_chan, "smallCinder", NULL); 
 		}
 		else assert(false && "unknown perception goal");
+		cout << "initialized" << endl;
 
 		// Reset the flags
 		pinitialized = true;
 		data.clear();
 	}
 
+	cout << "hey" << endl;
+
 	// Get data
-	struct timespec abstimeout = aa_tm_future( aa_tm_sec2timespec(1) );
+	struct timespec abstimeout = aa_tm_future( aa_tm_sec2timespec(1.0/30.0) );
 	int result;
 	size_t numBytes = 0;
+	cout << "wtf" << endl;
 	uint8_t* buffer = (uint8_t*) somatic_d_get(&daemon_cx, &vision_chan, &numBytes, 
-		&abstimeout, ACH_O_WAIT, &result);
-	if(numBytes == 0) return false;
-
+		&abstimeout, ACH_O_LAST, &result);
+	cout << "waited enough" << endl;
+	if(numBytes == 0) {
+		cout << "nothign" << endl;
+		return false;
+	}
+	cout << "something" << endl;
+ 
 	// Read the message
 	Somatic__Cinder* cinder_msg = somatic__cinder__unpack(&(daemon_cx.pballoc), numBytes, 
 		buffer);

@@ -21,7 +21,7 @@ Vector7d lgoal, rgoal;
 
 somatic_d_t daemon_cx;    
 ach_channel_t cinder_chan;
-somatic_motor_t* dynos;
+somatic_motor_t* dynos = NULL;
 simulation::World* world;
 dynamics::SkeletonDynamics* krang;
 Hardware* hw;     
@@ -45,9 +45,11 @@ void setupModeMapping () {
 void destroy() {
 	somatic_d_event(&daemon_cx, SOMATIC__EVENT__PRIORITIES__NOTICE, 
 	                SOMATIC__EVENT__CODES__PROC_STOPPING, NULL, NULL);
-	somatic_motor_halt(&daemon_cx, dynos);
-	somatic_motor_destroy(&daemon_cx, dynos);
-	delete dynos;
+	if(dynos != NULL) {
+		somatic_motor_halt(&daemon_cx, dynos);
+		somatic_motor_destroy(&daemon_cx, dynos);
+		delete dynos;
+	}
 	delete hw;
 	somatic_d_destroy(&daemon_cx);
 }
@@ -126,6 +128,7 @@ void init() {
 		run();
 
 		// Visualize the scene
+		cout << "drawing scene..." << endl;
 		viewer->DrawGLScene();
 		Start(0.005 * 1e4);
 	}
@@ -140,7 +143,6 @@ void init() {
 		viewer->worldV += Vector3d(-0.3, 0.0, -0.8);
 		viewer->UpdateCamera();
 		SetSizer(sizerFull);
-		frame->DoLoad("/etc/kore/scenes/01-World-Robot.urdf");
 
 		// Create the timer to notify the function that draws the robot at multiple configurations
 		timer = new Timer();
@@ -148,6 +150,11 @@ void init() {
 
 		// Initialize the threads 
 		init();
+
+		// Set the world
+		mWorld = world;
+		frame->DoLoadHelp("bla.urdf", false);
+
 	}
 
 	// ==========================================================================================
