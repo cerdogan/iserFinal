@@ -9,8 +9,6 @@
 #include "locomotion.h"
 #include "perception.h"
 
-#define GRIP_ON 1
-
 using namespace std;
 using namespace Krang;
 
@@ -33,11 +31,13 @@ bool sending_commands = false;
 /* ********************************************************************************************* */
 /// Mapping from modes to the type of modules they need
 
+bool nullFunc (Mode mode) { return false; }
 typedef bool (*Module)(Mode);
 map <Mode, Module> modeMapping;
 void setupModeMapping () {
 	modeMapping[A1] = locomotion;
 	modeMapping[A2] = perception;
+	modeMapping[A3] = nullFunc;
 }
 
 /* ********************************************************************************************* */
@@ -79,7 +79,7 @@ void init() {
 	// Initalize dart. Do this before we initialize the daemon because initalizing the daemon 
 	// changes our current directory to somewhere in /var/run.
 	DartLoader dl;
-	world = dl.parseWorld("/etc/kore/scenes/01-World-Robot.urdf");
+	world = dl.parseWorld("/etc/kore/scenes/13-World-Plates.urdf");
 	assert((world != NULL) && "Could not find the world");
 	krang = world->getSkeleton("Krang");
 	Krang::setupKrangCollisionModel(world, krang);
@@ -119,8 +119,6 @@ void init() {
 /// The main thread
 #ifdef GRIP_ON
 
-	#include "simTab.h"
-
 	// ==========================================================================================
 	void Timer::Notify() {
 
@@ -128,7 +126,6 @@ void init() {
 		run();
 
 		// Visualize the scene
-		cout << "drawing scene..." << endl;
 		viewer->DrawGLScene();
 		Start(0.005 * 1e4);
 	}
@@ -153,8 +150,10 @@ void init() {
 
 		// Set the world
 		mWorld = world;
+		viewer->backColor = Vector3d(0.95,0.95,0.95);
+		viewer->gridColor = Vector3d(.8,.8,1);
+		viewer->setClearColor();
 		frame->DoLoadHelp("bla.urdf", false);
-
 	}
 
 	// ==========================================================================================

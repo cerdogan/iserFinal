@@ -84,28 +84,19 @@ bool perception (Mode mode) {
 			somatic_d_channel_open(&daemon_cx, &vision_chan, "smallCinder", NULL); 
 		}
 		else assert(false && "unknown perception goal");
-		cout << "initialized" << endl;
 
 		// Reset the flags
 		pinitialized = true;
 		data.clear();
 	}
 
-	cout << "hey" << endl;
-
 	// Get data
 	struct timespec abstimeout = aa_tm_future( aa_tm_sec2timespec(1.0/30.0) );
 	int result;
 	size_t numBytes = 0;
-	cout << "wtf" << endl;
 	uint8_t* buffer = (uint8_t*) somatic_d_get(&daemon_cx, &vision_chan, &numBytes, 
 		&abstimeout, ACH_O_LAST, &result);
-	cout << "waited enough" << endl;
-	if(numBytes == 0) {
-		cout << "nothign" << endl;
-		return false;
-	}
-	cout << "something" << endl;
+	if(numBytes == 0) return false;
  
 	// Read the message
 	Somatic__Cinder* cinder_msg = somatic__cinder__unpack(&(daemon_cx.pballoc), numBytes, 
@@ -114,22 +105,49 @@ bool perception (Mode mode) {
 	for(size_t i = 0; i < 3; i++) value(i) = cinder_msg->hole->data[i];
 	for(size_t i = 0; i < 3; i++) value(i+3) = cinder_msg->normal->data[i];
 	data.push_back(value);
+	cout << "data count: " << data.size() << endl;
 
 	// Compute the mean if enough data is accumulated
-	if(data.size() >= 50) {
+	if(data.size() >= 100) {
 		
 		// Analyze the data
 		Eigen::VectorXd mean = analyzeData(data);
-		Eigen::Vector3d rpy = mean.block<3,1>(3,0);
+		cout << "mean: " << mean.transpose() << endl;
 		Eigen::Matrix4d rTo = Eigen::Matrix4d::Identity();
-		rTo.topLeftCorner<3,3>() = math::eulerToMatrix(rpy, math::XYZ);
+		double th = atan2(mean(4), mean(3));
+		cout << "th: " << th << endl;
+	  rTo.topLeftCorner<3,3>() = 
+			Eigen::AngleAxis<double>(th, Eigen::Vector3d(0.0, 0.0, 1.0)).matrix();
 		rTo.topRightCorner<3,1>() = mean.block<3,1>(0,0);
+		cout << "rTo: \n" << rTo << endl;
 
 		// Integrate the data to the robot pose
 		Eigen::Matrix4d wTr = Eigen::Matrix4d::Identity();
 		wTr.topRightCorner<3,1>() = Eigen::Vector3d(state(0), state(2), 0.27);
-		rpy = Eigen::Vector3d(0, 0, state(4));
+		Eigen::Vector3d rpy = Eigen::Vector3d(0, 0, state(4));
 		wTr.topLeftCorner<3,3>() = math::eulerToMatrix(rpy, math::XYZ);
+		cout << "wTr: \n" << wTr << endl;
+		Eigen::Matrix4d wTo = wTr * rTo;
+		cout << "wTo: \n" << wTo << endl;
+
+		// Set the pose for the object in GRIP if needed
+		#ifdef GRIP_ON
+			Eigen::VectorXd conf (6);
+			conf.topLeftCorner<3,1>() = wTo.topRightCorner<3,1>();
+			Eigen::Matrix3d R = wTo.topLeftCorner<3,3>();
+			conf.bottomLeftCorner<3,1>() = math::matrixToEuler(R, math::XYZ);
+			double temp = conf(3); conf(3) = conf(5); conf(5) = temp;
+			conf(2) = 0.0975;
+			conf(4) = M_PI_2;
+			cout << "set conf: " << conf.transpose() << endl;
+			const char* objName = "Cinder2";
+			mWorld->getSkeleton(objName)->setPose(conf);
+		#endif 
+
+		// THERE IS STILL SOME STUFF TO DO LIKE SETTING GLOBAL VARIABLE
+
+		cleanUp(mode);
+		return true;
 	}
 
 	// Keep accumulating data
