@@ -29,7 +29,7 @@ extern Eigen::Vector3d locoGoal;
 extern bool sending_commands;
 extern dynamics::SkeletonDynamics* krang;
 extern Krang::Hardware* hw;     
-extern somatic_d_t daemon_cx;    
+extern somatic_d_t daemon_cx;   
 
 /// See todo for explanation of the enums
 enum Mode {

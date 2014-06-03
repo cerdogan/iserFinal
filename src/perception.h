@@ -5,6 +5,8 @@
  * @brief Talks with the vision computer and handles frames.
  */
 
+#pragma once
+
 #include "helpers.h"
 
 extern Eigen::Vector3d cinder1loc;

@@ -9,10 +9,13 @@
 
 using namespace std;
 
+bool pinitialized = false;
+bool pdbg = false;
 Eigen::Vector3d cinder1loc (0.0, 0.0, 0.0);
 Eigen::Vector3d cinder2loc (0.0, 0.0, 0.0);
 Eigen::Vector3d plate1loc (0.0, 0.0, 0.0);
 Eigen::Vector3d plate2loc (0.0, 0.0, 0.0);
+ach_channel_t vision_chan;
 
 /* ******************************************************************************************** */
 /// Finds the consensus in the data and interprets it to get the motion parameters. Returns the
@@ -54,20 +57,73 @@ Eigen::VectorXd analyzeData (const std::vector <Eigen::VectorXd>& data) {
 		}
 	}
 	
-	// Set the hole location and the normal
-	Eigen::Vector3d hole = meanValues[bestMeanIdx].first.topLeftCorner<3,1>();
-	Eigen::Vector3d normal = meanValues[bestMeanIdx].first.bottomLeftCorner<3,1>().normalized();
-
-	// Set the output
-	Eigen::VectorXd output (6);
-	output.block<3,1>(0,0) = hole;
-	output.block<3,1>(3,0) = normal;
-	return output;
+	// Return the best value
+	return meanValues[bestMeanIdx].first;
 }
+
+/* ********************************************************************************************* */
+void cleanUp (Mode mode) {
+	if(mode == A2) {
+		system("ssh 192.168.10.10 \"/home/cerdogan/Documents/Software/project/vision/build/"
+			"stop-11\" > bla &");
+	}
+}
+
 /* ********************************************************************************************* */
 bool perception (Mode mode) {
-	cout << "hi perc" << endl;
-	usleep(1e5);
+
+	// Start the program on the vision computer based on the mode
+	static int c_ = 0;
+	static vector <Eigen::VectorXd> data;
+	if(!pinitialized) {
+
+		// Start the program on the vision computer
+		if(mode == A2) {
+			system("ssh 192.168.10.10 \"/home/cerdogan/Documents/Software/project/vision/build/"
+				"11-detectSmallCinder\" > bla &");
+			somatic_d_channel_open(&daemon_cx, &vision_chan, "smallCinder", NULL); 
+		}
+		else assert(false && "unknown perception goal");
+
+		// Reset the flags
+		pinitialized = true;
+		data.clear();
+	}
+
+	// Get data
+	struct timespec abstimeout = aa_tm_future( aa_tm_sec2timespec(1) );
+	int result;
+	size_t numBytes = 0;
+	uint8_t* buffer = (uint8_t*) somatic_d_get(&daemon_cx, &vision_chan, &numBytes, 
+		&abstimeout, ACH_O_WAIT, &result);
+	if(numBytes == 0) return false;
+
+	// Read the message
+	Somatic__Cinder* cinder_msg = somatic__cinder__unpack(&(daemon_cx.pballoc), numBytes, 
+		buffer);
+	Eigen::VectorXd value (6);
+	for(size_t i = 0; i < 3; i++) value(i) = cinder_msg->hole->data[i];
+	for(size_t i = 0; i < 3; i++) value(i+3) = cinder_msg->normal->data[i];
+	data.push_back(value);
+
+	// Compute the mean if enough data is accumulated
+	if(data.size() >= 50) {
+		
+		// Analyze the data
+		Eigen::VectorXd mean = analyzeData(data);
+		Eigen::Vector3d rpy = mean.block<3,1>(3,0);
+		Eigen::Matrix4d rTo = Eigen::Matrix4d::Identity();
+		rTo.topLeftCorner<3,3>() = math::eulerToMatrix(rpy, math::XYZ);
+		rTo.topRightCorner<3,1>() = mean.block<3,1>(0,0);
+
+		// Integrate the data to the robot pose
+		Eigen::Matrix4d wTr = Eigen::Matrix4d::Identity();
+		wTr.topRightCorner<3,1>() = Eigen::Vector3d(state(0), state(2), 0.27);
+		rpy = Eigen::Vector3d(0, 0, state(4));
+		wTr.topLeftCorner<3,3>() = math::eulerToMatrix(rpy, math::XYZ);
+	}
+
+	// Keep accumulating data
 	return false;
 }
 /* ********************************************************************************************* */

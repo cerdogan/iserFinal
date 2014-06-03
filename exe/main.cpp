@@ -9,6 +9,8 @@
 #include "locomotion.h"
 #include "perception.h"
 
+#define GRIP_ON 1
+
 using namespace std;
 using namespace Krang;
 
@@ -63,19 +65,9 @@ void *kbhit(void *) {
 /* ********************************************************************************************* */
 /// The main loop
 void run() {
-
-	// Start the daemon_cx running
-	somatic_d_event(&daemon_cx, SOMATIC__EVENT__PRIORITIES__NOTICE, 
-	                SOMATIC__EVENT__CODES__PROC_RUNNING, NULL, NULL);
-
-	// start some timers
-	struct timespec t_now, t_prev = aa_tm_now();
-	int c_ = 0;
-	while(!somatic_sig_received) {
-		Module M = modeMapping.at(mode);
-		bool result = M(mode);
-		if(result) mode = (Mode) (mode + 1);
-	}
+	Module M = modeMapping.at(mode);
+	bool result = M(mode);
+	if(result) mode = (Mode) (mode + 1);
 }
 
 /* ******************************************************************************************** */
@@ -115,12 +107,72 @@ void init() {
 
 	// Set up the modules
 	setupModeMapping();
+
+	// Start the daemon_cx running
+	somatic_d_event(&daemon_cx, SOMATIC__EVENT__PRIORITIES__NOTICE, 
+	                SOMATIC__EVENT__CODES__PROC_RUNNING, NULL, NULL);
 }
 
 /* ******************************************************************************************** */
 /// The main thread
-int main(int argc, char* argv[]) {
-	init();
-	run();
-	destroy();
-}
+#ifdef GRIP_ON
+
+	#include "simTab.h"
+
+	// ==========================================================================================
+	void Timer::Notify() {
+
+		// Do the execution
+		run();
+
+		// Visualize the scene
+		viewer->DrawGLScene();
+		Start(0.005 * 1e4);
+	}
+
+	// ==========================================================================================
+	SimTab::SimTab(wxWindow *parent, const wxWindowID id, const wxPoint& pos, const wxSize& size, 
+					 long style) : GRIPTab(parent, id, pos, size, style) {
+
+		// Create user interface
+		wxSizer* sizerFull= new wxBoxSizer(wxHORIZONTAL);
+		viewer->camRadius = 3.0;
+		viewer->worldV += Vector3d(-0.3, 0.0, -0.8);
+		viewer->UpdateCamera();
+		SetSizer(sizerFull);
+		frame->DoLoad("/etc/kore/scenes/01-World-Robot.urdf");
+
+		// Create the timer to notify the function that draws the robot at multiple configurations
+		timer = new Timer();
+		timer->Start(1);
+
+		// Initialize the threads 
+		init();
+	}
+
+	// ==========================================================================================
+	SimTab::~SimTab() {
+		destroy();
+	}
+
+	// ==========================================================================================
+	BEGIN_EVENT_TABLE(SimTab, wxPanel)
+	END_EVENT_TABLE()
+	IMPLEMENT_DYNAMIC_CLASS(SimTab, GRIPTab)
+	extern wxNotebook* tabView;
+	class mainApp : public GRIPApp {
+		virtual void AddTabs() {
+		tabView->AddPage(new SimTab(tabView), wxT("Liberty"));
+		}
+	};
+	IMPLEMENT_APP(mainApp)
+
+#else
+
+	int main(int argc, char* argv[]) {
+		init();
+		while(!somatic_sig_received) run();
+		destroy();
+	}
+
+#endif 
