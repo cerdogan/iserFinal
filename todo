@@ -4,28 +4,30 @@ ISER 2014 Ramp Video
 
 PART A:
 1-	Locomotion: 	Go towards the first cinder block to pick up with right arm
-2-	Perception:		Localize the cinder block 
-		- requires instructing vision computer what program to run
+2-	Perception:		Localize the small cinder block 
+		+ requires instructing vision computer what program to run
+		- requires clustering the vision data
+		- requires combining the current robot pose with the vision data
 
 3-	Locomotion:		Approach more
-4-	Perception:		Localize the cinder block 
-5-	Manipulation:	Pick up the cinder block with the preconfigured grasp 
+4-	Perception:		Localize the small cinder block 
+5-	Manipulation:	Pick up the small cinder block with the preconfigured grasp 
 	 	- requires jacobian
 
-6-	Locomotion:		Bring the cinder block to the default location
+6-	Locomotion:		Bring the small cinder block to the default location
 7-	Perception:		Localize the obstacle and determine goal pose 
 8-	Locomotion:		Approach more
 9-	Perception:		Localize the obstacle and determine goal pose again to refine
-10-	Manipulation:	Perform RRTs and place the cinder block 
+10-	Manipulation:	Perform RRTs and place the small cinder block 
 
 PART B:
-1-	Locomotion: 	Go towards the second cinder block to pick up with right arm
-2-	Perception:		Localize the cinder block 
+1-	Locomotion: 	Go towards the large cinder block to pick up with right arm
+2-	Perception:		Localize the large cinder block 
 3-	Locomotion:		Approach more
-4-	Manipulation:	Pick up the cinder block with the preconfigured grasp
-5-	Locomotion:		Bring the cinder block to the default location
-6-	Perception:		Localize the first cinder block and determine goal pose 
-7-	Manipulation:	Perform RRTs and place the cinder block 
+4-	Manipulation:	Pick up the large cinder block with the preconfigured grasp
+5-	Locomotion:		Bring the large cinder block to the default location
+6-	Perception:		Localize the small cinder block and determine goal pose 
+7-	Manipulation:	Perform RRTs and place the large cinder block 
 
 PART C:
 1-	Locomotion: 	Go towards the first plate to pick up with both arms 
