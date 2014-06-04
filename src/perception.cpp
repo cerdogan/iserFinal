@@ -20,7 +20,7 @@ void detectSmallCinder (const Eigen::VectorXd& mean) {
 
 	if(dbg) cout << "mean: " << mean.transpose() << endl;
 	Eigen::Matrix4d rTo = Eigen::Matrix4d::Identity();
-	double th = atan2(mean(4), mean(3));
+	double th = atan2(mean(4), mean(3)) + M_PI_2;
 	if(dbg) cout << "th: " << th << endl;
 	rTo.topLeftCorner<3,3>() = 
 		Eigen::AngleAxis<double>(th, Eigen::Vector3d(0.0, 0.0, 1.0)).matrix();
@@ -41,6 +41,7 @@ void detectSmallCinder (const Eigen::VectorXd& mean) {
 	conf.topLeftCorner<3,1>() = wTo.topRightCorner<3,1>();
 	Eigen::Matrix3d R = wTo.topLeftCorner<3,3>();
 	conf.bottomLeftCorner<3,1>() = math::matrixToEuler(R, math::XYZ);
+	conf.block<2,1>(0,0) += Eigen::Vector2d(-sin(conf(5)), cos(conf(5))).normalized() * 0.15;
 	double temp = conf(3); conf(3) = conf(5); conf(5) = temp;
 	if(dbg) cout << "set conf: " << conf.transpose() << endl;
 	conf(2) = 0.0;
@@ -96,7 +97,7 @@ Eigen::VectorXd analyzeData (const std::vector <Eigen::VectorXd>& data) {
 
 /* ********************************************************************************************* */
 void cleanUp (Mode mode) {
-	if(mode == A2) {
+	if((mode == A2) || (mode == A4)) {
 		system("ssh 192.168.10.10 \"/home/cerdogan/Documents/Software/project/vision/build/"
 			"stop-11\" > bla &");
 	}
@@ -111,7 +112,7 @@ bool perception (Mode mode) {
 	if(!pinitialized) {
 
 		// Start the program on the vision computer
-		if(mode == A2) {
+		if((mode == A2) || (mode == A4)) {
 			system("ssh 192.168.10.10 \"/home/cerdogan/Documents/Software/project/vision/build/"
 				"11-detectSmallCinder\" > bla &");
 			somatic_d_channel_open(&daemon_cx, &vision_chan, "smallCinder", NULL); 
@@ -141,16 +142,17 @@ bool perception (Mode mode) {
 	cout << "data count: " << data.size() << endl;
 
 	// Compute the mean if enough data is accumulated
-	if(data.size() >= 100) {
+	if(data.size() >= 50) {
 		
 		// Analyze the data
 		Eigen::VectorXd mean = analyzeData(data);
 		
 		// Use it according to the mode 
-		if(mode == A2) detectSmallCinder(mean);
+		if((mode == A2) || (mode == A4)) detectSmallCinder(mean);
 
 		// Stop the program called on the vision computer
 		cleanUp(mode);
+		pinitialized = false;
 		return true;
 	}
 

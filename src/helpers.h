@@ -31,8 +31,11 @@ extern Vector6d state;					//< current state (x,x.,y,y.,th,th.)
 extern Eigen::Vector3d locoGoal;
 extern bool sending_commands;
 extern dynamics::SkeletonDynamics* krang;
+extern simulation::World* world;
 extern Krang::Hardware* hw;     
 extern somatic_d_t daemon_cx;   
+
+extern Eigen::VectorXd smallGraspPose;
 
 /// See todo for explanation of the enums
 enum Mode {

@@ -15,6 +15,10 @@ Eigen::Vector4d lastWheelsState; //< last wheel state used to update the state
 bool initialized = false;
 bool dbg = false;
 
+Eigen::VectorXd smallGraspPose = 
+	(Eigen::VectorXd (7) << -0.150,   1.803,  -1.528,  -0.487,  -0.080,1.299,-1.438).finished();
+
+
 using namespace std;
 
 /* ******************************************************************************************** */
@@ -139,20 +143,45 @@ bool checkReach (LocoMode lMode) {
 /* ********************************************************************************************* */
 bool locomotion (Mode mode) {
 
+	// Initialize the dofs
+	static int dofs_xy_a [] = {0, 1};
+	static vector <int> dofs_xy (dofs_xy_a, dofs_xy_a + 2);  
+	static int base_ids_a [3] = {0, 1, 3};
+	static vector <int> base_ids (base_ids_a, base_ids_a + 3);  
+
 	// Initialize variables
 	static int c_ = 0;
 	static struct timespec t_now, t_prev;
 	static LocoMode lMode;
 	if(!initialized) {
 
+		// For visualization
+		mWorld->getSkeleton("KrangNext")->setPose(krang->getPose());
+
 		// Set the reference state if perception is not needed for it
 		// if(mode == A1) locoGoal = Eigen::Vector3d(0.0, 0.8, M_PI_2);
 		if(mode == A1) locoGoal = Eigen::Vector3d(0.0, 0.0, M_PI_2/2);
 		if(mode == A3) {
-		
-			assert(false && "unknown loco goal");
+
+			// Get the pose of the cinder block
+			Eigen::VectorXd cinderPose = world->getSkeleton("Cinder2")->getPose();
+			Eigen::Vector2d cinderLoc (cinderPose(0), cinderPose(1));
+
+			// Estimate where the robot should be 
+			Eigen::Vector2d dir (cos(cinderPose(3)), sin(cinderPose(3)));
+			Eigen::Vector2d perp (-dir(1), dir(0));
+			Eigen::Vector2d temp = cinderLoc - 0.83 * perp - 0.1 * dir;
+			locoGoal = Eigen::Vector3d(temp(0), temp(1), cinderPose(3) + M_PI_2);
+
+			// Set the arm pose for visualization
+			mWorld->getSkeleton("KrangNext")->setConfig(Krang::right_arm_ids, smallGraspPose);
 		}
 		else assert(false && "unknown loco goal");
+
+		// Update the visualization for the goal
+		Eigen::Vector3d temp = locoGoal;
+		temp(2) -= M_PI_2;
+		mWorld->getSkeleton("KrangNext")->setConfig(base_ids, temp);
 
 		// Set the time
 		t_prev = aa_tm_now();
@@ -224,7 +253,7 @@ bool locomotion (Mode mode) {
 
 	// Apply the torque
 	double input [2] = {ul, ur};
-	if(dbg) cout << "u: {" << ul << ", " << ur << "}" << endl;
+	if(dbg) cout << "u: {" << ul << ", " << ur << "}, start: " << sending_commands << endl;
 	if(!sending_commands) input[0] = input[1] = 0.0;
 	somatic_motor_cmd(&daemon_cx, hw->amc, SOMATIC__MOTOR_PARAM__MOTOR_CURRENT, input, 2, NULL);
 	return false;
