@@ -23,7 +23,7 @@ somatic_motor_t* dynos = NULL;
 simulation::World* world;
 dynamics::SkeletonDynamics* krang;
 Hardware* hw;     
-Mode mode = A1;
+Mode mode = A2;
 Vector6d state;					//< current state (x,x.,y,y.,th,th.)
 
 bool sending_commands = false;
@@ -37,7 +37,8 @@ map <Mode, Module> modeMapping;
 void setupModeMapping () {
 	modeMapping[A1] = locomotion;
 	modeMapping[A2] = perception;
-	modeMapping[A3] = nullFunc;
+	modeMapping[A3] = locomotion;
+	modeMapping[A4] = nullFunc;
 }
 
 /* ********************************************************************************************* */

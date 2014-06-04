@@ -148,6 +148,10 @@ bool locomotion (Mode mode) {
 		// Set the reference state if perception is not needed for it
 		// if(mode == A1) locoGoal = Eigen::Vector3d(0.0, 0.8, M_PI_2);
 		if(mode == A1) locoGoal = Eigen::Vector3d(0.0, 0.0, M_PI_2/2);
+		if(mode == A3) {
+		
+			assert(false && "unknown loco goal");
+		}
 		else assert(false && "unknown loco goal");
 
 		// Set the time

@@ -3,13 +3,8 @@ ISER 2014 Ramp Video
 -------------------------------------------------------------------------------
 
 PART A:
-1-	Locomotion: 	Go towards the first cinder block to pick up with right arm
-2-	Perception:		Localize the small cinder block 
-		+ requires instructing vision computer what program to run
-		+ requires clustering the vision data
-		- requires a scene file that contains all the objects
-		- requires combining the current robot pose with the vision data
-
+1+	Locomotion: 	Go towards the first cinder block to pick up with right arm
+2+	Perception:		Localize the small cinder block 
 3-	Locomotion:		Approach more
 4-	Perception:		Localize the small cinder block 
 5-	Manipulation:	Pick up the small cinder block with the preconfigured grasp 
