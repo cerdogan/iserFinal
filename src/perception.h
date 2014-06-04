@@ -9,11 +9,6 @@
 
 #include "helpers.h"
 
-extern Eigen::Vector3d cinder1loc;
-extern Eigen::Vector3d cinder2loc;
-extern Eigen::Vector3d plate1loc;
-extern Eigen::Vector3d plate2loc;
-
 /// Looks for a certian object and sets its position
 bool perception (Mode mode); 
 

@@ -11,10 +11,6 @@ using namespace std;
 
 bool pinitialized = false;
 bool pdbg = false;
-Eigen::Vector3d cinder1loc (0.0, 0.0, 0.0);
-Eigen::Vector3d cinder2loc (0.0, 0.0, 0.0);
-Eigen::Vector3d plate1loc (0.0, 0.0, 0.0);
-Eigen::Vector3d plate2loc (0.0, 0.0, 0.0);
 ach_channel_t vision_chan;
 
 /* ******************************************************************************************** */
@@ -130,21 +126,19 @@ bool perception (Mode mode) {
 		Eigen::Matrix4d wTo = wTr * rTo;
 		cout << "wTo: \n" << wTo << endl;
 
-		// Set the pose for the object in GRIP if needed
-		#ifdef GRIP_ON
-			Eigen::VectorXd conf (6);
-			conf.topLeftCorner<3,1>() = wTo.topRightCorner<3,1>();
-			Eigen::Matrix3d R = wTo.topLeftCorner<3,3>();
-			conf.bottomLeftCorner<3,1>() = math::matrixToEuler(R, math::XYZ);
-			double temp = conf(3); conf(3) = conf(5); conf(5) = temp;
-			conf(2) = 0.0975;
-			conf(4) = M_PI_2;
-			cout << "set conf: " << conf.transpose() << endl;
-			const char* objName = "Cinder2";
-			mWorld->getSkeleton(objName)->setPose(conf);
-		#endif 
-
-		// THERE IS STILL SOME STUFF TO DO LIKE SETTING GLOBAL VARIABLE
+		// Set the pose for the object 
+		Eigen::VectorXd conf (6);
+		conf.topLeftCorner<3,1>() = wTo.topRightCorner<3,1>();
+		Eigen::Matrix3d R = wTo.topLeftCorner<3,3>();
+		conf.bottomLeftCorner<3,1>() = math::matrixToEuler(R, math::XYZ);
+		double temp = conf(3); conf(3) = conf(5); conf(5) = temp;
+		cout << "set conf: " << conf.transpose() << endl;
+		conf(2) = 0.0;
+		conf(4) = 0.0;
+		conf(5) = M_PI_2;
+		cout << "set conf 2: " << conf.transpose() << endl;
+		const char* objName = "Cinder2";
+		mWorld->getSkeleton(objName)->setPose(conf);
 
 		cleanUp(mode);
 		return true;
