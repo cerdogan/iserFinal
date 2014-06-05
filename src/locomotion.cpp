@@ -169,7 +169,7 @@ bool locomotion (Mode mode) {
 			// Estimate where the robot should be 
 			Eigen::Vector2d dir (cos(cinderPose(3)), sin(cinderPose(3)));
 			Eigen::Vector2d perp (-dir(1), dir(0));
-			Eigen::Vector2d temp = cinderLoc - 0.83 * perp - 0.1 * dir;
+			Eigen::Vector2d temp = cinderLoc - 0.45 * perp - 0.51 * dir;
 			locoGoal = Eigen::Vector3d(temp(0), temp(1), cinderPose(3) + M_PI_2);
 
 			// Set the arm pose for visualization

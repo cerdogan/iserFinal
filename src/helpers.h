@@ -30,6 +30,7 @@ typedef Eigen::Matrix<double,6,1> Vector6d;
 extern Vector6d state;					//< current state (x,x.,y,y.,th,th.)
 extern Eigen::Vector3d locoGoal;
 extern bool sending_commands;
+extern somatic_motor_t* dynos;
 extern dynamics::SkeletonDynamics* krang;
 extern simulation::World* world;
 extern Krang::Hardware* hw;     

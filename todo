@@ -6,15 +6,12 @@ PART A:
 1+	Locomotion: 	Go towards the first cinder block to pick up with right arm
 2+	Perception:		Localize the small cinder block 
 3+	Locomotion:		Approach more
-4+	Perception:		Localize the small cinder block 
-5-	Manipulation:	Pick up the small cinder block with the preconfigured grasp 
-	 	- requires jacobian
-
-6-	Locomotion:		Bring the small cinder block to the default location
-7-	Perception:		Localize the obstacle and determine goal pose 
-8-	Locomotion:		Approach more
-9-	Perception:		Localize the obstacle and determine goal pose again to refine
-10-	Manipulation:	Perform RRTs and place the small cinder block 
+4-	Manipulation:	Pick up the small cinder block with the preconfigured grasp 
+5-	Locomotion:		Bring the small cinder block to the default location
+6-	Perception:		Localize the obstacle and determine goal pose 
+7-	Locomotion:		Approach more
+8-	Perception:		Localize the obstacle and determine goal pose again to refine
+9-	Manipulation:	Perform RRTs and place the small cinder block 
 
 PART B:
 1-	Locomotion: 	Go towards the large cinder block to pick up with right arm

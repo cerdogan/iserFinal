@@ -25,7 +25,7 @@ simulation::World* world;
 dynamics::SkeletonDynamics* krang;
 Hardware* hw;     
 Vector6d state;					//< current state (x,x.,y,y.,th,th.)
-Mode mode = A5;
+Mode mode = A4;
 
 bool sending_commands = false;
 
@@ -39,8 +39,9 @@ void setupModeMapping () {
 	modeMapping[A1] = locomotion;
 	modeMapping[A2] = perception;
 	modeMapping[A3] = locomotion;
-	modeMapping[A4] = perception;
-	modeMapping[A5] = manipulation;
+	modeMapping[A4] = manipulation;
+	modeMapping[A5] = perception;
+	modeMapping[A6] = manipulation;
 	modeMapping[A6] = nullFunc;
 }
 
@@ -102,10 +103,10 @@ void init() {
 	hw->printState();
 
 	// Open a channel to the dynamixel motors
-	// Eigen::VectorXd lim2 = Eigen::VectorXd::Ones(2) * 2047;
-	// Hardware::initMotorGroup(&daemon_cx, dynos, "dynamixel-cmd", "dynamixel-state", -lim2, lim2, 
-	// 	-lim2, lim2);
-	// somatic_motor_update(&daemon_cx, dynos);
+	Eigen::VectorXd lim2 = Eigen::VectorXd::Ones(2) * 2047;
+	Hardware::initMotorGroup(&daemon_cx, dynos, "dynamixel-cmd", "dynamixel-state", -lim2, lim2, 
+		-lim2, lim2);
+	somatic_motor_update(&daemon_cx, dynos);
 
 	// Create a thread to wait for user input to begin balancing
 	pthread_t kbhitThread;

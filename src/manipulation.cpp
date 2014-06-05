@@ -97,18 +97,32 @@ void reachOut () {
 /* ********************************************************************************************* */
 bool manipulation (Mode mode) {
 
-	if(mode != A5) assert(false && "Unknown manipulation mode");
-	
-	// Move the arm to the grasp pose by first moving to a keypoint in the middle
-	Eigen::VectorXd smallKeyPoint (7);
-	smallKeyPoint << -0.211,   0.690,  -0.016,   0.879,  -1.445,   1.376,  -0.000;
-//	somatic_motor_setpos(&daemon_cx, hw->arms[Krang::RIGHT], smallKeyPoint.data(), 7);
-//	sleep(3);
-	somatic_motor_setpos(&daemon_cx, hw->arms[Krang::RIGHT], smallGraspPose.data(), 7);
-	sleep(6);
+	// Prepare the arm for visualization
+	if(mode == A4) {
+
+		// Move the arm to the grasp pose by first moving to a keypoint in the middle
+		Eigen::VectorXd smallKeyPoint (7);
+		smallKeyPoint << -0.211,   0.690,  -0.016,   0.879,  -1.445,   1.376,  -0.000;
+		somatic_motor_setpos(&daemon_cx, hw->arms[Krang::RIGHT], smallKeyPoint.data(), 7);
+		sleep(3);
+		somatic_motor_setpos(&daemon_cx, hw->arms[Krang::RIGHT], smallGraspPose.data(), 7);
+		sleep(6);
+
+		// Move the camera
+		double pos [] = {260, 510};
+		somatic_motor_setpos(&daemon_cx, dynos, pos, 2);
+		sleep(2);
+
+		return true;
+	}
 
 	// Move the arm forward until contact
-	reachOut();
+	else if(mode == A6) {
+		reachOut();
+		return true;
+	}
 
-	return true;
+	else assert(false && "Unknown manipulation mode");
+	
+
 }
