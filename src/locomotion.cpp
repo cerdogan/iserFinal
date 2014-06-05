@@ -16,8 +16,7 @@ bool initialized = false;
 bool dbg = false;
 
 Eigen::VectorXd smallGraspPose = 
-	(Eigen::VectorXd (7) << -0.150,   1.803,  -1.528,  -0.487,  -0.080,1.299,-1.438).finished();
-
+	(Eigen::VectorXd (7) << 0.673,0.715,0.404,0.876,-1.727,1.820,-1.641).finished();
 
 using namespace std;
 

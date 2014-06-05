@@ -8,6 +8,7 @@
 #include "helpers.h"
 #include "locomotion.h"
 #include "perception.h"
+#include "manipulation.h"
 
 using namespace std;
 using namespace Krang;
@@ -23,8 +24,8 @@ somatic_motor_t* dynos = NULL;
 simulation::World* world;
 dynamics::SkeletonDynamics* krang;
 Hardware* hw;     
-Mode mode = A2;
 Vector6d state;					//< current state (x,x.,y,y.,th,th.)
+Mode mode = A5;
 
 bool sending_commands = false;
 
@@ -39,7 +40,8 @@ void setupModeMapping () {
 	modeMapping[A2] = perception;
 	modeMapping[A3] = locomotion;
 	modeMapping[A4] = perception;
-	modeMapping[A5] = nullFunc;
+	modeMapping[A5] = manipulation;
+	modeMapping[A6] = nullFunc;
 }
 
 /* ********************************************************************************************* */
