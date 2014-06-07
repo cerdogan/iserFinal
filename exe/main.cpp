@@ -46,7 +46,8 @@ void setupModeMapping () {
 	modeMapping[A4] = manipulation;
 	modeMapping[A5] = locomotion;
 	modeMapping[A6] = perception;
-	modeMapping[A7] = nullFunc;
+	modeMapping[A7] = locomotion;
+	modeMapping[A8] = nullFunc;
 }
 
 /* ********************************************************************************************* */

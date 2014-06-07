@@ -209,8 +209,8 @@ bool locomotion (Mode mode) {
 		world->getSkeleton("KrangNext")->setPose(krang->getPose());
 
 		// Set the reference state if perception is not needed for it
-		// if(mode == A1) locoGoal = Eigen::Vector3d(0.0, 0.8, M_PI_2);
-		if(mode == A5) locoGoal = Eigen::Vector3d(0.4, 0.0, -M_PI_2/2);
+		if(mode == A1) locoGoal = Eigen::Vector3d(0.0, 0.8, M_PI_2);
+		// if(mode == A5) locoGoal = Eigen::Vector3d(0.4, 0.0, -M_PI_2/2);
 		else if(mode == A3) {
 
 			// Get the pose of the cinder block
@@ -230,12 +230,30 @@ bool locomotion (Mode mode) {
 			locoGoal = krang->getConfig(base_ids);
 			locoGoal(2) -= M_PI_2;
 		}
+		else if(mode == A7) {
+
+			// Get the pose of the cinder block
+			Eigen::VectorXd cinderPose = world->getSkeleton("Cinder2G")->getPose();
+			Eigen::Vector2d cinderLoc (cinderPose(0), cinderPose(1));
+			double th = cinderPose(3) - M_PI;
+
+			// Estimate where the robot should be 
+			Eigen::Vector2d dir (cos(th), sin(th));
+			Eigen::Vector2d perp (-dir(1), dir(0));
+			Eigen::Vector2d temp = cinderLoc - 0.50 * perp - 0.50 * dir;
+			locoGoal = Eigen::Vector3d(temp(0), temp(1), th + M_PI_2);
+ 
+			// Set the arm pose for visualization
+			world->getSkeleton("KrangNext")->setConfig(Krang::right_arm_ids,smallGraspPose);
+
+		}
 		else assert(false && "unknown loco goal");
 
 		// Update the visualization for the goal
 		Eigen::Vector3d temp = locoGoal;
 		temp(2) -= M_PI_2;
 		world->getSkeleton("KrangNext")->setConfig(base_ids, temp);
+		return false;
 
 		// Set the time
 		t_prev = aa_tm_now();
