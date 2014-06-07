@@ -55,4 +55,12 @@ enum Mode {
 	D1, D2, D3, D4, D5, D6, D7, D8
 };
 
+inline Eigen::VectorXd matToVec (const Eigen::Matrix4d& mat) {
+	Eigen::VectorXd res (6);
+	res.topLeftCorner<3,1>() = mat.topRightCorner<3,1>();
+	Eigen::Matrix3d R = mat.topLeftCorner<3,3>();
+	res.bottomLeftCorner<3,1>() = math::matrixToEuler(R, math::XYZ);
+	double temp = res(5); res(5) = res(3); res(3) = temp;
+	return res;
+}
 

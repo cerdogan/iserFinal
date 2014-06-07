@@ -124,11 +124,13 @@ void readDesign () {
 	world->getSkeleton("Plate2G")->setPose(plate2);
 
 	// Get the relative transformations
-	Eigen::Matrix4d oTw = world->getSkeleton("Obstacle")->getWorldTransform().inverse();
-	design.oTc1 = oTw * world->getSkeleton("Cinder1G")->getWorldTransform();
-	design.oTc2 = oTw * world->getSkeleton("Cinder2G")->getWorldTransform();
-	design.oTp1 = oTw * world->getSkeleton("Plate1G")->getWorldTransform();
-	design.oTp2 = oTw * world->getSkeleton("Plate2G")->getWorldTransform();
+	Eigen::Matrix4d oTw = world->getSkeleton("Obstacle")->getNode("root")->getWorldTransform().inverse();
+	design.oTc1 = oTw * world->getSkeleton("Cinder1G")->getNode("root")->getWorldTransform();
+	design.oTc2 = oTw * world->getSkeleton("Cinder2G")->getNode("root")->getWorldTransform();
+	design.oTp1 = oTw * world->getSkeleton("Plate1G")->getNode("root")->getWorldTransform();
+	design.oTp2 = oTw * world->getSkeleton("Plate2G")->getNode("root")->getWorldTransform();
+	cout << "design.oTc1: \n" << design.oTc1 << endl;
+	// getchar();
 }
 
 /* ******************************************************************************************** */
@@ -183,6 +185,25 @@ void init() {
 
 	// ==========================================================================================
 	void Timer::Notify() {
+
+		// Update the design configurations
+		{
+			cout << "\n\n\noTc1: \n" << design.oTc1 << endl;
+			Eigen::Matrix4d wTo = world->getSkeleton("Obstacle")->getNode("root")->getWorldTransform();
+			Eigen::Matrix4d wTc1 = wTo * design.oTc1; 
+			Eigen::Matrix4d wTc2 = wTo * design.oTc2;
+			Eigen::Matrix4d wTp1 = wTo * design.oTp1;
+			Eigen::Matrix4d wTp2 = wTo * design.oTp2;
+			Eigen::VectorXd c1 = matToVec(wTc1);
+			Eigen::VectorXd c2 = matToVec(wTc2);
+			Eigen::VectorXd p1 = matToVec(wTp1);
+			Eigen::VectorXd p2 = matToVec(wTp2);
+			cout << "\nwTc1: \n" << wTc1 << endl;
+			world->getSkeleton("Cinder1G")->setPose(c1);
+			world->getSkeleton("Cinder2G")->setPose(c2);
+			world->getSkeleton("Plate1G")->setPose(p1);
+			world->getSkeleton("Plate2G")->setPose(p2);
+		}
 
 		// Do the execution
 		run();
