@@ -253,7 +253,6 @@ bool locomotion (Mode mode) {
 		Eigen::Vector3d temp = locoGoal;
 		temp(2) -= M_PI_2;
 		world->getSkeleton("KrangNext")->setConfig(base_ids, temp);
-		return false;
 
 		// Set the time
 		t_prev = aa_tm_now();
