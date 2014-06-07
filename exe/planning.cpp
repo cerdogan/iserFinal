@@ -310,6 +310,16 @@ void createAndVisualizeDesign() {
 	Eigen::Vector4d conf2 = Eigen::Vector4d (1.95, x, y-0.0975, th);
 	mWorld->getSkeleton("Cinder2")->setConfig(tempIds, conf2);
 	viewer->DrawGLScene();	
+
+	// Output the results on a file and scp to krang
+	ofstream file ("result");
+	file << mWorld->getSkeleton("Obstacle")->getPose().transpose() << endl;
+	file << mWorld->getSkeleton("Cinder2")->getPose().transpose() << endl;
+	file << mWorld->getSkeleton("Cinder1")->getPose().transpose() << endl;
+	file << mWorld->getSkeleton("Plate1")->getPose().transpose() << endl;
+	file << mWorld->getSkeleton("Plate2")->getPose().transpose() << endl;
+	file.close();
+	system("scp result cerdogan@192.168.1.51:~/");
 }
 
 /* ********************************************************************************************* */
