@@ -215,6 +215,7 @@ void moveHand (const Eigen::VectorXd& dx, bool right, double limitSQ) {
 /* ********************************************************************************************* */
 void Timer::Notify() {
 
+		collision::printVS = true;
   // Do the collision checking
 	static bool started = false;
   bool collision = mWorld->checkCollision(false);
@@ -331,6 +332,7 @@ SimTab::SimTab(wxWindow *parent, const wxWindowID id, const wxPoint& pos, const 
  // detector->deactivatePair(plate2->getNode("root"), cinder2->getNode("root"));
   detector->deactivatePair(cinder1->getNode("root"), cinder2->getNode("root"));
   detector->deactivatePair(cinder1->getNode("root"), ground->getNode("ground"));
+  detector->deactivatePair(cinder2->getNode("root"), ground->getNode("ground"));
   detector->deactivatePair(krang->getNode("Base"), ground->getNode("ground"));
   detector->deactivatePair(krang->getNode("LWheel"), ground->getNode("ground"));
   detector->deactivatePair(krang->getNode("RWheel"), ground->getNode("ground"));
@@ -395,12 +397,15 @@ void createAndVisualizeDesign() {
 	}
 
 	// Visualize the cinder blocks
-	double x = result.at <LieVector>(box0)(0), y = result.at <LieVector>(box0)(1);
+	double x = result.at <LieVector>(box1)(0), y = result.at <LieVector>(box1)(1);
 	Eigen::Vector3d conf(1.75, x, y);
 	mWorld->getSkeleton("Cinder1")->setConfig(tempIds, conf);
-	x = result.at <LieVector>(box1)(0), y = result.at <LieVector>(box1)(1);
-	conf = Eigen::Vector3d (1.75, x, y-0.0975);
-	mWorld->getSkeleton("Cinder2")->setConfig(tempIds, conf);
+
+	tempIds.push_back(3);
+	double th = ((double) rand()) / RAND_MAX;
+	x = result.at <LieVector>(box0)(0), y = result.at <LieVector>(box0)(1);
+	Eigen::Vector4d conf2 = Eigen::Vector4d (1.95, x, y-0.0975, th);
+	mWorld->getSkeleton("Cinder2")->setConfig(tempIds, conf2);
 	viewer->DrawGLScene();	
 }
 
