@@ -221,7 +221,7 @@ bool checkReach (LocoMode lMode) {
 		else c_ = 0;
 	}
 	else assert(false && "Unknown loco mode");
-	if(c_ > 150) {
+	if(c_ > 50) {
 		c_ = 0;
 		return true;
 	}

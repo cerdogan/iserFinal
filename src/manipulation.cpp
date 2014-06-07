@@ -16,6 +16,8 @@ bool minitialized = false;
 void reachOut (const Eigen::Vector3d& normal, double tl1, double tl2, bool ignoreFT = false,
 	double distLimit = -1.0) {
 
+	cout << "distance limit: " << distLimit << endl;
+
 	// workspace stuff
 	const double K_WORKERR_P = 1.00;
 	const double NULLSPACE_GAIN = 0.0;
@@ -40,6 +42,8 @@ void reachOut (const Eigen::Vector3d& normal, double tl1, double tl2, bool ignor
 		double time_delta = time_now - time_last;
 		time_last = time_now;
 		counter++;
+		bool dbg = (counter % 5 == 0);
+		if(dbg) cout << "\n";
 
 		// Update the krang
 		hw->updateSensors(time_delta);
@@ -49,21 +53,25 @@ void reachOut (const Eigen::Vector3d& normal, double tl1, double tl2, bool ignor
 			Eigen::Vector3d currLoc = 
 				krang->getNode("rGripper")->getWorldTransform().topRightCorner<3,1>();
 			double dist = (currLoc - initLoc).norm();
+			if(dbg) cout << "dist: " << dist << ", distLimit: " << distLimit << endl; 
 			if(dist > distLimit) {
+				cout << "DONE WITH DIST LIMIT: dist: " << dist << ", distLimit: " << distLimit << endl; 
 				somatic_motor_halt(&daemon_cx, hw->arms[Krang::RIGHT]);
 				return;
 			}
 		}
+		else if(dbg) cout << "no distance limit" << endl;
 
 		// Stop if f/t sensors feel too much force
-		cout << "\nlft: "<<hw->fts[Krang::RIGHT]->lastExternal.topLeftCorner<3,1>().transpose() << endl;
+		if(dbg) 
+			cout << "lft: "<<hw->fts[Krang::RIGHT]->lastExternal.topLeftCorner<3,1>().transpose() << endl;
 		double magn = hw->fts[Krang::RIGHT]->lastExternal.topLeftCorner<3,1>().norm();
 		if(!reached && ((!ignoreFT && (magn > 15)) || (counter > tl1))) reached = true;
 		if(reached) waited++;
-		cout << "reached: " << reached << endl;
-		cout << "waited: " << waited << endl;
+		if(dbg) cout << "reached: " << reached << ", waited: " << waited <<  endl;
 
 		if(waited > tl2) {
+			cout << "waited tl2" << endl;
 			somatic_motor_halt(&daemon_cx, hw->arms[Krang::RIGHT]);
 			return;
 		}
@@ -75,12 +83,11 @@ void reachOut (const Eigen::Vector3d& normal, double tl1, double tl2, bool ignor
 		// Get a workspace velocity from the goal position TODO
 		Eigen::VectorXd xdot_ws_goal = Eigen::VectorXd::Zero(6);
 		for(size_t i = 0; i < 3; i++) xdot_ws_goal(i) = (reached ? 1 : -1) * normal(i);
-		cout << "xdot: " << xdot_ws_goal.transpose() << endl;
+		if(dbg) cout << "xdot: " << xdot_ws_goal.transpose() << endl;
 
 		// Jacobian: compute the desired jointspace velocity from the inputs and sensors
 		Eigen::VectorXd qdot_jacobian;
 		workspace->refJSVelocity(xdot_ws_goal, nullspace_qdot_ref, qdot_jacobian);
-		cout << "qdot_jacobian: " << qdot_jacobian.transpose() << endl;
 
 		// Avoid joint limits
 		Eigen::VectorXd qdot_avoid(7);
@@ -88,9 +95,7 @@ void reachOut (const Eigen::Vector3d& normal, double tl1, double tl2, bool ignor
 
 		// Add qdots together to get the overall movement
 		Eigen::VectorXd qdot_apply = qdot_jacobian;
-		cout << "qdot_apply before norm: " << qdot_apply.transpose() << endl;
 		qdot_apply = qdot_apply.normalized() * (ignoreFT ? 0.1 : 0.05);
-		cout << "qdot_apply: " << qdot_apply.transpose() << endl;
 
 		// And apply that to the arm
 		somatic_motor_setvel(&daemon_cx, hw->arms[Krang::RIGHT], qdot_apply.data(), 7);
@@ -125,16 +130,19 @@ bool manipulation (Mode mode) {
 
 		// Open the hand
 		system("echo 0.9 | somatic_motor_cmd rgripper pos");
+		cout << "Opened the hand\n\n\n\n\n\n\n\n" << endl;
 
 		// Compensate for the error in navigation
+		cout << "Gonna fix error with arm motion\n\n\n\n\n\n\n\n" << endl;
 		Eigen::VectorXd conf = krang->getPose();
 		Eigen::VectorXd confNext = world->getSkeleton("KrangNext")->getPose();
 		Eigen::Vector3d dir (confNext(0) - conf(0), confNext(1) - conf(1), 0.0);
-		reachOut(-dir, 0, 0, false, dir.norm());
+		reachOut(-dir, 0, 0, true, dir.norm());
 		somatic_motor_reset(&daemon_cx,hw->arms[Krang::RIGHT]);
 		usleep(1e4);
 
 		// Move the arm forward until contact
+		cout << "Moving arm forward\n\n\n\n\n\n\n\n" << endl;
 		double th = conf(3);
 		Eigen::Vector3d normal (sin(th), -cos(th), 0.0);
 		cout << normal.transpose() << endl;
