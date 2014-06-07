@@ -157,8 +157,7 @@ bool perception (Mode mode) {
 		}
 		else if(mode == A6) {
 			system("ssh 192.168.10.10 \"/home/cerdogan/Documents/Software/project/vision/build/"
-				"11-detectSmallCinder\" > bla &");
-				//"12-detectObstacle\" > bla &");
+				"12-detectObstacle\" > bla &");
 			somatic_d_channel_open(&daemon_cx, &vision_chan, "smallCinder", NULL); 
 		}
 		else assert(false && "unknown perception goal");
