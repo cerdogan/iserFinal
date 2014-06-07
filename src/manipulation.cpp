@@ -98,12 +98,12 @@ bool manipulation (Mode mode) {
 	if(mode == A4) {
 
 		// Move the arm to the grasp pose by first moving to a keypoint in the middle
-		Eigen::VectorXd smallKeyPoint (7);
-		smallKeyPoint << -0.211,   0.690,  -0.016,   0.879,  -1.445,   1.376,  -0.000;
-		somatic_motor_setpos(&daemon_cx,hw->arms[Krang::RIGHT], smallKeyPoint.data(), 7);
-		sleep(3);
-		somatic_motor_setpos(&daemon_cx,hw->arms[Krang::RIGHT],smallGraspPose.data(), 7);
-		sleep(6);
+//		Eigen::VectorXd smallKeyPoint (7);
+//		smallKeyPoint << -0.211,   0.690,  -0.016,   0.879,  -1.445,   1.376,  -0.000;
+//		somatic_motor_setpos(&daemon_cx,hw->arms[Krang::RIGHT], smallKeyPoint.data(), 7);
+//		sleep(3);
+//		somatic_motor_setpos(&daemon_cx,hw->arms[Krang::RIGHT],smallGraspPose.data(), 7);
+//		sleep(6);
 
 		// Move the camera
 		double pos [] = {260, 510};
@@ -132,12 +132,15 @@ bool manipulation (Mode mode) {
 
 		// Move the small cinder to the middle
 		Eigen::VectorXd carryKeyPoint (7);
-		carryKeyPoint << -0.211,   0.664,  -0.016,   1.207,  -0.000,   1.299,  -0.000;
+		carryKeyPoint << 0.382000, 0.732000,  -1.458000, 0.973000, 0.000000, 1.396000, 0.0;
 		somatic_motor_reset(&daemon_cx,hw->arms[Krang::RIGHT]);
 		usleep(1e4);
 		somatic_motor_setpos(&daemon_cx,hw->arms[Krang::RIGHT], carryKeyPoint.data(), 7);
-		hw->updateSensors(0);
 		sleep(4);
+		carryKeyPoint << -0.211,   0.664,  -0.016,   1.207,  -0.000,   1.299,  -0.000;
+		somatic_motor_setpos(&daemon_cx,hw->arms[Krang::RIGHT], carryKeyPoint.data(), 7);
+		sleep(4);
+
 
 		return true;
 	}
