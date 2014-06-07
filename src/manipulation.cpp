@@ -130,7 +130,7 @@ bool manipulation (Mode mode) {
 		Eigen::VectorXd conf = krang->getPose();
 		Eigen::VectorXd confNext = world->getSkeleton("KrangNext")->getPose();
 		Eigen::Vector3d dir (confNext(0) - conf(0), confNext(1) - conf(1), 0.0);
-		reachOut(-dir, 0, 0, false, true, dir.norm());
+		reachOut(-dir, 0, 0, false, dir.norm());
 		somatic_motor_reset(&daemon_cx,hw->arms[Krang::RIGHT]);
 		usleep(1e4);
 
