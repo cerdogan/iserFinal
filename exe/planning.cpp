@@ -215,8 +215,6 @@ void moveHand (const Eigen::VectorXd& dx, bool right, double limitSQ) {
 /* ********************************************************************************************* */
 void Timer::Notify() {
 
-collision::printVS = true;
-
   // Do the collision checking
 	static bool started = false;
   bool collision = mWorld->checkCollision(false);
@@ -401,7 +399,7 @@ void createAndVisualizeDesign() {
 	Eigen::Vector3d conf(1.75, x, y);
 	mWorld->getSkeleton("Cinder1")->setConfig(tempIds, conf);
 	x = result.at <LieVector>(box1)(0), y = result.at <LieVector>(box1)(1);
-	conf = Eigen::Vector3d (1.75, x, y);
+	conf = Eigen::Vector3d (1.75, x, y-0.0975);
 	mWorld->getSkeleton("Cinder2")->setConfig(tempIds, conf);
 	viewer->DrawGLScene();	
 }
