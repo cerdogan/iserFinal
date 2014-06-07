@@ -27,7 +27,7 @@ simulation::World* world;
 dynamics::SkeletonDynamics* krang;
 Hardware* hw;     
 Vector6d state;					//< current state (x,x.,y,y.,th,th.)
-Mode mode = A5;
+Mode mode = A6;
 
 bool sending_commands = false;
 
@@ -129,8 +129,6 @@ void readDesign () {
 	design.oTc2 = oTw * world->getSkeleton("Cinder2G")->getNode("root")->getWorldTransform();
 	design.oTp1 = oTw * world->getSkeleton("Plate1G")->getNode("root")->getWorldTransform();
 	design.oTp2 = oTw * world->getSkeleton("Plate2G")->getNode("root")->getWorldTransform();
-	cout << "design.oTc1: \n" << design.oTc1 << endl;
-	// getchar();
 }
 
 /* ******************************************************************************************** */
@@ -188,7 +186,6 @@ void init() {
 
 		// Update the design configurations
 		{
-			cout << "\n\n\noTc1: \n" << design.oTc1 << endl;
 			Eigen::Matrix4d wTo = world->getSkeleton("Obstacle")->getNode("root")->getWorldTransform();
 			Eigen::Matrix4d wTc1 = wTo * design.oTc1; 
 			Eigen::Matrix4d wTc2 = wTo * design.oTc2;
@@ -198,7 +195,6 @@ void init() {
 			Eigen::VectorXd c2 = matToVec(wTc2);
 			Eigen::VectorXd p1 = matToVec(wTp1);
 			Eigen::VectorXd p2 = matToVec(wTp2);
-			cout << "\nwTc1: \n" << wTc1 << endl;
 			world->getSkeleton("Cinder1G")->setPose(c1);
 			world->getSkeleton("Cinder2G")->setPose(c2);
 			world->getSkeleton("Plate1G")->setPose(p1);

@@ -147,6 +147,8 @@ bool perception (Mode mode) {
 	static vector <Eigen::VectorXd> data;
 	if(!pinitialized) {
 
+		cout << "\n\nInitializing perception for new mode" << endl;
+
 		// Start the program on the vision computer
 		if(mode == A2) {
 			system("ssh 192.168.10.10 \"/home/cerdogan/Documents/Software/project/vision/build/"
@@ -155,7 +157,8 @@ bool perception (Mode mode) {
 		}
 		else if(mode == A6) {
 			system("ssh 192.168.10.10 \"/home/cerdogan/Documents/Software/project/vision/build/"
-				"12-detectObstacle\" > bla &");
+				"11-detectSmallCinder\" > bla &");
+				//"12-detectObstacle\" > bla &");
 			somatic_d_channel_open(&daemon_cx, &vision_chan, "smallCinder", NULL); 
 		}
 		else assert(false && "unknown perception goal");
