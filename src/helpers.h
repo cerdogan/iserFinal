@@ -23,7 +23,6 @@
 
 #pragma once
 
-#define GRIP_ON 1
 #include "simTab.h"
 
 typedef Eigen::Matrix<double,6,1> Vector6d;
@@ -37,6 +36,11 @@ extern Krang::Hardware* hw;
 extern somatic_d_t daemon_cx;   
 
 extern Eigen::VectorXd smallGraspPose;
+
+extern Eigen::Vector3d cinderGoal;
+extern Eigen::Vector3d smallCinderGoal;
+extern Eigen::Vector3d plate1Goal;
+extern Eigen::Vector3d plate2Goal;
 
 /// See todo for explanation of the enums
 enum Mode {

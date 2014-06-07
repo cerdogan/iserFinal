@@ -10,6 +10,8 @@
 #include "perception.h"
 #include "manipulation.h"
 
+#define GRIP_ON 1
+
 using namespace std;
 using namespace Krang;
 
@@ -25,9 +27,14 @@ simulation::World* world;
 dynamics::SkeletonDynamics* krang;
 Hardware* hw;     
 Vector6d state;					//< current state (x,x.,y,y.,th,th.)
-Mode mode = A4;
+Mode mode = A5;
 
 bool sending_commands = false;
+
+extern Eigen::Vector3d cinderGoal;
+extern Eigen::Vector3d smallCinderGoal;
+extern Eigen::Vector3d plate1Goal;
+extern Eigen::Vector3d plate2Goal;
 
 /* ********************************************************************************************* */
 /// Mapping from modes to the type of modules they need
@@ -40,9 +47,9 @@ void setupModeMapping () {
 	modeMapping[A2] = perception;
 	modeMapping[A3] = locomotion;
 	modeMapping[A4] = manipulation;
-	modeMapping[A5] = perception;
-	modeMapping[A6] = manipulation;
-	modeMapping[A6] = nullFunc;
+	modeMapping[A5] = locomotion;
+	modeMapping[A6] = perception;
+	modeMapping[A7] = nullFunc;
 }
 
 /* ********************************************************************************************* */

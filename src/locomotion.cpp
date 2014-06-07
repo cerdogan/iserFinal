@@ -6,6 +6,9 @@
  */
 
 #include "locomotion.h"
+#include <vector>
+
+using namespace std;
 
 Eigen::Vector4d K;	//< the gains for x and th of the state. y is ignored.
 Eigen::Vector3d locoGoal = Eigen::Vector3d::Zero();
@@ -14,24 +17,45 @@ Eigen::Vector4d wheelsState;		 //< wheel pos and vels in radians (lphi, lphi., r
 Eigen::Vector4d lastWheelsState; //< last wheel state used to update the state 
 bool initialized = false;
 bool dbg = false;
+size_t integralWindow = 0;
+int integralIndex = 0;
+double Kxint, Kthint, x_int_lim, th_int_lim;
+vector <Eigen::Vector2d> integralErrors;
 
 Eigen::VectorXd smallGraspPose = 
-	(Eigen::VectorXd (7) << 0.673,0.715,0.404,0.876,-1.727,1.820,-1.641).finished();
-
-using namespace std;
+	(Eigen::VectorXd (7) << 0.673,0.74,0.404,0.83,-1.727,1.815,-1.641).finished();
 
 /* ******************************************************************************************** */
 /// Read file for gains
 void readGains () {
+
+	// Get the PD gains
 	ifstream file ("/home/cerdogan/Documents/Software/project/krang/iser/data/gains-04.txt");
 	assert(file.is_open());
 	char line [1024];
 	K = Eigen::Vector4d::Zero();
 	file.getline(line, 1024);
-	std::stringstream stream(line, std::stringstream::in);
+	std::stringstream streampd(line, std::stringstream::in);
 	size_t i = 0;
 	double newDouble;
-	while ((i < 4) && (stream >> newDouble)) K(i++) = newDouble;
+	while ((i < 4) && (streampd >> newDouble)) K(i++) = newDouble;
+
+	// Get the integral control options
+	file.getline(line, 1024);
+	std::stringstream stream(line, std::stringstream::in);
+	stream >> integralWindow;
+
+	file.getline(line, 1024);
+	std::stringstream stream2(line, std::stringstream::in);
+	stream2 >> Kxint;
+	stream2 >> Kthint;
+
+	file.getline(line, 1024);
+	std::stringstream stream3(line, std::stringstream::in);
+	stream3 >> x_int_lim;
+	stream3 >> th_int_lim;
+
+	file.close();
 }
 
 /* ******************************************************************************************** */
@@ -95,7 +119,7 @@ void computeTorques (const Vector6d& state, double& ul, double& ur) {
 	Eigen::Vector2d dir (cos(state(4)), sin(state(4)));
 	Eigen::Vector2d refInCurr (refState(0) - state(0), refState(2) - state(2));
 	double linear_pos_err = dir.dot(refInCurr);
-	double linear_vel_err = state(1);
+	double linear_vel_err = -state(1);
 	
 	// Compute the angular position error by taking the difference of the two headings
 	double angular_pos_err = refState(4) - state(4);
@@ -105,19 +129,46 @@ void computeTorques (const Vector6d& state, double& ul, double& ur) {
 	Eigen::Vector4d error (linear_pos_err, linear_vel_err, angular_pos_err, angular_vel_err);
 	if(dbg) cout << "error: " << error.transpose() << endl;
 	if(dbg) cout << "K: " << K.transpose() << endl;
+	if(dbg) printf("Kxint: %lf, Kthint: %lf, x_int_lim: %lf, th_int_lim: %lf\n",
+		Kxint, Kthint, x_int_lim, th_int_lim);
 
 	// Compute the forward and spin torques (note K is 4x1 for x and th)
 	double u_x = (K(0)*error(0) + K(1)*error(1));
 	double u_spin = (K(2)*error(2) + K(3)*error(3));
 
+	// Add integral
+	if(integralWindow > 0) {
+		// Update the errors
+		integralErrors[integralIndex % integralWindow] = 
+			Eigen::Vector2d(linear_pos_err, angular_pos_err);
+		integralIndex++;
+
+		// Compute the total error
+		Eigen::Vector2d totalError (0.0, 0.0);
+		for(size_t i = 0; i < integralWindow; i++)
+			totalError += integralErrors[i];
+
+		// Compute the addition if necessary
+		double u_x_int = 0.0, u_th_int = 0.0;
+		if(fabs(linear_pos_err) < x_int_lim) {
+			u_x_int = totalError(0) * Kxint;
+			u_x += u_x_int;
+		}
+		if(fabs(angular_pos_err) < th_int_lim) {
+			u_th_int = totalError(1) * Kthint;
+			u_spin  += u_th_int;
+		}
+		if(dbg) printf("u_x_int: %lf, u_spin_int: %lf\n", u_x_int, u_th_int);
+	}
+
 	// Limit the output torques
-	u_spin = max(-20.0, min(20.0, u_spin));
+	u_spin = max(-21.0, min(21.0, u_spin));
 	u_x= max(-13.0, min(13.0, u_x));
 	if(dbg) printf("u_x: %lf, u_spin: %lf\n", u_x, u_spin);
 	ul = u_x - u_spin;
 	ur = u_x + u_spin;
-	ul = max(-20.0, min(20.0, ul));
-	ur = max(-20.0, min(20.0, ur));
+	ul = max(-21.0, min(21.0, ul));
+	ur = max(-21.0, min(21.0, ur));
 	if(dbg) printf("ul: %lf, ur: %lf\n", ul, ur);
 }
 
@@ -155,12 +206,12 @@ bool locomotion (Mode mode) {
 	if(!initialized) {
 
 		// For visualization
-		mWorld->getSkeleton("KrangNext")->setPose(krang->getPose());
+		world->getSkeleton("KrangNext")->setPose(krang->getPose());
 
 		// Set the reference state if perception is not needed for it
 		// if(mode == A1) locoGoal = Eigen::Vector3d(0.0, 0.8, M_PI_2);
-		if(mode == A1) locoGoal = Eigen::Vector3d(0.0, 0.0, M_PI_2/2);
-		if(mode == A3) {
+		if(mode == A5) locoGoal = Eigen::Vector3d(0.4, 0.0, -M_PI_2/2);
+		else if(mode == A3) {
 
 			// Get the pose of the cinder block
 			Eigen::VectorXd cinderPose = world->getSkeleton("Cinder2")->getPose();
@@ -169,18 +220,22 @@ bool locomotion (Mode mode) {
 			// Estimate where the robot should be 
 			Eigen::Vector2d dir (cos(cinderPose(3)), sin(cinderPose(3)));
 			Eigen::Vector2d perp (-dir(1), dir(0));
-			Eigen::Vector2d temp = cinderLoc - 0.45 * perp - 0.51 * dir;
+			Eigen::Vector2d temp = cinderLoc - 0.50 * perp - 0.50 * dir;
 			locoGoal = Eigen::Vector3d(temp(0), temp(1), cinderPose(3) + M_PI_2);
-
+ 
 			// Set the arm pose for visualization
-			mWorld->getSkeleton("KrangNext")->setConfig(Krang::right_arm_ids, smallGraspPose);
+			world->getSkeleton("KrangNext")->setConfig(Krang::right_arm_ids,smallGraspPose);
+		}
+		else if(mode == A5) {
+			locoGoal = krang->getConfig(base_ids);
+			locoGoal(2) -= M_PI_2;
 		}
 		else assert(false && "unknown loco goal");
 
 		// Update the visualization for the goal
 		Eigen::Vector3d temp = locoGoal;
 		temp(2) -= M_PI_2;
-		mWorld->getSkeleton("KrangNext")->setConfig(base_ids, temp);
+		world->getSkeleton("KrangNext")->setConfig(base_ids, temp);
 
 		// Set the time
 		t_prev = aa_tm_now();
@@ -190,8 +245,12 @@ bool locomotion (Mode mode) {
 		lastWheelsState = wheelsState;
 		updateState(wheelsState, lastWheelsState, state);
 
-		// Read the gains
+		// Read the gains and initialize the integral controller
 		readGains();
+		integralErrors.clear();
+		for(size_t i = 0; i < integralWindow; i++)
+			integralErrors.push_back(Eigen::Vector2d(0.0, 0.0));
+		integralIndex = 0;
 
 		// Set the reference state
 		lMode = TURN1;
