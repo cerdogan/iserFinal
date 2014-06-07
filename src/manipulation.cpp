@@ -98,12 +98,12 @@ bool manipulation (Mode mode) {
 	if(mode == A4) {
 
 		// Move the arm to the grasp pose by first moving to a keypoint in the middle
-//		Eigen::VectorXd smallKeyPoint (7);
-//		smallKeyPoint << -0.211,   0.690,  -0.016,   0.879,  -1.445,   1.376,  -0.000;
-//		somatic_motor_setpos(&daemon_cx,hw->arms[Krang::RIGHT], smallKeyPoint.data(), 7);
-//		sleep(3);
-//		somatic_motor_setpos(&daemon_cx,hw->arms[Krang::RIGHT],smallGraspPose.data(), 7);
-//		sleep(6);
+		Eigen::VectorXd smallKeyPoint (7);
+		smallKeyPoint << -0.211,   0.690,  -0.016,   0.879,  -1.445,   1.376,  -0.000;
+		somatic_motor_setpos(&daemon_cx,hw->arms[Krang::RIGHT], smallKeyPoint.data(), 7);
+		sleep(3);
+		somatic_motor_setpos(&daemon_cx,hw->arms[Krang::RIGHT],smallGraspPose.data(), 7);
+		sleep(6);
 
 		// Move the camera
 		double pos [] = {260, 510};
@@ -148,16 +148,16 @@ bool manipulation (Mode mode) {
 	// Prepare the arm for visualization
 	if(mode == A8) {
 
-		//// Move the arm to the grasp pose by first moving to a keypoint in the middle
-		//Eigen::VectorXd smallKeyPoint2 (7);
-		//smallKeyPoint2 << 0.382000, 0.732000,  -1.458000, 0.973000, 0.000000, 1.396000, 0.0;
-		//somatic_motor_setpos(&daemon_cx,hw->arms[Krang::RIGHT], smallKeyPoint2.data(), 7);
-		//sleep(6);
-		//somatic_motor_setpos(&daemon_cx,hw->arms[Krang::RIGHT],smallGraspPose.data(), 7);
-		//sleep(6);
+		// Move the arm to the grasp pose by first moving to a keypoint in the middle
+		Eigen::VectorXd smallKeyPoint2 (7);
+		smallKeyPoint2 << 0.382000, 0.732000,  -1.458000, 0.973000, 0.000000, 1.396000, 0.0;
+		somatic_motor_setpos(&daemon_cx,hw->arms[Krang::RIGHT], smallKeyPoint2.data(), 7);
+		sleep(6);
+		somatic_motor_setpos(&daemon_cx,hw->arms[Krang::RIGHT],smallGraspPose.data(), 7);
+		sleep(6);
 
-		//// Open the hand
-		//system("echo 0.9 | sudo somatic_motor_cmd rgripper pos");
+		// Open the hand
+		system("echo 0.9 | sudo somatic_motor_cmd rgripper pos");
 
 		// Move the arm out of the cinder
 		Eigen::VectorXd conf = krang->getPose();
@@ -180,10 +180,8 @@ bool manipulation (Mode mode) {
 		somatic_motor_setpos(&daemon_cx,hw->arms[Krang::RIGHT], carryKeyPoint.data(), 7);
 		sleep(4);
 
-
 		return true;
 	}
-
 
 	else assert(false && "Unknown manipulation mode");
 }
