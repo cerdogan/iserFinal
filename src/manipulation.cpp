@@ -141,5 +141,45 @@ bool manipulation (Mode mode) {
 		return true;
 	}
 
+	// Prepare the arm for visualization
+	if(mode == A8) {
+
+		// Move the arm to the grasp pose by first moving to a keypoint in the middle
+		Eigen::VectorXd smallKeyPoint2 (7);
+		smallKeyPoint2 << 0.382000, 0.732000,  -1.458000, 0.973000, 0.000000, 1.396000, 0.0;
+		somatic_motor_setpos(&daemon_cx,hw->arms[Krang::RIGHT], smallKeyPoint2.data(), 7);
+		sleep(3);
+		somatic_motor_setpos(&daemon_cx,hw->arms[Krang::RIGHT],smallGraspPose.data(), 7);
+		sleep(6);
+
+		// Open the hand
+		system("echo 0.9 | sudo somatic_motor_cmd rgripper pos");
+
+		// Move the arm forward until contact
+		reachOut();
+
+		// Close the hand
+		system("echo 0.0 | sudo somatic_motor_cmd rgripper pos");
+
+		// Move the camera
+		double pos2 [] = {260, 450};
+		somatic_motor_setpos(&daemon_cx, dynos, pos2, 2);
+		sleep(2);
+
+		hw->updateSensors(0);
+
+		// Move the small cinder to the middle
+		Eigen::VectorXd carryKeyPoint (7);
+		carryKeyPoint << -0.211,   0.664,  -0.016,   1.207,  -0.000,   1.299,  -0.000;
+		somatic_motor_reset(&daemon_cx,hw->arms[Krang::RIGHT]);
+		usleep(1e4);
+		somatic_motor_setpos(&daemon_cx,hw->arms[Krang::RIGHT], carryKeyPoint.data(), 7);
+		hw->updateSensors(0);
+		sleep(4);
+
+		return true;
+	}
+
+
 	else assert(false && "Unknown manipulation mode");
 }
