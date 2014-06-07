@@ -31,7 +31,6 @@ find_package (OpenGL REQUIRED)
 find_package (GLUT REQUIRED)
 find_package (GLU REQUIRED)
 include_directories(${GLUT_INCLUDE_DIR} ${GLU_INCLUDE_DIR})
-link_libraries(${GLU_LIBRARY} "/usr/lib/x86_64-linux-gnu/libglut.so")
 
 # Include kore
 include_directories(/usr/include/kore)
@@ -42,6 +41,8 @@ include_directories(src)
 include_directories(src/factors)
 
 # Include gtsam
+set(gtsam_lib "bla")
+set(gtsam_path "bla")
 find_path(gtsam_path "gtsam/base/Lie.h" PATHS "${CMAKE_INSTALL_PREFIX}/include")
 find_library(gtsam_lib "gtsam" PATHS "${CMAKE_INSTALL_PREFIX}/lib")
 include_directories(AFTER "${gtsam_path}")
@@ -64,12 +65,13 @@ add_library(Planning SHARED ${planning_source})
 add_executable(main exe/main.cpp)
 target_link_libraries(main Main) 
 target_link_libraries(main protobuf-c amino ach kore somatic filter stdc++ ncurses blas lapack)
-target_link_libraries(main ${GRIP_LIBRARIES} ${DART_LIBRARIES} ${DARTExt_LIBRARIES} ${wxWidgets_LIBRARIES}) 
+target_link_libraries(main grip dart boost_system fcl assimp tinyxml tinyxml2 ${wxWidgets_LIBRARIES} glut)
 
 # Add the programming executable
 add_executable(planning exe/planning.cpp)
 target_link_libraries(planning Planning) 
 target_link_libraries(planning "${gtsam_lib}" grip dart boost_system fcl assimp tinyxml tinyxml2 ${wxWidgets_LIBRARIES})
+target_link_libraries(planning ${GLU_LIBRARY} "/usr/lib/x86_64-linux-gnu/libglut.so")
 
 # Build tests 
 message(STATUS "\n-- TESTS: ")
