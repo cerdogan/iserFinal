@@ -25,7 +25,7 @@ vector <Eigen::Vector2d> integralErrors;
 pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
 
 Eigen::VectorXd smallGraspPose = 
-	(Eigen::VectorXd (7) << 0.673,0.74,0.404,0.83,-1.727,1.815,-1.641).finished();
+	(Eigen::VectorXd (7) << 0.673,0.74,0.404,0.83,-1.727,1.825,-1.641).finished();
 
 LocoMode lMode;
 Mode mode_;
@@ -156,7 +156,7 @@ void computeTorques (const Vector6d& state, double& ul, double& ur) {
 
 	// Add integral
 	static int int_x_counter = 0, int_th_counter = 0;
-	if(integralWindow > 0) {
+	if((integralWindow > 0) && sending_commands) {
 
 		// Update the errors
 		integralErrors[integralIndex % integralWindow] = 
@@ -248,8 +248,7 @@ bool locomotion (Mode mode) {
 		world->getSkeleton("KrangNext")->setPose(krang->getPose());
 
 		// Set the reference state if perception is not needed for it
-		if(mode == A7) locoGoal = Eigen::Vector3d(0.4, 0.8, M_PI_2);
-		// if(mode == A5) locoGoal = Eigen::Vector3d(0.4, 0.0, -M_PI_2/2);
+		if(mode == A1) locoGoal = Eigen::Vector3d(0.4, 0.8, M_PI_2);
 		else if(mode == A3) {
 
 			// Get the pose of the cinder block
@@ -279,7 +278,7 @@ bool locomotion (Mode mode) {
 			// Estimate where the robot should be 
 			Eigen::Vector2d dir (cos(th), sin(th));
 			Eigen::Vector2d perp (-dir(1), dir(0));
-			Eigen::Vector2d temp = cinderLoc - 0.50 * perp - 0.50 * dir;
+			Eigen::Vector2d temp = cinderLoc - 0.30 * perp - 0.50 * dir;
 			locoGoal = Eigen::Vector3d(temp(0), temp(1), th + M_PI_2);
  
 			// Set the arm pose for visualization

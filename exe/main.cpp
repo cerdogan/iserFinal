@@ -10,7 +10,7 @@
 #include "perception.h"
 #include "manipulation.h"
 
-// #define GRIP_ON 1
+#define GRIP_ON 1
 
 using namespace std;
 using namespace Krang;
@@ -27,7 +27,7 @@ simulation::World* world;
 dynamics::SkeletonDynamics* krang;
 Hardware* hw;     
 Vector6d state;					//< current state (x,x.,y,y.,th,th.)
-Mode mode = A7;
+Mode mode = A2;
 
 bool sending_commands = false;
 
@@ -48,7 +48,7 @@ void setupModeMapping () {
 	modeMapping[A6] = perception;
 	modeMapping[A7] = locomotion;
 	modeMapping[A8] = manipulation;
-	modeMapping[A8] = nullFunc;
+	modeMapping[A9] = nullFunc;
 }
 
 /* ********************************************************************************************* */
@@ -211,7 +211,7 @@ void init() {
 
 		// Visualize the scene
 		viewer->DrawGLScene();
-		Start(0.005 * 1e4);
+		Start(50);
 	}
 
 	// ==========================================================================================

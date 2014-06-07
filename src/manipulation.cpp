@@ -13,7 +13,8 @@ using namespace std;
 bool minitialized = false;
 
 /* ********************************************************************************************* */
-void reachOut (const Eigen::Vector3d& normal, double tl1, double tl2, bool ignoreFT = false) {
+void reachOut (const Eigen::Vector3d& normal, double tl1, double tl2, bool ignoreFT = false,
+	double distLimit = -1.0) {
 
 	// workspace stuff
 	const double K_WORKERR_P = 1.00;
@@ -31,6 +32,7 @@ void reachOut (const Eigen::Vector3d& normal, double tl1, double tl2, bool ignor
 	double time_last = aa_tm_timespec2sec(aa_tm_now());
 	bool reached = false;
 	size_t counter = 0;
+	Eigen::Vector3d initLoc = krang->getNode("rGripper")->getWorldTransform().topRightCorner<3,1>();
 	while(true) {
 
 		// Update times
@@ -41,6 +43,17 @@ void reachOut (const Eigen::Vector3d& normal, double tl1, double tl2, bool ignor
 
 		// Update the krang
 		hw->updateSensors(time_delta);
+
+		// Stop if a distance constraint is expressed
+		if(distLimit > 0.0) {
+			Eigen::Vector3d currLoc = 
+				krang->getNode("rGripper")->getWorldTransform().topRightCorner<3,1>();
+			double dist = (currLoc - initLoc).norm();
+			if(dist > distLimit) {
+				somatic_motor_halt(&daemon_cx, hw->arms[Krang::RIGHT]);
+				return;
+			}
+		}
 
 		// Stop if f/t sensors feel too much force
 		cout << "\nlft: "<<hw->fts[Krang::RIGHT]->lastExternal.topLeftCorner<3,1>().transpose() << endl;
@@ -111,17 +124,24 @@ bool manipulation (Mode mode) {
 		sleep(2);
 
 		// Open the hand
-		system("echo 0.9 | sudo somatic_motor_cmd rgripper pos");
+		system("echo 0.9 | somatic_motor_cmd rgripper pos");
+
+		// Compensate for the error in navigation
+		Eigen::VectorXd conf = krang->getPose();
+		Eigen::VectorXd confNext = world->getSkeleton("KrangNext")->getPose();
+		Eigen::Vector3d dir (confNext(0) - conf(0), confNext(1) - conf(1), 0.0);
+		reachOut(-dir, 0, 0, false, true, dir.norm());
+		somatic_motor_reset(&daemon_cx,hw->arms[Krang::RIGHT]);
+		usleep(1e4);
 
 		// Move the arm forward until contact
-		Eigen::VectorXd conf = krang->getPose();
 		double th = conf(3);
 		Eigen::Vector3d normal (sin(th), -cos(th), 0.0);
 		cout << normal.transpose() << endl;
 		reachOut(normal, 200, 15);
 
 		// Close the hand
-		system("echo 0.0 | sudo somatic_motor_cmd rgripper pos");
+		system("echo 0.0 | somatic_motor_cmd rgripper pos");
 
 		// Move the camera
 		double pos2 [] = {260, 450};
@@ -157,27 +177,33 @@ bool manipulation (Mode mode) {
 		sleep(6);
 
 		// Open the hand
-		system("echo 0.9 | sudo somatic_motor_cmd rgripper pos");
+		system("echo 0.9 | somatic_motor_cmd rgripper pos");
 
 		// Move the arm out of the cinder
 		Eigen::VectorXd conf = krang->getPose();
 		double th = conf(3);
 		Eigen::Vector3d normal (sin(th), -cos(th), 0.0);
 		cout << normal.transpose() << endl;
-		reachOut(-normal, 55, 0, true);
+		reachOut(-normal, 60, 0, true);
 		somatic_motor_reset(&daemon_cx,hw->arms[Krang::RIGHT]);
 		usleep(1e4);
-		reachOut(Eigen::Vector3d(0.0, 0.0, -1.0), 120, 0, true);
 
 		// Move the hand to the middle
-		Eigen::VectorXd carryKeyPoint (7);
-		carryKeyPoint << -0.211,   0.690,  -0.016,   0.879,  -1.445,   1.376,  -0.000;
 		somatic_motor_reset(&daemon_cx,hw->arms[Krang::RIGHT]);
 		usleep(1e4);
-		somatic_motor_setpos(&daemon_cx,hw->arms[Krang::RIGHT], carryKeyPoint.data(), 7);
+		hw->updateSensors(0.0);
+		Eigen::VectorXd curr = krang->getConfig(Krang::right_arm_ids);
+		Eigen::VectorXd goal1 = curr;
+		goal1(1) -= 0.4;
+		somatic_motor_setpos(&daemon_cx,hw->arms[Krang::RIGHT], goal1.data(), 7);
 		sleep(4);
-		carryKeyPoint << -0.211,   0.664,  -0.016,   1.207,  -0.000,   1.299,  -0.000;
-		somatic_motor_setpos(&daemon_cx,hw->arms[Krang::RIGHT], carryKeyPoint.data(), 7);
+		Eigen::VectorXd goal2 = goal1;
+		goal2(0) -= 1.0;
+		somatic_motor_setpos(&daemon_cx,hw->arms[Krang::RIGHT], goal2.data(), 7);
+		sleep(4);
+		Eigen::VectorXd goal3 (7);
+		goal3 << -0.211,   0.664,  -0.016,   1.207,  -0.000,   1.299,  -0.000;
+		somatic_motor_setpos(&daemon_cx,hw->arms[Krang::RIGHT], goal3.data(), 7);
 		sleep(4);
 
 		return true;
