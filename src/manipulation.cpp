@@ -13,7 +13,7 @@ using namespace std;
 bool minitialized = false;
 
 /* ********************************************************************************************* */
-void reachOut (const Eigen::Vector3d& normal, double tl1, double tl2) {
+void reachOut (const Eigen::Vector3d& normal, double tl1, double tl2, bool ignoreFT = false) {
 
 	// workspace stuff
 	const double K_WORKERR_P = 1.00;
@@ -45,7 +45,7 @@ void reachOut (const Eigen::Vector3d& normal, double tl1, double tl2) {
 		// Stop if f/t sensors feel too much force
 		cout << "\nlft: "<<hw->fts[Krang::RIGHT]->lastExternal.topLeftCorner<3,1>().transpose() << endl;
 		double magn = hw->fts[Krang::RIGHT]->lastExternal.topLeftCorner<3,1>().norm();
-		if(!reached && ((magn > 15) || (counter > tl1))) reached = true;
+		if(!reached && ((!ignoreFT && (magn > 15)) || (counter > tl1))) reached = true;
 		if(reached) waited++;
 		cout << "reached: " << reached << endl;
 		cout << "waited: " << waited << endl;
@@ -76,7 +76,7 @@ void reachOut (const Eigen::Vector3d& normal, double tl1, double tl2) {
 		// Add qdots together to get the overall movement
 		Eigen::VectorXd qdot_apply = qdot_jacobian;
 		cout << "qdot_apply before norm: " << qdot_apply.transpose() << endl;
-		qdot_apply = qdot_apply.normalized() * 0.05;
+		qdot_apply = qdot_apply.normalized() * (ignoreFT ? 0.1 : 0.05);
 		cout << "qdot_apply: " << qdot_apply.transpose() << endl;
 
 		// And apply that to the arm
@@ -148,32 +148,38 @@ bool manipulation (Mode mode) {
 	// Prepare the arm for visualization
 	if(mode == A8) {
 
-		// Move the arm to the grasp pose by first moving to a keypoint in the middle
-		Eigen::VectorXd smallKeyPoint2 (7);
-		smallKeyPoint2 << 0.382000, 0.732000,  -1.458000, 0.973000, 0.000000, 1.396000, 0.0;
-		somatic_motor_setpos(&daemon_cx,hw->arms[Krang::RIGHT], smallKeyPoint2.data(), 7);
-		sleep(6);
-		somatic_motor_setpos(&daemon_cx,hw->arms[Krang::RIGHT],smallGraspPose.data(), 7);
-		sleep(6);
+		//// Move the arm to the grasp pose by first moving to a keypoint in the middle
+		//Eigen::VectorXd smallKeyPoint2 (7);
+		//smallKeyPoint2 << 0.382000, 0.732000,  -1.458000, 0.973000, 0.000000, 1.396000, 0.0;
+		//somatic_motor_setpos(&daemon_cx,hw->arms[Krang::RIGHT], smallKeyPoint2.data(), 7);
+		//sleep(6);
+		//somatic_motor_setpos(&daemon_cx,hw->arms[Krang::RIGHT],smallGraspPose.data(), 7);
+		//sleep(6);
 
-		// Open the hand
-		system("echo 0.9 | sudo somatic_motor_cmd rgripper pos");
+		//// Open the hand
+		//system("echo 0.9 | sudo somatic_motor_cmd rgripper pos");
 
 		// Move the arm out of the cinder
 		Eigen::VectorXd conf = krang->getPose();
 		double th = conf(3);
 		Eigen::Vector3d normal (sin(th), -cos(th), 0.0);
 		cout << normal.transpose() << endl;
-		reachOut(-normal, 50, 0);
+		reachOut(-normal, 55, 0, true);
+		somatic_motor_reset(&daemon_cx,hw->arms[Krang::RIGHT]);
+		usleep(1e4);
+		reachOut(Eigen::Vector3d(0.0, 0.0, -1.0), 120, 0, true);
 
-		// Move the small cinder to the middle
+		// Move the hand to the middle
 		Eigen::VectorXd carryKeyPoint (7);
-		carryKeyPoint << -0.211,   0.664,  -0.016,   1.207,  -0.000,   1.299,  -0.000;
+		carryKeyPoint << -0.211,   0.690,  -0.016,   0.879,  -1.445,   1.376,  -0.000;
 		somatic_motor_reset(&daemon_cx,hw->arms[Krang::RIGHT]);
 		usleep(1e4);
 		somatic_motor_setpos(&daemon_cx,hw->arms[Krang::RIGHT], carryKeyPoint.data(), 7);
-		hw->updateSensors(0);
 		sleep(4);
+		carryKeyPoint << -0.211,   0.664,  -0.016,   1.207,  -0.000,   1.299,  -0.000;
+		somatic_motor_setpos(&daemon_cx,hw->arms[Krang::RIGHT], carryKeyPoint.data(), 7);
+		sleep(4);
+
 
 		return true;
 	}
