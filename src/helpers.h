@@ -25,6 +25,7 @@
 
 #include "simTab.h"
 
+extern pthread_mutex_t mutex;
 typedef Eigen::Matrix<double,6,1> Vector6d;
 extern Vector6d state;					//< current state (x,x.,y,y.,th,th.)
 extern Eigen::Vector3d locoGoal;

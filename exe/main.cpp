@@ -10,7 +10,7 @@
 #include "perception.h"
 #include "manipulation.h"
 
-#define GRIP_ON 1
+// #define GRIP_ON 1
 
 using namespace std;
 using namespace Krang;
@@ -27,7 +27,7 @@ simulation::World* world;
 dynamics::SkeletonDynamics* krang;
 Hardware* hw;     
 Vector6d state;					//< current state (x,x.,y,y.,th,th.)
-Mode mode = A6;
+Mode mode = A7;
 
 bool sending_commands = false;
 
@@ -48,7 +48,7 @@ void setupModeMapping () {
 	modeMapping[A6] = perception;
 	modeMapping[A7] = locomotion;
 	modeMapping[A8] = manipulation;
-	modeMapping[A9] = nullFunc;
+	modeMapping[A8] = nullFunc;
 }
 
 /* ********************************************************************************************* */
@@ -71,7 +71,10 @@ void *kbhit(void *) {
 	char input;
 	while(true){ 
 		input=cin.get(); 
+		pthread_mutex_lock(&mutex);
 		if(input=='s') sending_commands = !sending_commands;
+		if(input=='r') readGains();
+		pthread_mutex_unlock(&mutex);
 	}
 }
 
