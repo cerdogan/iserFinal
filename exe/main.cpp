@@ -31,10 +31,7 @@ Mode mode = A5;
 
 bool sending_commands = false;
 
-extern Eigen::Vector3d cinderGoal;
-extern Eigen::Vector3d smallCinderGoal;
-extern Eigen::Vector3d plate1Goal;
-extern Eigen::Vector3d plate2Goal;
+Design design;
 
 /* ********************************************************************************************* */
 /// Mapping from modes to the type of modules they need
@@ -85,6 +82,56 @@ void run() {
 }
 
 /* ******************************************************************************************** */
+void readDesign () {
+
+	// Read the data in to the configuration vectors
+	fstream file ("/home/cerdogan/result");
+	assert(file.is_open() && "Could not open the design file");
+	Eigen::VectorXd obstacle (6), cinder1 (6), cinder2 (6), plate1 (6), plate2 (6);
+	char line [1024];
+	file.getline(line, 1024);
+	std::stringstream stream1(line, std::stringstream::in);
+	size_t i = 0;
+	double newDouble;
+	while ((i < 6) && (stream1 >> newDouble)) obstacle(i++) = newDouble;
+	file.getline(line, 1024);
+	std::stringstream stream2(line, std::stringstream::in);
+	i = 0;
+	while ((i < 6) && (stream2 >> newDouble)) cinder1(i++) = newDouble;
+	file.getline(line, 1024);
+	std::stringstream stream3(line, std::stringstream::in);
+	i = 0;
+	while ((i < 6) && (stream3 >> newDouble)) cinder2(i++) = newDouble;
+	file.getline(line, 1024);
+	std::stringstream stream4(line, std::stringstream::in);
+	i = 0;
+	while ((i < 6) && (stream4 >> newDouble)) plate1(i++) = newDouble;
+	file.getline(line, 1024);
+	std::stringstream stream5(line, std::stringstream::in);
+	i = 0;
+	while ((i < 6) && (stream5 >> newDouble)) plate2(i++) = newDouble;
+	obstacle(2) += 5.0;
+	cinder1(2) += 5.0;
+	cinder2(2) += 5.0;
+	plate1(2) += 5.0;
+	plate2(2) += 5.0;
+
+	// Set the configuration of the objects
+	world->getSkeleton("Obstacle")->setPose(obstacle);
+	world->getSkeleton("Cinder2G")->setPose(cinder1);
+	world->getSkeleton("Cinder1G")->setPose(cinder2);
+	world->getSkeleton("Plate1G")->setPose(plate1);
+	world->getSkeleton("Plate2G")->setPose(plate2);
+
+	// Get the relative transformations
+	Eigen::Matrix4d oTw = world->getSkeleton("Obstacle")->getWorldTransform().inverse();
+	design.oTc1 = oTw * world->getSkeleton("Cinder1G")->getWorldTransform();
+	design.oTc2 = oTw * world->getSkeleton("Cinder2G")->getWorldTransform();
+	design.oTp1 = oTw * world->getSkeleton("Plate1G")->getWorldTransform();
+	design.oTp2 = oTw * world->getSkeleton("Plate2G")->getWorldTransform();
+}
+
+/* ******************************************************************************************** */
 /// Initialization
 void init() {
 
@@ -121,6 +168,9 @@ void init() {
 
 	// Set up the modules
 	setupModeMapping();
+
+	// Read the design
+	readDesign();
 
 	// Start the daemon_cx running
 	somatic_d_event(&daemon_cx, SOMATIC__EVENT__PRIORITIES__NOTICE, 

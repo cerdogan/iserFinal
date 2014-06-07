@@ -37,10 +37,15 @@ extern somatic_d_t daemon_cx;
 
 extern Eigen::VectorXd smallGraspPose;
 
-extern Eigen::Vector3d cinderGoal;
-extern Eigen::Vector3d smallCinderGoal;
-extern Eigen::Vector3d plate1Goal;
-extern Eigen::Vector3d plate2Goal;
+/// Configurations of the design objects wrt the obstacle
+struct Design {
+	Eigen::Matrix4d oTc1;		//< small cinder
+	Eigen::Matrix4d oTc2;
+	Eigen::Matrix4d oTp1;		//< large plate
+	Eigen::Matrix4d oTp2;	
+};
+
+extern Design design;
 
 /// See todo for explanation of the enums
 enum Mode {
