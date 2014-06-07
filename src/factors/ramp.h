@@ -17,6 +17,19 @@ namespace Factors {
 
 	/* ******************************************************************************************** */
 	/// Limits the angle
+	struct LimitAngle2 : public NoiseModelFactor2 <LieVector, LieVector> {
+
+		LimitAngle2(Key key1, Key key2, const SharedNoiseModel& model) :
+			NoiseModelFactor2 <LieVector, LieVector>(model, key1, key2) { }
+
+		static Vector errorProxy(const LieVector& p1, const LieVector& p2);
+
+		Vector evaluateError(const LieVector& p1, const LieVector& p2,
+			 boost::optional <Matrix&> H1= boost::none, boost::optional <Matrix&> H2 = boost::none) const;
+	};
+
+	/* ******************************************************************************************** */
+	/// Limits the angle
 	struct LimitAngle : public NoiseModelFactor2 <LieVector, LieVector> {
 
 		LimitAngle(Key key1, Key key2, const SharedNoiseModel& model) :

@@ -11,6 +11,25 @@ using namespace std;
 using namespace gtsam;
 
 /* ********************************************************************************************* */
+Vector Factors::LimitAngle2::errorProxy(const LieVector& p1, const LieVector& p2) {
+
+	double angle = fabs(atan2((p2(1) - p1(1)), (p2(0) - p1(0))));
+	double error = 0.0;
+	static const double angleLimit = (28.0 / 180.0) * M_PI;
+	if(angle > angleLimit) error = angle - angleLimit;
+	return Vector_(1, error);
+}
+
+/* ********************************************************************************************* */
+Vector Factors::LimitAngle2::evaluateError(const LieVector& p1, const LieVector& p2,
+		boost::optional <Matrix&> H1, boost::optional <Matrix&> H2) const {
+	Vector error = errorProxy(p1, p2);
+	if(H1) *H1 = numericalDerivative21(errorProxy, p1, p2);
+	if(H2) *H2 = numericalDerivative22(errorProxy, p1, p2);
+	return error;
+}
+
+/* ********************************************************************************************* */
 Vector Factors::LimitAngle::errorProxy(const LieVector& p1, const LieVector& p2) {
 
 	double angle = fabs(atan2((p2(1) - p1(1)), (p2(0) - p1(0))));

@@ -61,6 +61,7 @@ Values result, lastResult;
 static SharedNoiseModel model = noiseModel::Diagonal::Sigmas(Vector_(1, 1e-3));
 static SharedNoiseModel model2 = noiseModel::Diagonal::Sigmas(Vector_(2, 1e-3, 1e-3));
 static const double plateLength = 1.2192;
+static const double plate2Length = 0.889;
 
 enum Keys {
 	A0 = 0,
@@ -80,11 +81,11 @@ Graph* createGraph() {
 
 	// The tip of the first plate needs to reach the tower
 	Graph* graph = new Graph;
-	graph->add(PriorFactor < LieVector >(A0,LieVector(Eigen::Vector2d(-1.3, 1.00)), model2));
+	graph->add(PriorFactor < LieVector >(A0,LieVector(Eigen::Vector2d(-1.3, 1.05)), model2));
 
 	// Add the distance constraints
 	graph->add(Factors::Distance(A0, A1, plateLength, model));
-	graph->add(Factors::Distance(B0, B1, plateLength, model));
+	graph->add(Factors::Distance(B0, B1, plate2Length, model));
 
 	// Place the ground constraints
 	graph->add(Factors::Prior1D(A1, false, 0.39, model));
@@ -109,12 +110,12 @@ Graph* createGraph() {
 	graph->add(Factors::Ordering(B0, B1, true, .15, true));
 
 	// Avoid collisions
-	graph->add(Factors::Side(A1, B0, B1, false, model));
-	graph->add(Factors::MinDistance(A1, B0, 0.04, true));
+//	graph->add(Factors::Side(A1, B0, B1, false, model));
+//	graph->add(Factors::MinDistance(A1, B0, 0.04, true));
 
 	// Set angle limits
 	graph->add(Factors::LimitAngle(A0, A1, model));
-	graph->add(Factors::LimitAngle(B0, B1, model));
+	graph->add(Factors::LimitAngle2(B0, B1, model));
 	graph->add(Factors::LimitAngle(C0, C1, model));
 	
 	// Add the bounding constraint for the water for the last stick
@@ -169,53 +170,10 @@ static Values solveGraph(Graph& graph, double maxValue, size_t numIterations) {
 }
 
 /* ********************************************************************************************* */
-/// Given a workspace velocity, returns the joint space velocity
-VectorXd workToJointVelocity (kinematics::BodyNode* eeNode, const VectorXd& xdot) {
-
-  // Get the Jacobian towards computing joint-space velocities
-  MatrixXd Jlin = eeNode->getJacobianLinear().topRightCorner<3,7>();
-  MatrixXd Jang = eeNode->getJacobianAngular().topRightCorner<3,7>();
-  MatrixXd J (6,7);
-  J << Jlin, Jang;
-
-  // Compute the inverse of the Jacobian
-  Eigen::MatrixXd Jt = J.transpose();
-  Eigen::MatrixXd Jinv = Jt * (J * Jt).inverse();
-
-  // Get the joint-space velocities by multiplying inverse Jacobian with x.
-  VectorXd qdot = Jinv * xdot;
-  return qdot;
-}
-
-/* ********************************************************************************************* */
-void moveHand (const Eigen::VectorXd& dx, bool right, double limitSQ) {
-	
-	cout << "moving" << endl;
-	// Get the initial hand location
-	kinematics::BodyNode* eeNode = krang->getNode(right ? "rGripper" : "lGripper");
-	Eigen::Vector3d init = eeNode->getWorldTransform().topRightCorner<3,1>();
-	while(true) {
-
-		// Stop if reached too far	
-		Eigen::Vector3d curr = eeNode->getWorldTransform().topRightCorner<3,1>();
-		double distSQ = (curr - init).squaredNorm();
-		cout << "distSQ: " << distSQ << ", vs. limitSQ: " << limitSQ << endl;
-		if(distSQ > limitSQ) break;
-
-		// Update the joint values
-		Eigen::VectorXd qdot = workToJointVelocity(eeNode, dx);
-		qdot = qdot.normalized() * 0.05;
-		Eigen::VectorXd q = krang->getConfig(right ? right_arm_ids : left_arm_ids);
-		krang->setConfig(right ? right_arm_ids : left_arm_ids, q + qdot);
-		viewer->DrawGLScene();
-	}
-	cout << "moving done" << endl;
-}
-
-/* ********************************************************************************************* */
 void Timer::Notify() {
 
-		collision::printVS = true;
+	collision::printVS = true;
+
   // Do the collision checking
 	static bool started = false;
   bool collision = mWorld->checkCollision(false);
@@ -227,51 +185,6 @@ void Timer::Notify() {
     glFogfv(GL_FOG_COLOR,fogCol);
   }
   else viewer->setClearColor();
-  viewer->DrawGLScene();
-
-  // If there is no path, just wait
-  if(path.empty()) {
-
-		if(started) {
-			// Close the right hand
-			collision::printVS = true;
-			Eigen::VectorXd dx (6);
-			dx << 0.0, (side ? -1.0 : 1.0), 0.0, 0.0, 0.0, 0.0;
-			moveHand(dx, !side, 0.006);
-			started = false;
-		}
-
-    Start(0.01 * 1e3);  
-    return;
-  }
-
-	started = true;
-
-  // Traverse the path
-  static size_t pathIdx = 0;
-	Eigen::VectorXd temp = *(path.begin());
-  krang->setConfig(side ? right_arm_ids : left_arm_ids, temp);
-  path.pop_front();
-	path2.push_back(temp);
-
-	// Update the manipulated object if one exists
-	if(manipData != NULL) {
-
-		// Get the object frame in the world frame
-		const char* name = manipData->right ? "rGripper" : "lGripper";
-		Eigen::Matrix4d wTh = krang->getNode(name)->getWorldTransform();
-		Eigen::Matrix4d wTo = wTh * manipData->hTo;
-
-		// Set the object dofs
-		Eigen::VectorXd vals (6);
-		vals.block<3,1>(0,0) = wTo.topRightCorner<3,1>();
-		Eigen::Matrix3d R = wTo.topLeftCorner<3,3>();
-		vals.block<3,1>(3,0) = math::matrixToEuler(R, math::XYZ);
-		double temp = vals(5); vals(5) = vals(3); vals(3) = temp;
-		mWorld->getSkeleton(manipData->objName)->setPose(vals);
-	}
-
-	// Update the scene
   viewer->DrawGLScene();
   Start(0.01 * 1e3);  
 }
@@ -325,11 +238,6 @@ SimTab::SimTab(wxWindow *parent, const wxWindowID id, const wxPoint& pos, const 
 		*plate2 = mWorld->getSkeleton("Plate2"), *cinder1 = mWorld->getSkeleton("Cinder1"),  
 		*cinder2 = mWorld->getSkeleton("Cinder2"), *ground = mWorld->getSkeleton("ground");
   detector = (collision::FCLMESHCollisionDetector*) (constraints->mCollisionChecker);
-//  detector->deactivatePair(plate1->getNode("root"), plate2->getNode("root"));
-//  detector->deactivatePair(plate1->getNode("root"), cinder1->getNode("root"));
-//  detector->deactivatePair(plate1->getNode("root"), cinder2->getNode("root"));
- // detector->deactivatePair(plate2->getNode("root"), cinder1->getNode("root"));
- // detector->deactivatePair(plate2->getNode("root"), cinder2->getNode("root"));
   detector->deactivatePair(cinder1->getNode("root"), cinder2->getNode("root"));
   detector->deactivatePair(cinder1->getNode("root"), ground->getNode("ground"));
   detector->deactivatePair(cinder2->getNode("root"), ground->getNode("ground"));
@@ -346,10 +254,12 @@ SimTab::SimTab(wxWindow *parent, const wxWindowID id, const wxPoint& pos, const 
 	krang->setConfig(left_arm_ids, defaultConf);
 	krang->setConfig(right_arm_ids, -defaultConf);
 
-	// Move the hand
-	Eigen::VectorXd dx (6);
-	dx << 0.0, -1.0, 0.0, 0.0, 0.0, 0.0;
-	moveHand(dx, true, 0.011);
+	// Set the obstacle configuration
+	Eigen::VectorXd fuckTard = mWorld->getSkeleton("Obstacle")->getPose();
+	fuckTard(2) = 0.1;
+	fuckTard(0) = 1.55;
+	fuckTard(1) = -1.29;
+	mWorld->getSkeleton("Obstacle")->setPose(fuckTard);
 }
 
 /* ********************************************************************************************* */
@@ -384,17 +294,10 @@ void createAndVisualizeDesign() {
 		plate->setConfig(plate_ids, conf);
 	}
 
-	// Also, with points
 	vector <int> tempIds;
 	tempIds.push_back(0);
 	tempIds.push_back(1);
 	tempIds.push_back(2);
-	const char* temp [] = {"A0", "A1", "B0", "B1", "C0", "C1"};
-	for(size_t i = 0; i < 0; i++) {
-		double x = result.at <LieVector>(i)(0), y = result.at <LieVector>(i)(1);
-		Eigen::Vector3d conf(2.3, x, y);
-		mWorld->getSkeleton(temp[i])->setConfig(tempIds, conf);
-	}
 
 	// Visualize the cinder blocks
 	double x = result.at <LieVector>(box1)(0), y = result.at <LieVector>(box1)(1);
@@ -410,262 +313,6 @@ void createAndVisualizeDesign() {
 }
 
 /* ********************************************************************************************* */
-bool performIK (const Eigen::Vector3d& loc, double plate_angle, double phi, 
-		Vector7d& qa, bool right) {
-
-	// Get the initial arm configuration
-	vector <int>& ids = right ? right_arm_ids : left_arm_ids;
-	Eigen::VectorXd initial = krang->getConfig(ids);
-
-	// Compute the goal position
-	Eigen::Matrix4d goalT = Eigen::Matrix4d::Identity();
-	goalT.block<3,1>(0,3) = loc;
-	goalT.block<3,1>(0,0) = -Eigen::Vector3d(0,0,1);
-	goalT.block<3,1>(0,1) = -Eigen::Vector3d(0,1,0); 
-	goalT.block<3,1>(0,2) = -Eigen::Vector3d(1,0,0); 
-	goalT.block<3,3>(0,0) = goalT.block<3,3>(0,0) * Eigen::AngleAxis<double>(M_PI - plate_angle, 
-		Eigen::Vector3d(0.0, 0.0, 1.0)).matrix();
-	// cout << "goalT:\n" << goalT << endl;
-	// cout << "plate_angle:" << plate_angle << endl;
-	
-	// Make the IK call and return a bad error if cannot ik
-	qa = Eigen::Matrix<double,7,1>::Zero();
-	qa(0) = phi;
-	Eigen::VectorXd qb = mWorld->getSkeleton("Krang")->getConfig(lower_dofs);
-	bool result = singleArmIK(qb, goalT, right, qa);
-	if(result) {
-
-		// Set the configuration
-		// cout << "qa: " << qa.transpose() << endl;
-		krang->setConfig(ids, qa);
-
-		// Check for collisions
-		if(!mWorld->checkCollision(false)) {
-			// cout << "successful\n\n\n" << endl;
-			return true;
-		}
-		else {
-			krang->setConfig(ids, initial);
-			// cout << "collision" << endl;
-		}
-	}
-	return false;
-}
-
-/* ********************************************************************************************* */
-bool sampleGrasp (const char* plateName, bool right, Eigen::VectorXd& goal) {
-
- 	//Get the top corner of the object
-	Eigen::VectorXd plate_conf = mWorld->getSkeleton(plateName)->getConfig(plate_ids);
-	Eigen::Vector3d pcorner = plate_conf.topRightCorner<3,1>();
-	pcorner(0) -= 0.25;
-	pcorner(1) -= cos(plate_conf(3)) * plateLength / 2;
-	pcorner(2) -= sin(plate_conf(3)) * plateLength / 2;
-
-	vector <int> tempIds;
-	tempIds.push_back(0);
-	tempIds.push_back(1);
-	tempIds.push_back(2);
-
-	// Keep sampling points along the edge until there is a collision-free inverse kinematics
-	for(size_t sample_idx = 0; sample_idx < 100; sample_idx++) {
-
-		// Uniform sampling
-		double dist = (((double) rand()) / RAND_MAX) * plateLength;
-		Eigen::Vector3d pcontact = pcorner;
-		pcontact(1) += cos(plate_conf(3)) * dist;
-		pcontact(2) += sin(plate_conf(3)) * dist;
-		mWorld->getSkeleton("C0")->setConfig(tempIds, pcontact);
-		viewer->DrawGLScene();	
-
-		// Perform inverse kinematics for the contact point
-		Eigen::Matrix<double, 7, 1> q_arm;
-		for(double phi = 0.0; phi < 2*M_PI; phi += M_PI/4.0) {
-			if(performIK(pcontact, plate_conf(3), phi, q_arm, right)) {
-				goal = q_arm;
-				viewer->DrawGLScene();	
-				return true;
-			}
-		}
-	}
-	return false;
-}
-
-/* ********************************************************************************************* */
-bool sampleGraspCinder (const char* cinderName, Eigen::VectorXd& goal) {
-
-	// Hardcode all the grasps
-	static const size_t numGrasps = 14;
-	double grasps [][6] = {
-		{0.075, 0.0975, -0.04, 0.0, M_PI, 0.0},
-		{0.075, 0.2925, -0.04, 0.0, M_PI, 0.0},
-		{-0.075, 0.0975, -0.04, 0.0, M_PI, 0.0},
-		{-0.075, 0.2925, -0.04, 0.0, M_PI, 0.0},
-		{0.0, 0.39, -0.04, 0.0, M_PI, M_PI_2},
-		{0.0, 0.215, -0.04, 0.0, M_PI, M_PI_2},
-		{0.0, 0.02, -0.04, 0.0, M_PI, M_PI_2},
-		{0.0, 0.02, 0.04, 0.0, 0.0, M_PI_2},
-		{-0.075, 0.2925, 0.04, 0.0, 0.0, 0.0},
-		{-0.075, 0.0975, 0.04, 0.0, 0.0, 0.0},
-		{0.075, 0.2925, 0.04, 0.0, 0.0, 0.0},
-		{0.075, 0.0975, 0.04, 0.0, 0.0, 0.0},
-		{0.0, 0.39, 0.04, 0.0, 0.0, M_PI_2},
-		{0.0, 0.215, 0.04, 0.0, 0.0, M_PI_2}
-	};
-
-	// Find out which grasps are reachable
-	double maxManip = -1.0;;
-	Eigen::VectorXd bestConf;
-	static const bool right = true;
-	for(size_t grasp_idx = 0; grasp_idx < numGrasps; grasp_idx++) {
-
-		// Get the local transform
-		Eigen::Vector3d rpy;
-		for(size_t i = 3; i < 6; i++) 
-			rpy(i-3) = grasps[grasp_idx][i];
-		Eigen::Matrix4d oTh = Eigen::Matrix4d::Identity(); 
-		oTh.topLeftCorner<3,3>() = math::eulerToMatrix(rpy, math::XYZ);
-		oTh.topRightCorner<3,1>() << grasps[grasp_idx][0], grasps[grasp_idx][1], 
-			grasps[grasp_idx][2];
-		
-		// Get the goal hand transform
-		Eigen::Matrix4d wTo = mWorld->getSkeleton(cinderName)->getNode("root")->getWorldTransform();
-		Eigen::Matrix4d wTh = wTo * oTh;
-
-		// Perform IK
-		Eigen::Matrix<double,7,1> qa = Eigen::Matrix<double,7,1>::Zero();
-		Eigen::VectorXd qb = mWorld->getSkeleton("Krang")->getConfig(lower_dofs);
-		bool result = singleArmIK(qb, wTh, right, qa);
-		if(!result) {
-			cout << "grasp_idx: " << grasp_idx << " failed" << endl;
-			continue;
-		}
-		krang->setConfig(right ? right_arm_ids : left_arm_ids, qa);
-
-		// Compute the manipulability	
-		kinematics::BodyNode* eeNode = krang->getNode(right ? "rGripper" : "lGripper");
-		MatrixXd Jlin = eeNode->getJacobianLinear().topRightCorner<3,7>();
-		MatrixXd Jang = eeNode->getJacobianAngular().topRightCorner<3,7>();
-		MatrixXd J (6,7);
-		J << Jlin, Jang;
-		Eigen::MatrixXd Jt = J.transpose();
-		double manip = sqrt((J*Jt).determinant());
-
-		// See if this solution is the best
-		if(manip > maxManip) {
-			maxManip = manip;
-			bestConf = qa;
-		}
-	}
-
-	// Return the best configuration if one is found
-	goal = bestConf;
-	if(maxManip != -1) {
-		krang->setConfig(right ? right_arm_ids : left_arm_ids, goal);
-		return true;
-	}
-	return false;
-}
-
-/* ********************************************************************************************* */
-void motionPlanCinder (bool first) {
-
-	const char* plateName= first ? "Cinder2" : "Cinder1";
-	const char* handName= "lGripper";
-
-	// Find a good initial grasp for the second plate
-	Eigen::VectorXd graspPose (7);
-	bool successful = sampleGraspCinder(plateName, graspPose);
-	cout << "successful: " << successful << endl;
-	if(!successful) return;
-	return;
-
-	// Remove the blue object
-	Eigen::VectorXd temp (6);
-	temp(2) = 10.0;
-	mWorld->getSkeleton("C0")->setPose(temp);
-
-	// Compute the transformation between the hand and the plate to use it in motion planning
-	Eigen::Matrix4d wTh = krang->getNode(handName)->getWorldTransform();
-	Eigen::Matrix4d wTo = mWorld->getSkeleton(plateName)->getNode("root")->getWorldTransform();
-	Eigen::Matrix4d hTo = wTh.inverse() * wTo;
-
-	// Create the manipulation data to be used in motion planning
-	manipData = new ManipData();
-	sprintf(manipData->objName, "%s", plateName);
-	manipData->right = right;
-	manipData->hTo = hTo;
-
-	// Move the arm to the initial configuration
-	planning::PathPlanner <ManipRRT> planner (*mWorld);
-	Eigen::VectorXd goalConf (7);
-	if(right) {
-		goalConf = -defaultConf;
-		goalConf(6) += 2*M_PI;
-	}
-	else goalConf = defaultConf;
-	vector <int>& ids = right ? right_arm_ids : left_arm_ids;
-  bool success = planner.planPath(krang, ids, graspPose, goalConf, path);
-	planner.maxNodes = 5000;
-  if(success) {
-    cout << "Found path: " << path.size() << endl;
-    ManipShortener shortener (mWorld, krang, ids);
-    shortener.shortenPath(path);
-    cout << "Shortened path: " << path.size() << endl;
-  }
-  else cout << "Planner failed." << endl;
-}
-
-
-/* ********************************************************************************************* */
-void motionPlanPlates (bool right) {
-
-	const char* plateName= right ? "Plate1" : "Plate2";
-	const char* handName= right ? "rGripper" : "lGripper";
-
-	// Find a good initial grasp for the second plate
-	Eigen::VectorXd graspPose (7);
-	bool successful = sampleGrasp(plateName, right, graspPose);
-	cout << "successful: " << successful << endl;
-	if(!successful) return;
-
-	// Remove the blue object
-	Eigen::VectorXd temp (6);
-	temp(2) = 10.0;
-	mWorld->getSkeleton("C0")->setPose(temp);
-
-	// Compute the transformation between the hand and the plate to use it in motion planning
-	Eigen::Matrix4d wTh = krang->getNode(handName)->getWorldTransform();
-	Eigen::Matrix4d wTo = mWorld->getSkeleton(plateName)->getNode("root")->getWorldTransform();
-	Eigen::Matrix4d hTo = wTh.inverse() * wTo;
-
-	// Create the manipulation data to be used in motion planning
-	manipData = new ManipData();
-	sprintf(manipData->objName, "%s", plateName);
-	manipData->right = right;
-	manipData->hTo = hTo;
-
-	// Move the arm to the initial configuration
-	planning::PathPlanner <ManipRRT> planner (*mWorld);
-	Eigen::VectorXd goalConf (7);
-	if(right) {
-		goalConf = -defaultConf;
-		goalConf(6) += 2*M_PI;
-	}
-	else goalConf = defaultConf;
-	vector <int>& ids = right ? right_arm_ids : left_arm_ids;
-  bool success = planner.planPath(krang, ids, graspPose, goalConf, path);
-	planner.maxNodes = 5000;
-  if(success) {
-    cout << "Found path: " << path.size() << endl;
-    ManipShortener shortener (mWorld, krang, ids);
-    shortener.shortenPath(path);
-    cout << "Shortened path: " << path.size() << endl;
-  }
-  else cout << "Planner failed." << endl;
-}
-
-/* ********************************************************************************************* */
 void SimTab::GRIPEventSimulationBeforeTimestep() { }
 void SimTab::GRIPEventRender() { }
 void SimTab::OnButton(wxCommandEvent &evt) {
@@ -677,50 +324,6 @@ void SimTab::OnButton(wxCommandEvent &evt) {
 
 	// Make the design
 	if(evt.GetId() == 1233) createAndVisualizeDesign();
-	else if(evt.GetId() == 1234) motionPlanPlates(false);
-	else if(evt.GetId() == 1235) {
-
-		// Move the hand
-		if(!offsetRightArm) {
-			Eigen::VectorXd dx (6);
-			dx << 0.0, 1.0, 0.0, 0.0, 0.0, 0.0;
-	//		Eigen::VectorXd bla = Eigen::VectorXd::Zero(7);
-	//		krang->setConfig(left_arm_ids, bla);
-			moveHand(dx, false, 0.011);
-			offsetRightArm = true;
-		}
-
-		// Remove the other plate
-		side = true;
-		Eigen::VectorXd temp (6);
-		temp(2) = 12.0;
-		mWorld->getSkeleton("Plate2")->setPose(temp);
-		motionPlanPlates(true);
-	}
-	else if(evt.GetId() == 1236) {
-
-		// Reset the arms
-		krang->setConfig(left_arm_ids, defaultConf);
-		krang->setConfig(right_arm_ids, -defaultConf);
-
-		// Remove the other plate
-		side = true;
-		Eigen::VectorXd temp (6);
-		temp(2) = 14.0;
-		mWorld->getSkeleton("Plate1")->setPose(temp);
-		temp(2) = 12.0;
-		mWorld->getSkeleton("Plate2")->setPose(temp);
-
-		// Move the robot close
-		Eigen::Vector2d temp2 (1.5, 2.7);
-		vector <int> fudge;
-		fudge.push_back(0);
-		fudge.push_back(8);
-		krang->setConfig(fudge, temp2);
-
-		// Do the motion plan
-		motionPlanCinder(true);
-	}
 
 	// Get the end time
 	gettimeofday(&end, NULL);
