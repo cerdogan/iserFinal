@@ -97,7 +97,7 @@ void run() {
 	// Check that the waist is at the right value
 	if(mode <= A8) {
 		Eigen::VectorXd conf = krang->getPose();
-		assert(fabs(conf(8) - 2.809) < 0.05 && "Waist in wrong position for part A");
+		assert(fabs(conf(8) - 2.809) < 0.01 && "Waist in wrong position for part A");
 	}
 
 	// Run the mode
