@@ -166,7 +166,7 @@ void computeTorques (const Vector6d& state, double& ul, double& ur) {
 	pthread_mutex_lock(&mutex);
 	Eigen::Vector4d K;
 	if((mode_ == A1) || (mode_ == A3)) K = K_normal;
-	else if((mode_ == A5) || (mode_ == A7)) K = K_smallCinder;
+	else if((mode_ == A5) || (mode_ == A7) || (mode_ == B4)) K = K_smallCinder;
 	else if(mode_ == B2) K = K_waistUp;
 	else assert(false && "unknown mode to set K gains for");
 	if(dbg) cout << "K: " << K.transpose() << endl;
@@ -307,7 +307,6 @@ bool locomotion (Mode mode) {
 			world->getSkeleton("KrangNext")->setConfig(Krang::right_arm_ids,smallGraspPose);
 
 		}
-
 		else if(mode == B2) {
 
 			// Get the pose of the cinder block
@@ -322,7 +321,10 @@ bool locomotion (Mode mode) {
  
 			// Set the arm pose for visualization
 			world->getSkeleton("KrangNext")->setConfig(Krang::right_arm_ids,largeGraspPosePickUp);
-
+		}
+		else if(mode == B4) {
+			locoGoal = krang->getConfig(base_ids);
+			locoGoal(2) -= M_PI_2/2;
 		}
 		else assert(false && "unknown loco goal");
 
