@@ -11,6 +11,7 @@
 using namespace std;
 
 Eigen::Vector4d K_normal;	//< the gains for x and th of the state. y is ignored.
+Eigen::Vector4d K_waistUp;	//< the gains for x and th of the state. y is ignored.
 Eigen::Vector4d K_smallCinder;	//< the gains for x and th of the state. y is ignored.
 Eigen::Vector3d locoGoal = Eigen::Vector3d::Zero();
 Vector6d refState = Vector6d::Zero();
@@ -27,7 +28,7 @@ pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
 Eigen::VectorXd smallGraspPose = 
 	(Eigen::VectorXd (7) << 0.673,0.74,0.404,0.83,-1.727,1.825,-1.641).finished();
 Eigen::VectorXd largeGraspPosePickUp = 
-	(Eigen::VectorXd (7) << 0.751,0.933,0.365,0.462,-1.787,1.776,-1.816).finished();
+	(Eigen::VectorXd (7) << 0.751,0.933,0.365,0.462,-1.787,1.850,-1.816).finished();
 Eigen::VectorXd largeGraspPosePutDown = (Eigen::VectorXd (7) << 0.11112437,0.52565354,
 	0.01548701,1.36946034,-1.65618289,1.06081688,0.20862269).finished();
 /*
@@ -39,9 +40,6 @@ Eigen::VectorXd largeGraspPosePutDown = (Eigen::VectorXd (7) << 0.11112437,0.525
 		 -0.650,   0.645,  -0.016,   1.207,  -1.585,   1.299,  -0.000
 4.  place down:
 		 0.11112437 0.52565354 0.01548701 1.36946034 -1.65618289 1.06081688 0.20862269 
-		
-
-
 */
 
 LocoMode lMode;
@@ -66,6 +64,12 @@ void readGains () {
 	std::stringstream streampd_sc(line, std::stringstream::in);
 	i = 0;
 	while ((i < 4) && (streampd_sc >> newDouble)) K_smallCinder(i++) = newDouble;
+
+	// Read the PD gains for waist up
+	file.getline(line, 1024);
+	std::stringstream streampd_wu(line, std::stringstream::in);
+	i = 0;
+	while ((i < 4) && (streampd_wu >> newDouble)) K_waistUp(i++) = newDouble;
 
 	// Get the integral control options
 	file.getline(line, 1024);
@@ -161,8 +165,9 @@ void computeTorques (const Vector6d& state, double& ul, double& ur) {
 	// Select the gains based on the mode
 	pthread_mutex_lock(&mutex);
 	Eigen::Vector4d K;
-	if((mode_ == A1) || (mode_ == A3) || (mode_ == B2)) K = K_normal;
+	if((mode_ == A1) || (mode_ == A3)) K = K_normal;
 	else if((mode_ == A5) || (mode_ == A7)) K = K_smallCinder;
+	else if(mode_ == B2) K = K_waistUp;
 	else assert(false && "unknown mode to set K gains for");
 	if(dbg) cout << "K: " << K.transpose() << endl;
 	pthread_mutex_unlock(&mutex);
@@ -312,11 +317,11 @@ bool locomotion (Mode mode) {
 			// Estimate where the robot should be 
 			Eigen::Vector2d dir (cos(cinderPose(3)), sin(cinderPose(3)));
 			Eigen::Vector2d perp (-dir(1), dir(0));
-			Eigen::Vector2d temp = cinderLoc - 0.50 * perp - 0.50 * dir;
+			Eigen::Vector2d temp = cinderLoc - 0.50 * perp - 0.47 * dir;
 			locoGoal = Eigen::Vector3d(temp(0), temp(1), cinderPose(3) + M_PI_2);
  
 			// Set the arm pose for visualization
-			world->getSkeleton("KrangNext")->setConfig(Krang::right_arm_ids,smallGraspPose);
+			world->getSkeleton("KrangNext")->setConfig(Krang::right_arm_ids,largeGraspPosePickUp);
 
 		}
 		else assert(false && "unknown loco goal");
