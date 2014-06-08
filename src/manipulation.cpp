@@ -35,6 +35,7 @@ void reachOut (const Eigen::Vector3d& normal, double tl1, double tl2, bool ignor
 	bool reached = false;
 	size_t counter = 0;
 	Eigen::Vector3d initLoc = krang->getNode("rGripper")->getWorldTransform().topRightCorner<3,1>();
+	Eigen::VectorXd q0 = krang->getPose();
 	while(true) {
 
 		// Update times
@@ -50,11 +51,16 @@ void reachOut (const Eigen::Vector3d& normal, double tl1, double tl2, bool ignor
 
 		// Stop if a distance constraint is expressed
 		if(distLimit > 0.0) {
+			Eigen::VectorXd qcurr = krang->getPose();
 			Eigen::Vector3d currLoc = 
 				krang->getNode("rGripper")->getWorldTransform().topRightCorner<3,1>();
 			double dist = (currLoc - initLoc).norm();
 			if(dbg) cout << "dist: " << dist << ", distLimit: " << distLimit << endl; 
 			if(dist > distLimit) {
+				cout << "q0: " << q0.transpose() << endl;
+				cout << "qcurr: " << qcurr.transpose() << endl;
+				cout << "initLoc: " << initLoc.transpose() << endl;
+				cout << "currLoc: " << currLoc.transpose() << endl;
 				cout << "DONE WITH DIST LIMIT: dist: " << dist << ", distLimit: " << distLimit << endl; 
 				somatic_motor_halt(&daemon_cx, hw->arms[Krang::RIGHT]);
 				return;
@@ -133,16 +139,17 @@ bool manipulation (Mode mode) {
 		cout << "Opened the hand\n\n\n\n\n\n\n\n" << endl;
 
 		// Compensate for the error in navigation
-		cout << "Gonna fix error with arm motion\n\n\n\n\n\n\n\n" << endl;
-		Eigen::VectorXd conf = krang->getPose();
-		Eigen::VectorXd confNext = world->getSkeleton("KrangNext")->getPose();
-		Eigen::Vector3d dir (confNext(0) - conf(0), confNext(1) - conf(1), 0.0);
-		reachOut(-dir, 0, 0, true, dir.norm());
-		somatic_motor_reset(&daemon_cx,hw->arms[Krang::RIGHT]);
-		usleep(1e4);
+		// hw->updateSensors(0);
+		// cout << "Gonna fix error with arm motion\n\n\n\n\n\n\n\n" << endl;
+		// Eigen::VectorXd confNext = world->getSkeleton("KrangNext")->getPose();
+		// Eigen::Vector3d dir (confNext(0) - conf(0), confNext(1) - conf(1), 0.0);
+		// reachOut(-dir, 0, 0, true, dir.norm());
+		// somatic_motor_reset(&daemon_cx,hw->arms[Krang::RIGHT]);
+		// usleep(1e4);
 
 		// Move the arm forward until contact
 		cout << "Moving arm forward\n\n\n\n\n\n\n\n" << endl;
+		Eigen::VectorXd conf = krang->getPose();
 		double th = conf(3);
 		Eigen::Vector3d normal (sin(th), -cos(th), 0.0);
 		cout << normal.transpose() << endl;
@@ -296,17 +303,19 @@ bool manipulation (Mode mode) {
 		sleep(6);
 
 		// Move the large cinder down enough until contact with the small cinder
-		reachOut(Eigen::Vector3d(0.0, 0.0, 1.0), 10, 0, true);
+		hw->updateSensors(0.0);
+		reachOut(Eigen::Vector3d(0.0, 0.0, 1.0), 100, 0, true, 0.05);
 
 		// Open the hand
 		system("echo 0.9 | somatic_motor_cmd rgripper pos");
+		somatic_motor_reset(&daemon_cx,hw->arms[Krang::RIGHT]);
 
 		// Move the arm out of the cinder
 		Eigen::VectorXd conf = krang->getPose();
 		double th = conf(3);
 		Eigen::Vector3d normal (sin(th), -cos(th), -0.2);
 		cout << normal.transpose() << endl;
-		reachOut(-normal, 60, 0, true);
+		reachOut(-normal, 75, 0, true);
 		somatic_motor_reset(&daemon_cx,hw->arms[Krang::RIGHT]);
 		usleep(1e4);
 
