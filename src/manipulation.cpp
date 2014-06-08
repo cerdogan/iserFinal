@@ -112,7 +112,7 @@ void reachOut (const Eigen::Vector3d& normal, double tl1, double tl2, bool ignor
 /* ********************************************************************************************* */
 bool manipulation (Mode mode) {
 
-	// Prepare the arm for visualization
+	// Pick up the small cinder block
 	if(mode == A4) {
 
 		// Move the arm to the grasp pose by first moving to a keypoint in the middle
@@ -169,12 +169,11 @@ bool manipulation (Mode mode) {
 		somatic_motor_setpos(&daemon_cx,hw->arms[Krang::RIGHT], carryKeyPoint.data(), 7);
 		sleep(4);
 
-
 		return true;
 	}
 
-	// Prepare the arm for visualization
-	if(mode == A8) {
+	// Place the small cinder block on the ground
+	else if(mode == A8) {
 
 		// Move the arm to the grasp pose by first moving to a keypoint in the middle
 		Eigen::VectorXd smallKeyPoint2 (7);
@@ -217,5 +216,120 @@ bool manipulation (Mode mode) {
 		return true;
 	}
 
+	// Pick up the large cinder block
+	else if(mode == B3) {
+
+		Eigen::VectorXd leftOpen (7), leftClose (7);
+		leftOpen << 0.372,   1.479,   0.015,  -1.207,  -0.001,  -1.299,  -0.000;
+		leftClose <<  0.372,  -0.664,  0.016,  -1.207,  0.000,  -1.299,  0.000;
+
+		// Move the arm to the grasp pose by first moving to a keypoint in the middle
+		Eigen::VectorXd smallKeyPoint (7);
+		smallKeyPoint << -0.211,   0.664,  -0.016,   1.207,  -1.426,   1.908,   0.000;
+		somatic_motor_setpos(&daemon_cx,hw->arms[Krang::LEFT], leftOpen.data(), 7);
+		somatic_motor_setpos(&daemon_cx,hw->arms[Krang::RIGHT], smallKeyPoint.data(), 7);
+		sleep(3);
+		smallKeyPoint <<  1.018,   0.664,  -0.016,   0.945,  -1.426,   1.909,   0.000;
+		somatic_motor_setpos(&daemon_cx,hw->arms[Krang::RIGHT], smallKeyPoint.data(), 7);
+		sleep(3);
+		somatic_motor_setpos(&daemon_cx,hw->arms[Krang::RIGHT],largeGraspPosePickUp.data(), 7);
+		sleep(6);
+
+		// Move the camera
+		double pos [] = {260, 510};
+		somatic_motor_setpos(&daemon_cx, dynos, pos, 2);
+		sleep(2);
+
+		// Open the hand
+		system("echo 0.9 | somatic_motor_cmd rgripper pos");
+		cout << "Opened the hand\n\n\n\n\n\n\n\n" << endl;
+
+		// Move the arm forward until contact
+		cout << "Moving arm forward\n\n\n\n\n\n\n\n" << endl;
+		Eigen::VectorXd conf = krang->getPose();
+		double th = conf(3);
+		Eigen::Vector3d normal (sin(th), -cos(th), 0.0);
+		cout << normal.transpose() << endl;
+		reachOut(normal, 400, 15);
+
+		// Close the hand
+		system("echo 0.0 | somatic_motor_cmd rgripper pos");
+
+		// Move the camera
+		double pos2 [] = {260, 450};
+		somatic_motor_setpos(&daemon_cx, dynos, pos2, 2);
+		sleep(2);
+
+		hw->updateSensors(0);
+
+		// Move the large cinder to the middle
+		somatic_motor_reset(&daemon_cx,hw->arms[Krang::RIGHT]);
+		usleep(1e4);
+		smallKeyPoint << -0.650,   0.645,  -0.016,   1.207,  -0.4,   1.299,  -0.000;
+		somatic_motor_setpos(&daemon_cx,hw->arms[Krang::RIGHT], smallKeyPoint.data(), 7);
+		sleep(4);
+		Eigen::VectorXd carryKeyPoint (7);
+		carryKeyPoint << -0.211,   0.664,  -0.016,   1.207,  -0.000,   1.299,  1.570;
+		somatic_motor_setpos(&daemon_cx,hw->arms[Krang::RIGHT], carryKeyPoint.data(), 7);
+		sleep(4);
+		somatic_motor_setpos(&daemon_cx,hw->arms[Krang::LEFT], leftClose.data(), 7);
+		sleep(4);
+
+		return true;
+	}
+
+	// Place the large cinder block on the small cinder block 
+	else if(mode == B7) {
+
+		Eigen::VectorXd leftOpen (7), leftClose (7);
+		leftOpen << 0.372,   1.479,   0.015,  -1.207,  -0.001,  -1.299,  -0.000;
+		leftClose <<  0.372,  -0.664,  0.016,  -1.207,  0.000,  -1.299,  0.000;
+
+		// Move the arm to the grasp pose by first moving to a keypoint in the middle
+		Eigen::VectorXd smallKeyPoint2 (7);
+		smallKeyPoint2 << -0.650,   0.645,  -0.016,   1.207,  -1.585,   1.299,  -0.000;
+		somatic_motor_setpos(&daemon_cx,hw->arms[Krang::LEFT], leftOpen.data(), 7);
+		sleep(4);
+		somatic_motor_setpos(&daemon_cx,hw->arms[Krang::RIGHT], smallKeyPoint2.data(), 7);
+		sleep(6);
+		somatic_motor_setpos(&daemon_cx,hw->arms[Krang::RIGHT],largeGraspPosePutDown.data(), 7);
+		sleep(6);
+
+		// Move the large cinder down enough until contact with the small cinder
+		reachOut(Eigen::Vector3d(0.0, 0.0, 1.0), 10, 0, true);
+
+		// Open the hand
+		system("echo 0.9 | somatic_motor_cmd rgripper pos");
+
+		// Move the arm out of the cinder
+		Eigen::VectorXd conf = krang->getPose();
+		double th = conf(3);
+		Eigen::Vector3d normal (sin(th), -cos(th), -0.2);
+		cout << normal.transpose() << endl;
+		reachOut(-normal, 60, 0, true);
+		somatic_motor_reset(&daemon_cx,hw->arms[Krang::RIGHT]);
+		usleep(1e4);
+
+		// Move the hand to the middle
+		somatic_motor_reset(&daemon_cx,hw->arms[Krang::RIGHT]);
+		usleep(1e4);
+		hw->updateSensors(0.0);
+		Eigen::VectorXd curr = krang->getConfig(Krang::right_arm_ids);
+		Eigen::VectorXd goal1 = curr;
+		goal1(1) -= 0.6;
+		somatic_motor_setpos(&daemon_cx,hw->arms[Krang::RIGHT], goal1.data(), 7);
+		sleep(4);
+		Eigen::VectorXd goal2 = goal1;
+		goal2(0) -= 1.0;
+		somatic_motor_setpos(&daemon_cx,hw->arms[Krang::RIGHT], goal2.data(), 7);
+		sleep(4);
+		Eigen::VectorXd goal3 (7);
+		goal3 << -0.211,   0.664,  -0.016,   1.207,  -0.000,   1.299,  -0.000;
+		somatic_motor_setpos(&daemon_cx,hw->arms[Krang::RIGHT], goal3.data(), 7);
+		somatic_motor_setpos(&daemon_cx,hw->arms[Krang::LEFT], leftClose.data(), 7);
+		sleep(4);
+
+		return true;
+	}
 	else assert(false && "Unknown manipulation mode");
 }

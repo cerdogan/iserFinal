@@ -37,7 +37,8 @@ extern Krang::Hardware* hw;
 extern somatic_d_t daemon_cx;   
 
 extern Eigen::VectorXd smallGraspPose;
-extern Eigen::VectorXd largeGraspPose;
+extern Eigen::VectorXd largeGraspPosePickUp;
+extern Eigen::VectorXd largeGraspPosePutDown;
 
 /// Configurations of the design objects wrt the obstacle
 struct Design {

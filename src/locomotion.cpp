@@ -26,8 +26,10 @@ pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
 
 Eigen::VectorXd smallGraspPose = 
 	(Eigen::VectorXd (7) << 0.673,0.74,0.404,0.83,-1.727,1.825,-1.641).finished();
-Eigen::VectorXd largeGraspPose = 
-	(Eigen::VectorXd (7) << 0.673,0.74,0.404,0.83,-1.727,1.825,-1.641).finished();
+Eigen::VectorXd largeGraspPosePickUp = 
+	(Eigen::VectorXd (7) << 0.751,0.933,0.365,0.462,-1.787,1.776,-1.816).finished();
+Eigen::VectorXd largeGraspPosePutDown = (Eigen::VectorXd (7) << 0.11112437,0.52565354,
+	0.01548701,1.36946034,-1.65618289,1.06081688,0.20862269).finished();
 /*
 1. 	pick up: 
 			0.751 0.933 0.365 0.462 -1.787 1.776 -1.816 

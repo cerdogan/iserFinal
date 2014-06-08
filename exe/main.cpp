@@ -27,7 +27,7 @@ simulation::World* world;
 dynamics::SkeletonDynamics* krang;
 Hardware* hw;     
 Vector6d state;					//< current state (x,x.,y,y.,th,th.)
-Mode mode = B1;
+Mode mode = B3;
 
 bool sending_commands = false;
 
@@ -57,7 +57,7 @@ void setupModeMapping () {
 	modeMapping[B5] = perception;
 	modeMapping[B6] = locomotion;
 	modeMapping[B7] = manipulation;
-	modeMapping[B3] = nullFunc;
+	modeMapping[B4] = nullFunc;
 }
 
 /* ********************************************************************************************* */
