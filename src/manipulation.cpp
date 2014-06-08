@@ -257,7 +257,7 @@ bool manipulation (Mode mode) {
 		double th = conf(3);
 		Eigen::Vector3d normal (sin(th), -cos(th), 0.0);
 		cout << normal.transpose() << endl;
-		reachOut(normal, 400, 15);
+		reachOut(normal, 400, 0);
 
 		// Close the hand
 		system("echo 0.0 | somatic_motor_cmd rgripper pos");

@@ -29,8 +29,10 @@ Eigen::VectorXd smallGraspPose =
 	(Eigen::VectorXd (7) << 0.673,0.74,0.404,0.83,-1.727,1.825,-1.641).finished();
 Eigen::VectorXd largeGraspPosePickUp = 
 	(Eigen::VectorXd (7) << 0.751,0.933,0.365,0.462,-1.787,1.850,-1.816).finished();
-Eigen::VectorXd largeGraspPosePutDown = (Eigen::VectorXd (7) << 0.11112437,0.52565354,
-	0.01548701,1.36946034,-1.65618289,1.06081688,0.20862269).finished();
+//Eigen::VectorXd largeGraspPosePutDown = (Eigen::VectorXd (7) << 0.11112437,0.52565354,
+//	0.01548701,1.36946034,-1.65618289,1.06081688,0.20862269).finished();
+Eigen::VectorXd largeGraspPosePutDown = (Eigen::VectorXd (7) << 0.10970834 ,0.46936491 ,
+		0.016948335,1.28562260 ,-1.64631414,1.02800083, 0.08154527).finished();
 /*
 1. 	pick up: 
 			0.751 0.933 0.365 0.462 -1.787 1.776 -1.816 
@@ -166,7 +168,7 @@ void computeTorques (const Vector6d& state, double& ul, double& ur) {
 	pthread_mutex_lock(&mutex);
 	Eigen::Vector4d K;
 	if((mode_ == A1) || (mode_ == A3)) K = K_normal;
-	else if((mode_ == A5) || (mode_ == A7) || (mode_ == B4)) K = K_smallCinder;
+	else if((mode_ == A5) || (mode_ == A7) || (mode_ == B4) || (mode_ == B6)) K = K_smallCinder;
 	else if(mode_ == B2) K = K_waistUp;
 	else assert(false && "unknown mode to set K gains for");
 	if(dbg) cout << "K: " << K.transpose() << endl;
@@ -325,6 +327,23 @@ bool locomotion (Mode mode) {
 		else if(mode == B4) {
 			locoGoal = krang->getConfig(base_ids);
 			locoGoal(2) -= M_PI_2/2;
+		}
+		else if(mode == B6) {
+		
+			// Get the pose of the cinder block
+			Eigen::VectorXd cinderPose = world->getSkeleton("Cinder1G")->getPose();
+			Eigen::Vector2d cinderLoc (cinderPose(0), cinderPose(1));
+			double th = (cinderPose(3) + cinderPose(5)) + M_PI_2;
+
+			// Estimate where the robot should be 
+			Eigen::Vector2d dir (cos(th), sin(th));
+			Eigen::Vector2d perp (-dir(1), dir(0));
+			Eigen::Vector2d temp = cinderLoc - 0.60 * perp - 0.32 * dir;
+			locoGoal = Eigen::Vector3d(temp(0), temp(1), th + M_PI_2);
+ 
+			// Set the arm pose for visualization
+			world->getSkeleton("KrangNext")->setConfig(Krang::right_arm_ids,largeGraspPosePutDown);
+
 		}
 		else assert(false && "unknown loco goal");
 

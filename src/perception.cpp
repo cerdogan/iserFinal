@@ -16,7 +16,7 @@ ach_channel_t vision_chan;
 /* ******************************************************************************************** */
 void detectSmallCinder (Mode mode, const Eigen::VectorXd& mean) {
 
-	static const bool dbg = 0;
+	static const bool dbg = 1;
 
 	if(dbg) cout << "mean: " << mean.transpose() << endl;
 	Eigen::Matrix4d rTo = Eigen::Matrix4d::Identity();
@@ -49,6 +49,18 @@ void detectSmallCinder (Mode mode, const Eigen::VectorXd& mean) {
 	conf(5) = M_PI_2;
 	if(dbg) cout << "set conf 2: " << conf.transpose() << endl;
 	world->getSkeleton("Cinder2")->setPose(conf);
+
+	// Update the goal location for the first cinder if in part 2
+	if(mode == B5) {
+		Eigen::Matrix4d wTc2 = world->getSkeleton("Cinder2")->getNode("root")->getWorldTransform();
+		cout << "wTc2: \n" << wTc2 << endl;
+		Eigen::Matrix4d wTo = wTc2 * design.oTc2.inverse();
+		Eigen::Matrix4d wTc1 = wTo * design.oTc1;
+		cout << "wTc1: \n" << wTc1 << endl;
+		Eigen::VectorXd c1 = matToVec(wTc1);
+		cout << "c1: " << c1 << endl;
+		world->getSkeleton("Cinder1G")->setPose(c1);
+	}
 }
 
 /* ******************************************************************************************** */
@@ -210,6 +222,12 @@ bool perception (Mode mode) {
 				"06-detectCinder\" > bla &");
 			somatic_d_channel_open(&daemon_cx, &vision_chan, "cinder", NULL); 
 		}
+		else if(mode == B5) {
+			system("echo 260 450 | somatic_motor_cmd dynamixel pos");
+			system("ssh 192.168.10.10 \"/home/cerdogan/Documents/Software/project/vision/build/"
+				"11-detectSmallCinder\" > bla &");
+			somatic_d_channel_open(&daemon_cx, &vision_chan, "smallCinder", NULL); 
+		}
 		else assert(false && "unknown perception goal");
 
 		// Reset the flags
@@ -244,6 +262,8 @@ bool perception (Mode mode) {
 		if(mode == A2) detectSmallCinder(mode, mean);
 		else if(mode == A6) detectObstacle(mode, mean);
 		else if(mode == B1) detectCinder(mode, mean);
+		else if(mode == B5) detectSmallCinder(mode, mean);
+		else assert("unknown perception interpretation");
 
 		// Stop the program called on the vision computer
 		cleanUp(mode);

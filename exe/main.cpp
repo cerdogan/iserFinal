@@ -27,7 +27,7 @@ simulation::World* world;
 dynamics::SkeletonDynamics* krang;
 Hardware* hw;     
 Vector6d state;					//< current state (x,x.,y,y.,th,th.)
-Mode mode = B4;
+Mode mode = B5;
 
 bool sending_commands = false;
 
@@ -57,7 +57,7 @@ void setupModeMapping () {
 	modeMapping[B5] = perception;
 	modeMapping[B6] = locomotion;
 	modeMapping[B7] = manipulation;
-	modeMapping[B5] = nullFunc;
+	modeMapping[B7] = nullFunc;
 }
 
 /* ********************************************************************************************* */
@@ -211,7 +211,7 @@ void init() {
 	void Timer::Notify() {
 
 		// Update the design configurations
-		{
+		if(mode < B1) {
 			Eigen::Matrix4d wTo = world->getSkeleton("Obstacle")->getNode("root")->getWorldTransform();
 			Eigen::Matrix4d wTc1 = wTo * design.oTc1; 
 			Eigen::Matrix4d wTc2 = wTo * design.oTc2;
