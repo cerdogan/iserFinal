@@ -13,12 +13,12 @@ PART A:
 8-	Manipulation:	Perform RRTs and place the small cinder block 
 
 PART B:
-1-	Locomotion: 	Go towards the large cinder block to pick up with right arm
-2-	Perception:		Localize the large cinder block 
-3-	Locomotion:		Approach more
-4-	Manipulation:	Pick up the large cinder block with the preconfigured grasp
-5-	Locomotion:		Bring the large cinder block to the default location
-6-	Perception:		Localize the small cinder block and determine goal pose 
+1-	Perception:		Localize the large cinder block 
+2-	Locomotion:		Approach more
+3-	Manipulation:	Pick up the large cinder block with the preconfigured grasp
+4-	Locomotion:		Bring the large cinder block to the default location
+5-	Perception:		Localize the small cinder block and determine goal pose 
+6-	Locomotion:		Approach more
 7-	Manipulation:	Perform RRTs and place the large cinder block 
 
 PART C:

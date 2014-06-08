@@ -27,7 +27,7 @@ simulation::World* world;
 dynamics::SkeletonDynamics* krang;
 Hardware* hw;     
 Vector6d state;					//< current state (x,x.,y,y.,th,th.)
-Mode mode = A2;
+Mode mode = B1;
 
 bool sending_commands = false;
 
@@ -49,6 +49,15 @@ void setupModeMapping () {
 	modeMapping[A7] = locomotion;
 	modeMapping[A8] = manipulation;
 	modeMapping[A9] = nullFunc;
+
+	modeMapping[B1] = perception;
+	modeMapping[B2] = locomotion;
+	modeMapping[B3] = manipulation;
+	modeMapping[B4] = locomotion;
+	modeMapping[B5] = perception;
+	modeMapping[B6] = locomotion;
+	modeMapping[B7] = manipulation;
+	modeMapping[B3] = nullFunc;
 }
 
 /* ********************************************************************************************* */
@@ -81,8 +90,20 @@ void *kbhit(void *) {
 /* ********************************************************************************************* */
 /// The main loop
 void run() {
+
+	// Get the mode
 	Module M = modeMapping.at(mode);
+
+	// Check that the waist is at the right value
+	if(mode <= A8) {
+		Eigen::VectorXd conf = krang->getPose();
+		assert(fabs(conf(8) - 2.809) < 0.05 && "Waist in wrong position for part A");
+	}
+
+	// Run the mode
 	bool result = M(mode);
+
+	// Change mode if successful
 	if(result) mode = (Mode) (mode + 1);
 }
 

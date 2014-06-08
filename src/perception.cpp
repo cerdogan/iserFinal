@@ -90,6 +90,44 @@ void detectObstacle (Mode mode, const Eigen::VectorXd& mean) {
 }
 
 /* ******************************************************************************************** */
+void detectCinder (Mode mode, const Eigen::VectorXd& mean) {
+
+	static const bool dbg = 0;
+
+	if(dbg) cout << "mean: " << mean.transpose() << endl;
+	Eigen::Matrix4d rTo = Eigen::Matrix4d::Identity();
+	double th = atan2(mean(4), mean(3)) + M_PI_2;
+	if(dbg) cout << "th: " << th << endl;
+	rTo.topLeftCorner<3,3>() = 
+		Eigen::AngleAxis<double>(th, Eigen::Vector3d(0.0, 0.0, 1.0)).matrix();
+	rTo.topRightCorner<3,1>() = mean.block<3,1>(0,0);
+	if(dbg) cout << "rTo: \n" << rTo << endl;
+
+	// Integrate the data to the robot pose
+	Eigen::Matrix4d wTr = Eigen::Matrix4d::Identity();
+	wTr.topRightCorner<3,1>() = Eigen::Vector3d(state(0), state(2), 0.27);
+	Eigen::Vector3d rpy = Eigen::Vector3d(0, 0, state(4));
+	wTr.topLeftCorner<3,3>() = math::eulerToMatrix(rpy, math::XYZ);
+	if(dbg) cout << "wTr: \n" << wTr << endl;
+	Eigen::Matrix4d wTo = wTr * rTo;
+	if(dbg) cout << "wTo: \n" << wTo << endl;
+
+	// Set the pose for the object 
+	Eigen::VectorXd conf (6);
+	conf.topLeftCorner<3,1>() = wTo.topRightCorner<3,1>();
+	Eigen::Matrix3d R = wTo.topLeftCorner<3,3>();
+	conf.bottomLeftCorner<3,1>() = math::matrixToEuler(R, math::XYZ);
+	conf.block<2,1>(0,0) += Eigen::Vector2d(-sin(conf(5)), cos(conf(5))).normalized() * 0.15;
+	double temp = conf(3); conf(3) = conf(5); conf(5) = temp;
+	if(dbg) cout << "set conf: " << conf.transpose() << endl;
+	conf(2) = 0.0;
+	conf(4) = 0.0;
+	conf(5) = M_PI_2;
+	if(dbg) cout << "set conf 2: " << conf.transpose() << endl;
+	world->getSkeleton("Cinder1")->setPose(conf);
+}
+
+/* ******************************************************************************************** */
 /// Finds the consensus in the data and interprets it to get the motion parameters. Returns the
 /// consensus data
 Eigen::VectorXd analyzeData (const std::vector <Eigen::VectorXd>& data) {
@@ -135,8 +173,12 @@ Eigen::VectorXd analyzeData (const std::vector <Eigen::VectorXd>& data) {
 
 /* ********************************************************************************************* */
 void cleanUp (Mode mode) {
-	system("ssh 192.168.10.10 \"/home/cerdogan/Documents/Software/project/vision/build/"
-		"stop-11\" > bla &");
+	if(mode == B1) 
+		system("ssh 192.168.10.10 \"/home/cerdogan/Documents/Software/project/vision/build/"
+			"stop-06\" > bla &");
+	else 
+		system("ssh 192.168.10.10 \"/home/cerdogan/Documents/Software/project/vision/build/"
+			"stop-11\" > bla &");
 }
 
 /* ********************************************************************************************* */
@@ -161,6 +203,12 @@ bool perception (Mode mode) {
 			system("ssh 192.168.10.10 \"/home/cerdogan/Documents/Software/project/vision/build/"
 				"12-detectObstacle\" > bla &");
 			somatic_d_channel_open(&daemon_cx, &vision_chan, "smallCinder", NULL); 
+		}
+		else if(mode == B1) {
+			system("echo 300 450 | somatic_motor_cmd dynamixel pos");
+			system("ssh 192.168.10.10 \"/home/cerdogan/Documents/Software/project/vision/build/"
+				"06-detectCinder\" > bla &");
+			somatic_d_channel_open(&daemon_cx, &vision_chan, "cinder", NULL); 
 		}
 		else assert(false && "unknown perception goal");
 
@@ -195,6 +243,7 @@ bool perception (Mode mode) {
 		// Use it according to the mode 
 		if(mode == A2) detectSmallCinder(mode, mean);
 		else if(mode == A6) detectObstacle(mode, mean);
+		else if(mode == B1) detectCinder(mode, mean);
 
 		// Stop the program called on the vision computer
 		cleanUp(mode);

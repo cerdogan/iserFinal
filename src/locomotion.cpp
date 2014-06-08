@@ -26,6 +26,8 @@ pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
 
 Eigen::VectorXd smallGraspPose = 
 	(Eigen::VectorXd (7) << 0.673,0.74,0.404,0.83,-1.727,1.825,-1.641).finished();
+Eigen::VectorXd largeGraspPose = 
+	(Eigen::VectorXd (7) << 0.673,0.74,0.404,0.83,-1.727,1.825,-1.641).finished();
 
 LocoMode lMode;
 Mode mode_;
@@ -144,7 +146,7 @@ void computeTorques (const Vector6d& state, double& ul, double& ur) {
 	// Select the gains based on the mode
 	pthread_mutex_lock(&mutex);
 	Eigen::Vector4d K;
-	if((mode_ == A1) || (mode_ == A3)) K = K_normal;
+	if((mode_ == A1) || (mode_ == A3) || (mode_ == B2)) K = K_normal;
 	else if((mode_ == A5) || (mode_ == A7)) K = K_smallCinder;
 	else assert(false && "unknown mode to set K gains for");
 	if(dbg) cout << "K: " << K.transpose() << endl;
@@ -280,6 +282,23 @@ bool locomotion (Mode mode) {
 			Eigen::Vector2d perp (-dir(1), dir(0));
 			Eigen::Vector2d temp = cinderLoc - 0.30 * perp - 0.50 * dir;
 			locoGoal = Eigen::Vector3d(temp(0), temp(1), th + M_PI_2);
+ 
+			// Set the arm pose for visualization
+			world->getSkeleton("KrangNext")->setConfig(Krang::right_arm_ids,smallGraspPose);
+
+		}
+
+		else if(mode == B2) {
+
+			// Get the pose of the cinder block
+			Eigen::VectorXd cinderPose = world->getSkeleton("Cinder1")->getPose();
+			Eigen::Vector2d cinderLoc (cinderPose(0), cinderPose(1));
+
+			// Estimate where the robot should be 
+			Eigen::Vector2d dir (cos(cinderPose(3)), sin(cinderPose(3)));
+			Eigen::Vector2d perp (-dir(1), dir(0));
+			Eigen::Vector2d temp = cinderLoc - 0.50 * perp - 0.50 * dir;
+			locoGoal = Eigen::Vector3d(temp(0), temp(1), cinderPose(3) + M_PI_2);
  
 			// Set the arm pose for visualization
 			world->getSkeleton("KrangNext")->setConfig(Krang::right_arm_ids,smallGraspPose);
